@@ -56,11 +56,11 @@ class LoginProvider extends ChangeNotifier {
   Future<void> downloadAnonymousInfo(User? user) async { // 익명 유저 정보 다운로드
     FirebaseFirestore.instance.collection('user').doc(user!.uid).get().then((value) {
       _userInformation = UserInformation(
-        email: "Anonymous",
-        name: "Hyeongseo Shin",
+        email: "sumday@gmail.com",
+        name: "sumday",
         statusMessage: value.data()!['status_message'] as String,
         uid: value.data()!['uid'] as String,
-        profileUrl:  "https://handong.edu/site/handong/res/img/logo.png",
+        profileUrl:  "https://img.freepik.com/free-icon/user_318-749758.jpg",
       );
     });
     notifyListeners();
@@ -85,6 +85,7 @@ class LoginProvider extends ChangeNotifier {
       _userName = user!.displayName;
 
       addUserInfo(user);
+      print("hello");
       downloadUserInfo(user);
       notifyListeners();
       return userCredential;
@@ -123,13 +124,14 @@ class LoginProvider extends ChangeNotifier {
       }
 
       else {
+        print('hello2');
         return FirebaseFirestore.instance
             .collection('user')
             .doc(user.uid)
             .set(<String, dynamic>{
           'email': user.email,
           'name': user.displayName,
-          'status_message': "I promise to take the test honestly before GOD.",
+          'status_message': "someday, someone",
           'uid': user.uid,
           'profileUrl': user.photoURL,
         });
@@ -146,7 +148,7 @@ class LoginProvider extends ChangeNotifier {
         .collection('user')
         .doc(user!.uid)
         .set(<String, dynamic>{
-      'status_message': "Need To Make Google Login Only For HGU Student",
+      'status_message': "sumday is all you need",
       'uid': user.uid,
     });
     notifyListeners();
@@ -157,7 +159,7 @@ class LoginProvider extends ChangeNotifier {
         .collection('user')
         .doc(user!.uid)
         .update(<String, dynamic>{
-      'status_message': "I promise to take the test honestly before GOD.",
+      'status_message': "New sumday user.",
       'uid': user.uid,
     });
     notifyListeners();

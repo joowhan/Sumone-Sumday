@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   await loginProvider.signInWithGoogle(); // 구글 로그인
                   print("Google Login Success!!");
                   //SignInController().signIn();
-                  await signInWithGoogle();
+                  // await signInWithGoogle();
                   print("Google Login Success!!");
                   // Navigator.push(
                   //   context,
