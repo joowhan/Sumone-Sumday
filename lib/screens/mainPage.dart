@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/bookmark.dart';
+import 'package:sumday/screens/diaries.dart';
+import 'package:sumday/screens/newDiary.dart';
+import 'package:sumday/screens/settings.dart';
+import 'package:sumday/screens/home.dart';
 
 
 class MainPage extends StatefulWidget {
@@ -10,7 +15,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  // final List<Widget> _widgetOptions = <Widget> [Home(), list(), MyProfile()];
+  final List<Widget> _widgetOptions = <Widget> [Home(), Diaries(), NewDiary(), Bookmark(),Settings()];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -23,12 +28,13 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sumday!', style: TextStyle(fontWeight:FontWeight.bold),),
-        backgroundColor: Color(0xff326295),
+        backgroundColor: Color(0xffF4C54F),
       ),
       body: Center(
         // child: _widgetOptions[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -39,12 +45,20 @@ class _MainPageState extends State<MainPage> {
             label: '목록',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '마이 페이지',
+            icon: Icon(Icons.add_circle_outline, size:45 ,),
+            label:'',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark_border),
+            label: '북마크',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: '설정',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xff326295),
+        selectedItemColor: Color(0xff136750),
         backgroundColor: Colors.white,
         onTap: _onItemTapped,
       ),

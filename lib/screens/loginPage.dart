@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 200.0),
+            SizedBox(height: 100.0),
             Text(
               "SUMDAY",
               style: TextStyle(
@@ -47,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
                   print("Google Login Success!!");
                   //SignInController().signIn();
                   // await signInWithGoogle();
-                  print("Google Login Success!!");
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(
