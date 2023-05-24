@@ -31,7 +31,7 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Color(0xffF4C54F),
       ),
       body: Center(
-        // child: _widgetOptions[_selectedIndex],
+        child: _widgetOptions[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
