@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/ai_writeDiary.dart';
+import 'package:sumday/screens/writeDiary.dart';
+
 class NewDiary extends StatelessWidget {
   const NewDiary({Key? key}) : super(key: key);
   Widget oneBoxedContainer() {
@@ -26,6 +29,7 @@ class NewDiary extends StatelessWidget {
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -37,24 +41,48 @@ class NewDiary extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "width: $width\nheight: $height\naspect ratio: $ratio",
+              "AI와 일기를 작성할까요?",
             ),
             SizedBox(
               height: 20,
             ),
-            Container(
-              height: 300,
-              width: 300 * ratio,
-              color: Colors.blueGrey[100],
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Ai_WriteDiary()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                minimumSize: Size(300,100)
+              ),
+              label: Text('AI와 일기 작성'),
+              icon: Icon(Icons.comment_bank_rounded),
+
             ),
             SizedBox(
               height: 20,
             ),
-            ratio >= 1 ? twoBoxedContainer() : oneBoxedContainer()
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WriteDiary()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  minimumSize: Size(300,100)
+              ),
+              label: Text('스스로 일기 작성'),
+              icon: Icon(Icons.comment_bank_rounded),
+
+            ),
+            // ratio >= 1 ? twoBoxedContainer() : oneBoxedContainer()
           ],
         );
       },
-
     );
   }
 }
