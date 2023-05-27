@@ -7,6 +7,8 @@ import 'package:background_fetch/background_fetch.dart';
 // ignore: unused_import
 import 'dart:async';
 // test
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/loginProvider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,4 +19,13 @@ Future<void> main() async {
   initLocationState();
   runApp(MyApp());
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => LoginProvider()),
+        // ChangeNotifierProvider(create: (context) => ReviewProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
