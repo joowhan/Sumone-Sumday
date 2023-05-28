@@ -1,8 +1,6 @@
-import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationModel {
-  final String datetime =
-      DateFormat("yy/MM/dd HH:mm:ss").format(DateTime.now());
   final double latitude;
   final double longitude;
   final double speed;
@@ -14,6 +12,22 @@ class LocationModel {
         speed = json["speed"];
 
   Map<String, Object?> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'speed': speed,
+    };
+  }
+
+  factory LocationModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return LocationModel.fromJson(data!);
+  }
+
+  Map<String, dynamic> toFirestore() {
     return {
       'latitude': latitude,
       'longitude': longitude,

@@ -3,13 +3,17 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // ignore: unused_import
 import 'dart:async';
 
-import 'package:sumday/models/location_model.dart';
 import 'package:sumday/models/visited_place_model.dart';
+import 'package:sumday/models/weather_model.dart';
 
+final FirebaseAuth auth = FirebaseAuth.instance;
+
+// initiralize background fetch
 Future<void> initLocationState() async {
   int status = await BackgroundFetch.configure(
     BackgroundFetchConfig(
@@ -30,6 +34,7 @@ Future<void> initLocationState() async {
   );
 }
 
+// save location on db
 Future<Position> getLocation() async {
   var currentPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -38,40 +43,24 @@ Future<Position> getLocation() async {
 
 void _onBackgroundFetch(String taskId) async {
   print("[BackgroundFetch] Event received $taskId");
+  final User? user = auth.currentUser;
+  late String uid;
+  if (user != null) {
+    uid = user.uid;
+  } else {
+    uid = 'guest';
+  }
   var currentLocation = await getLocation();
 
-  final locationRef = FirebaseFirestore.instance
-      .collection("location")
-      .withConverter<LocationModel>(
-        fromFirestore: (snapshot, _) =>
-            LocationModel.fromJson(snapshot.data()!),
-        toFirestore: (location, _) => location.toJson(),
-      );
-  locationRef.add(LocationModel.fromJson({
+  final locationRef = FirebaseFirestore.instance.collection("locationRef");
+
+  locationRef.add({
+    'uid': uid,
     'latitude': currentLocation.latitude,
     'longitude': currentLocation.longitude,
     'speed': currentLocation.speed,
-  }));
+  });
 
-  var places =
-      await getPlacesKakao(currentLocation.latitude, currentLocation.longitude);
-  var timestamp = Timestamp.now();
-  var weather =
-      await getWeather(currentLocation.latitude, currentLocation.longitude);
-  for (VisitedPlaceModel place in places) {
-    final places = FirebaseFirestore.instance.collection("place");
-    places.add({
-      'place_id': place.placeId,
-      'distance': place.distance,
-      'place_name': place.placeName,
-      'place_address': place.placeAddress,
-      'place_category_name': place.placeCategoryName,
-      'place_categoty_group_code': place.placeCategoryGroupCode,
-      'place_category_group_name': place.placeCategoryGroupName,
-      'timestamp': timestamp,
-      'weather': weather,
-    });
-  }
   BackgroundFetch.finish(taskId);
 }
 
@@ -91,29 +80,43 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   }
 
   print("[BackgroundFetch] Event received $taskId");
+  final User? user = auth.currentUser;
+  late String uid;
+  if (user != null) {
+    uid = user.uid;
+  } else {
+    uid = 'guest';
+  }
   var currentLocation = await getLocation();
 
-  final locationRef = FirebaseFirestore.instance
-      .collection("location")
-      .withConverter<LocationModel>(
-        fromFirestore: (snapshot, _) =>
-            LocationModel.fromJson(snapshot.data()!),
-        toFirestore: (location, _) => location.toJson(),
-      );
-  locationRef.add(LocationModel.fromJson({
+  final locationRef = FirebaseFirestore.instance.collection("locationRef");
+
+  locationRef.add({
+    'uid': uid,
     'latitude': currentLocation.latitude,
     'longitude': currentLocation.longitude,
     'speed': currentLocation.speed,
-  }));
+  });
+  BackgroundFetch.finish(taskId);
+}
 
-  var places =
-      await getPlacesKakao(currentLocation.latitude, currentLocation.longitude);
+// get place by coordinate
+Future<List<dynamic>> getPlace(var latitude, var longitude) async {
+  final User? user = auth.currentUser;
+  late String uid;
+  if (user != null) {
+    uid = user.uid;
+  } else {
+    uid = 'guest';
+  }
+
+  var places = await getPlacesKakao(latitude, longitude);
   var timestamp = Timestamp.now();
-  var weather =
-      await getWeather(currentLocation.latitude, currentLocation.longitude);
+  var weather = await getWeather(latitude, longitude);
+  var placeList = [];
   for (VisitedPlaceModel place in places) {
-    final places = FirebaseFirestore.instance.collection("place");
-    places.add({
+    placeList.add({
+      'uid': uid,
       'place_id': place.placeId,
       'distance': place.distance,
       'place_name': place.placeName,
@@ -122,34 +125,14 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
       'place_categoty_group_code': place.placeCategoryGroupCode,
       'place_category_group_name': place.placeCategoryGroupName,
       'timestamp': timestamp,
-      'weather': weather,
+      'temp': weather.temp,
+      'humidity': weather.humidity,
+      'weather': weather.weather,
+      'weather_description': weather.description,
     });
   }
-  BackgroundFetch.finish(taskId);
-}
 
-// KAKAO REST API
-
-class Place {
-  final Map<String, dynamic> meta;
-  final List<Map<String, dynamic>> documents;
-
-  Place({
-    required this.meta,
-    required this.documents,
-  });
-
-  factory Place.fromJson(Map<String, dynamic> json) {
-    return Place(
-      meta: json['meta'],
-      documents: json['documents'],
-    );
-  }
-
-  void printPlace() {
-    print("meta: $meta");
-    print("documents: $documents");
-  }
+  return placeList;
 }
 
 // KaKao REST API
@@ -216,13 +199,16 @@ Future<http.Response> getPlacesGoogle(var latitude, var longitude) async {
 }
 
 // Weather API
-Future<Map<String, dynamic>> getWeather(var latitude, var longitude) async {
+Future<WeatherModel> getWeather(var latitude, var longitude) async {
   var key = "944c738ce4a56b8e700b1a95bd3fc1af";
   var baseUrl = "https://api.openweathermap.org/data/2.5/weather";
   var url = Uri.parse(
       '$baseUrl?lat=$latitude&lon=$longitude&appid=$key&units=metric&lang=kr');
   var response = await http.get(url);
-  var json = await jsonDecode(response.body);
-
-  return json;
+  if (response.statusCode != 200) {
+    var json = await jsonDecode(response.body);
+    return WeatherModel.fromJson(json);
+  } else {
+    throw Exception('Failed to load weather');
+  }
 }

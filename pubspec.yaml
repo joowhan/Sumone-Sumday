@@ -44,7 +44,6 @@ dependencies:
   intl: ^0.18.1
   firebase_database: ^10.2.1
   cloud_firestore: ^4.7.1
-  cloud_firestore: ^4.7.1
   google_sign_in: ^6.1.0
   flutter_signin_button: ^2.0.0
   sign_button: ^2.0.3
