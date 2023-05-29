@@ -51,14 +51,21 @@ void _onBackgroundFetch(String taskId) async {
     uid = 'guest';
   }
   var currentLocation = await getLocation();
-
-  final locationRef = FirebaseFirestore.instance.collection("locationRef");
+  var weather =
+      await getWeather(currentLocation.latitude, currentLocation.longitude);
+  final locationRef = FirebaseFirestore.instance.collection("location");
+  var timestamp = Timestamp.now();
 
   locationRef.add({
     'uid': uid,
     'latitude': currentLocation.latitude,
     'longitude': currentLocation.longitude,
     'speed': currentLocation.speed,
+    'temp': weather.temp,
+    'humidity': weather.humidity,
+    'weather': weather.weather,
+    'weather_description': weather.description,
+    'timestamp': timestamp,
   });
 
   BackgroundFetch.finish(taskId);
@@ -88,15 +95,23 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
     uid = 'guest';
   }
   var currentLocation = await getLocation();
-
-  final locationRef = FirebaseFirestore.instance.collection("locationRef");
+  var weather =
+      await getWeather(currentLocation.latitude, currentLocation.longitude);
+  final locationRef = FirebaseFirestore.instance.collection("location");
+  var timestamp = Timestamp.now();
 
   locationRef.add({
     'uid': uid,
     'latitude': currentLocation.latitude,
     'longitude': currentLocation.longitude,
     'speed': currentLocation.speed,
+    'temp': weather.temp,
+    'humidity': weather.humidity,
+    'weather': weather.weather,
+    'weather_description': weather.description,
+    'timestamp': timestamp,
   });
+
   BackgroundFetch.finish(taskId);
 }
 
@@ -111,8 +126,6 @@ Future<List<dynamic>> getPlace(var latitude, var longitude) async {
   }
 
   var places = await getPlacesKakao(latitude, longitude);
-  var timestamp = Timestamp.now();
-  var weather = await getWeather(latitude, longitude);
   var placeList = [];
   for (VisitedPlaceModel place in places) {
     placeList.add({
@@ -124,11 +137,6 @@ Future<List<dynamic>> getPlace(var latitude, var longitude) async {
       'place_category_name': place.placeCategoryName,
       'place_categoty_group_code': place.placeCategoryGroupCode,
       'place_category_group_name': place.placeCategoryGroupName,
-      'timestamp': timestamp,
-      'temp': weather.temp,
-      'humidity': weather.humidity,
-      'weather': weather.weather,
-      'weather_description': weather.description,
     });
   }
 
@@ -176,7 +184,6 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
       for (final json in jsons) {
         if (json['documents'].length > 0) {
           for (final document in json['documents']) {
-            print(document);
             responses.add(VisitedPlaceModel.fromJson(document));
           }
         }
@@ -200,15 +207,16 @@ Future<http.Response> getPlacesGoogle(var latitude, var longitude) async {
 
 // Weather API
 Future<WeatherModel> getWeather(var latitude, var longitude) async {
-  var key = "944c738ce4a56b8e700b1a95bd3fc1af";
+  var key = "a01688e1c93e922e4bd07d6714e06468";
   var baseUrl = "https://api.openweathermap.org/data/2.5/weather";
   var url = Uri.parse(
       '$baseUrl?lat=$latitude&lon=$longitude&appid=$key&units=metric&lang=kr');
   var response = await http.get(url);
-  if (response.statusCode != 200) {
+  if (response.statusCode == 200) {
     var json = await jsonDecode(response.body);
+    print(json);
     return WeatherModel.fromJson(json);
   } else {
-    throw Exception('Failed to load weather');
+    throw Exception('${response.statusCode}');
   }
 }

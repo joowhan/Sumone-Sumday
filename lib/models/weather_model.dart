@@ -1,6 +1,6 @@
 class WeatherModel {
-  final String temp;
-  final String humidity;
+  final double temp;
+  final int humidity;
   final String weather;
   final String description;
 
