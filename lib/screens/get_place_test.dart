@@ -18,7 +18,7 @@ class _PlaceTestState extends State<PlaceTest> {
   final User? user = auth.currentUser;
   late final ref;
   late String uid;
-  late Future<List<dynamic>> place;
+  Future<List<dynamic>>? place;
 
   @override
   void initState() {
