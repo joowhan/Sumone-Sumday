@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/models/location_model.dart';
+import 'package:sumday/models/visited_place_model.dart';
 import 'package:sumday/providers/place_api.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -18,7 +19,12 @@ class _PlaceTestState extends State<PlaceTest> {
   final User? user = auth.currentUser;
   late final ref;
   late String uid;
-  late Future<List<dynamic>> place;
+  late String weather;
+  late String temp;
+  late String humidity;
+  late String description;
+  late String timestamp;
+  Future<List<VisitedPlaceModel>>? place;
 
   @override
   void initState() {
@@ -29,6 +35,7 @@ class _PlaceTestState extends State<PlaceTest> {
       uid = 'guest';
     }
     initPlace();
+    setState(() {});
   }
 
   Future<void> initPlace() async {
@@ -40,25 +47,46 @@ class _PlaceTestState extends State<PlaceTest> {
         .where("uid", isEqualTo: uid);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
-    place = getPlace(docs[0]["latitude"], docs[0]["longitude"]);
+    weather = snap.docs[0]["weather"];
+    temp = snap.docs[0]["temp"];
+    humidity = snap.docs[0]["humidity"];
+    description = snap.docs[0]["description"];
+    timestamp = snap.docs[0]["timestamp"];
+    place = getPlacesKakao(docs[0]["latitude"], docs[0]["longitude"]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data.toString());
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-                future: place),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              FutureBuilder(
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          Text(snapshot.data![0].placeName),
+                          Text(snapshot.data![0].placeAddress),
+                          Text(snapshot.data![0].placeCategoryName),
+                          Text(snapshot.data![0].placeCategoryGroupName),
+                          Text(weather),
+                          Text(temp),
+                          Text(description),
+                          Text(timestamp),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                  future: place),
+            ],
+          ),
         ),
       ),
     );
