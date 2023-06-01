@@ -49,6 +49,7 @@ class TitledContainer extends StatelessWidget {
           child: Align(
             alignment: Alignment.topLeft,
             child: Container(
+              // constraints: BoxConstraints.expand(),
               color: Colors.white,
               child: Text(
                 titleText,
@@ -95,7 +96,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
       _locationId = id;
     });
   }
-
+  List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다','평범하다','지쳤다','최고다'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -496,94 +497,139 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 TitledContainer(
 
                   titleText: '컨디션',
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      // mainAxisSize: MainAxisSize.max,
 
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white70,
-                          shape: CircleBorder(),
-                        ),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
                           ),
-                          onPressed: () {},
-                          child: Text(
-                            "즐겁다",
-                            style: TextStyle(
-                                fontSize: 18, color: Color(0xff136750)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white70,
-                          shape: CircleBorder(),
-                        ),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "즐겁다",
-                            style: TextStyle(
-                                fontSize: 18, color: Color(0xff136750)),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "즐겁다",
+                              style: TextStyle(
+                                  fontSize: 18, color: Color(0xff136750)),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white70,
-                          shape: CircleBorder(),
+                        SizedBox(
+                          width: 10,
                         ),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
                           ),
-                          onPressed: () {},
-                          child: Text(
-                            "즐겁다",
-                            style: TextStyle(
-                                fontSize: 18, color: Color(0xff136750)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white70,
-                          shape: CircleBorder(),
-                        ),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "즐겁다",
-                            style: TextStyle(
-                                fontSize: 18, color: Color(0xff136750)),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "힘들다",
+                              style: TextStyle(
+                                  fontSize: 18, color: Color(0xff136750)),
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "보통이다",
+                              style: TextStyle(
+                                  fontSize: 18, color: Color(0xff136750)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "지쳤다",
+                              style: TextStyle(
+                                  fontSize: 18, color: Color(0xff136750)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
 
-                    ],
+                      ],
+                    ),
                   ),
+
+                ),
+              ],
+            ),
+
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitledContainer(
+
+                  titleText: '기분',
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      // mainAxisSize: MainAxisSize.max,
+
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: feelingTexts.map((text) {
+                        return
+                            Ink(
+                              padding: EdgeInsets.fromLTRB(10,0,0,0),
+                              decoration: const ShapeDecoration(
+                                color: Colors.white70,
+                                shape: CircleBorder(),
+                              ),
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                ),
+                                onPressed: () {},
+                                child: Text(
+                                  text,
+                                  style: TextStyle(fontSize: 18, color: Color(0xff136750)),
+                                ),
+                              ),
+                            );// 버튼 사이에 10픽셀의 간격
+                      }).toList(),
+
+                    ),
+                  ),
+
                 ),
               ],
             ),
