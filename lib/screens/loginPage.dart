@@ -38,7 +38,11 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color(0xff326295)),
             ),
             SizedBox(height: 50.0),
-            Image.asset("assets/day_night.png", width: 250, height: 250,),
+            Image.asset(
+              "assets/day_night.png",
+              width: 200,
+              height: 200,
+            ),
             SizedBox(height: 80.0),
             OutlinedButton.icon(
               onPressed: () async {
@@ -53,8 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   //       builder: (context) => Home()),
                   // );
                   Navigator.pushNamed(context, '/home');
-
-                } catch(e) {
+                } catch (e) {
                   if (e is FirebaseAuthException) {
                     print(e.message!);
                   }
@@ -81,18 +84,33 @@ class _LoginPageState extends State<LoginPage> {
                 //color: Colors.white,
               ),
             ),
+            OutlinedButton(onPressed: () async{
+              try {
+                await loginProvider.signInWithAnonymous(); // 구글 로그인
+                print("Anonymous Login Success!!");
 
+                Navigator.pushNamed(context, '/home');
+              } catch (e) {
+                if (e is FirebaseAuthException) {
+                  print(e.message!);
+                }
+              }
+              Navigator.pushNamed(context, '/home');
+            },
+                child: Text('익명 로그인')),
           ],
         ),
       ),
     );
   }
+
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
@@ -102,7 +120,8 @@ class _LoginPageState extends State<LoginPage> {
 
     // Once signed in, return the UserCredential
     //return await FirebaseAuth.instance.signInWithCredential(credential);
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
     User user = userCredential.user!;
 
     //assert(userCredential.user!.isAnonymous);
