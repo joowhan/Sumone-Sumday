@@ -80,7 +80,7 @@ flutter:
      - assets/day_night.png
      - assets/google.png
      - assets/jjeri1.jpg
-
+     - assets/sorry.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

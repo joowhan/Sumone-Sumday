@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:sumday/models/diary_model.dart';
 import 'package:sumday/models/diary_data.dart';
 
+
+
 class DiaryListpage extends StatelessWidget {
   const DiaryListpage({Key? key}) : super(key: key);
 
