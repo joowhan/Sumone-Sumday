@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import 'package:multi_select_flutter/multi_select_flutter.dart';
+// import 'package:flutter_titled_container/flutter_titled_container.dart';
 
 class Ai_WriteDiary extends StatefulWidget {
   const Ai_WriteDiary({Key? key}) : super(key: key);
@@ -7,277 +9,619 @@ class Ai_WriteDiary extends StatefulWidget {
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
 }
 
+class Animal {
+  final int id;
+  final String name;
+
+  Animal({
+    required this.id,
+    required this.name,
+  });
+}
+
+class TitledContainer extends StatelessWidget {
+  const TitledContainer(
+      {required this.titleText, required this.child, this.idden = 8, Key? key})
+      : super(key: key);
+  final String titleText;
+  final double idden;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          alignment: Alignment.center,
+          width: 350,
+          margin: const EdgeInsets.only(top: 8),
+          padding: EdgeInsets.all(idden),
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xff136750)),
+            borderRadius: BorderRadius.circular(idden * 0.6),
+          ),
+          child: child,
+        ),
+        Positioned(
+          left: 10,
+          right: 10,
+          top: 0,
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              color: Colors.white,
+              child: Text(
+                titleText,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Color(0xff136750)),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
-  List<TagModel> _tags = [];
-  TextEditingController _searchTextEditingController =
-  new TextEditingController();
-
-  String get _searchText => _searchTextEditingController.text.trim();
-
-  final List<TagModel> _tagsToSelect = [
-    TagModel(id: '1', title: 'JavaScript'),
-    TagModel(id: '2', title: 'Python'),
-    TagModel(id: '3', title: 'Java'),
-    TagModel(id: '4', title: 'PHP'),
-    TagModel(id: '5', title: 'C#'),
-    TagModel(id: '6', title: 'C++'),
-    TagModel(id: '7', title: 'Dart'),
-    TagModel(id: '8', title: 'DataFlex'),
-    TagModel(id: '9', title: 'Flutter'),
-    TagModel(id: '10', title: 'Flutter Selectable Tags'),
-    TagModel(id: '11', title: 'Android Studio developer'),
-  ];
-  refreshState(VoidCallback fn) {
-    if (mounted) setState(fn);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchTextEditingController.addListener(() => refreshState(() {}));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchTextEditingController.dispose();
-  }
-
-
-
-  List<TagModel> _filterSearchResultList() {
-    if (_searchText.isEmpty) return _tagsToSelect;
-
-    List<TagModel> _tempList = [];
-    for (int index = 0; index < _tagsToSelect.length; index++) {
-      TagModel tagModel = _tagsToSelect[index];
-      if (tagModel.title
-          .toLowerCase()
-          .trim()
-          .contains(_searchText.toLowerCase())) {
-        _tempList.add(tagModel);
-      }
+  // static List<Animal?> _animals = [
+  //   Animal(id: 1, name: "Lion"),
+  //   Animal(id: 2, name: "Flamingo"),
+  //   Animal(id: 3, name: "Hippo"),
+  //   Animal(id: 4, name: "Horse"),
+  //   Animal(id: 5, name: "Tiger"),
+  // ];
+  // final _items = _animals
+  //     .map((animal) => MultiSelectItem<Animal?>(animal, animal!.name))
+  //     .toList();
+  var _location = "";
+  var _locationId = "";
+  var _question = "";
+  AskingQuestion() {
+    if (_location == "") {
+      _question = "장소를 선택해주세요!";
+    } else {
+      _question = "$_location에서 무엇을 하셨나요?";
     }
-
-    return _tempList;
+    return _question;
   }
 
-  _addTags(tagModel) async {
-    if (!_tags.contains(tagModel))
-      setState(() {
-        _tags.add(tagModel);
-      });
-  }
-
-  _removeTag(tagModel) async {
-    if (_tags.contains(tagModel)) {
-      setState(() {
-        _tags.remove(tagModel);
-      });
-    }
+  // bool isLocationClicked = false;
+  // final List<bool>_selectedLocation = <bool>[true, ]
+  void locationClick(text, id) {
+    setState(() {
+      _location = text; // 버튼 클릭 시 변수에 값을 저장
+      // isLocationClicked = !isLocationClicked;
+      _locationId = id;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Tags'),
-        backgroundColor: Colors.deepOrangeAccent,
-      ),
-      body: _tagIcon(),
-    );
-  }
-
-  Widget _tagIcon() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.local_offer_outlined,
-          color: Colors.deepOrangeAccent,
-          size: 25.0,
-        ),
-        _tagsWidget(),
-      ],
-    );
-  }
-
-  _displayTagWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: _filterSearchResultList().isNotEmpty
-          ? _buildSuggestionWidget()
-          : Text('No Labels added'),
-    );
-  }
-
-  Widget _buildSuggestionWidget() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (_filterSearchResultList().length != _tags.length) Text('Suggestions'),
-      Wrap(
-        alignment: WrapAlignment.start,
-        children: _filterSearchResultList()
-            .where((tagModel) => !_tags.contains(tagModel))
-            .map((tagModel) => tagChip(
-          tagModel: tagModel,
-          onTap: () => _addTags(tagModel),
-          action: 'Add',
-        ))
-            .toList(),
-      ),
-    ]);
-  }
-
-  Widget tagChip({
-    tagModel,
-    onTap,
-    action,
-  }) {
-    return InkWell(
-        onTap: onTap,
-        child: Stack(
+      body: Center(
+        child: ListView(
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 5.0,
-                horizontal: 5.0,
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.deepOrangeAccent,
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                child: Text(
-                  '${tagModel.title}',
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // SizedBox(width: 10,),
+                Text(
+                  "6월 9일, 오전 10시,",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.0,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff136750)),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitledContainer(
+                  titleText: '장소',
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: _locationId == '1'
+                                ? Color(0xff136750)
+                                : Colors.white,
+                          ),
+                          onPressed: () {
+                            locationClick("스타벅스", "1");
+                          },
+                          child: Text(
+                            "스타벅스",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: _locationId == '1'
+                                    ? Colors.white
+                                    : Color(0xff136750)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: _locationId == '2'
+                                ? Color(0xff136750)
+                                : Colors.white,
+                          ),
+                          onPressed: () {
+                            locationClick("투썸 플레이스", "2");
+                          },
+                          child: Text(
+                            "투썸 플레이스",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: _locationId == '2'
+                                    ? Colors.white
+                                    : Color(0xff136750)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: _locationId == '3'
+                                ? Color(0xff136750)
+                                : Colors.white,
+                          ),
+                          onPressed: () {
+                            locationClick("삼성 내과 의원", "3");
+                          },
+                          child: Text(
+                            "삼성 내과 의원",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: _locationId == '3'
+                                    ? Colors.white
+                                    : Color(0xff136750)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              AskingQuestion(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Positioned(
-              right: 0,
-              child: CircleAvatar(
-                backgroundColor: Colors.orange.shade600,
-                radius: 8.0,
-                child: Icon(
-                  Icons.clear,
-                  size: 10.0,
-                  color: Colors.white,
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitledContainer(
+                  titleText: '관계',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.family_restroom_sharp),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "가족",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.favorite),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "연인",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.people_alt),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "친구",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.accessibility_new_rounded),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "혼자",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.business),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '비즈니스',
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitledContainer(
+                  titleText: '활동',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.menu_book_sharp),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "공부",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.favorite_outline_sharp),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "데이트",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.restaurant),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "식사",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon:
+                                  const Icon(Icons.sports_basketball_outlined),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "운동",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.beach_access),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            '휴식',
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitledContainer(
+
+                  titleText: '컨디션',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: CircleBorder(),
+                        ),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "즐겁다",
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xff136750)),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: CircleBorder(),
+                        ),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "즐겁다",
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xff136750)),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: CircleBorder(),
+                        ),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "즐겁다",
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xff136750)),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: CircleBorder(),
+                        ),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "즐겁다",
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xff136750)),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () {},
+                  child: Text(
+                    "건너뛰기",
+                    style: TextStyle(fontSize: 18, color: Color(0xff136750)),
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                ),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () {},
+                  child: Text(
+                    "완료",
+                    style: TextStyle(fontSize: 18, color: Color(0xff136750)),
+                  ),
+                ),
+              ],
+            ),
           ],
-        ));
-  }
-
-  Widget _buildSearchFieldWidget() {
-    return Container(
-      padding: EdgeInsets.only(
-        left: 20.0,
-        top: 10.0,
-        bottom: 10.0,
-      ),
-      margin: EdgeInsets.only(
-        left: 20.0,
-        right: 20.0,
-        top: 20.0,
-        bottom: 5.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5.0),
         ),
-        border: Border.all(
-          color: Colors.grey.shade500,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _searchTextEditingController,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Search Tag',
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-              textInputAction: TextInputAction.search,
-            ),
-          ),
-          _searchText.isNotEmpty
-              ? InkWell(
-            child: Icon(
-              Icons.clear,
-              color: Colors.grey.shade700,
-            ),
-            onTap: () => _searchTextEditingController.clear(),
-          )
-              : Icon(
-            Icons.search,
-            color: Colors.grey.shade700,
-          ),
-          Container(),
-        ],
-      ),
-    );
-  }
-
-  Widget _tagsWidget() {
-    return Flexible(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Tags',
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          _tags.length > 0
-              ? Column(children: [
-            Wrap(
-              alignment: WrapAlignment.start,
-              children: _tags
-                  .map((tagModel) => tagChip(
-                tagModel: tagModel,
-                onTap: () => _removeTag(tagModel),
-                action: 'Remove',
-              ))
-                  .toSet()
-                  .toList(),
-            ),
-          ])
-              : Container(),
-          _buildSearchFieldWidget(),
-          _displayTagWidget(),
-        ],
       ),
     );
   }
 }
-
-class TagModel {
-  String id;
-  String title;
-
-  TagModel({
-    required this.id,
-    required this.title,
-  });
-}
+// OutlinedButton(onPressed: null, child:Text("한강대우아파트")),
