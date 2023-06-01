@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const MainPage(),
       },
-      initialRoute: '/home',
+      initialRoute: '/login',
       home: const LoginPage(),
       onGenerateRoute: _getRoute,
     );

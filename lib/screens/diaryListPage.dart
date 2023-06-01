@@ -6,14 +6,13 @@ import 'package:intl/intl.dart';
 
 import 'package:sumday/models/diary_model.dart';
 import 'package:sumday/models/diary_data.dart';
-class Diaries extends StatefulWidget {
-  const Diaries({Key? key}) : super(key: key);
 
-  @override
-  State<Diaries> createState() => _DiariesState();
-}
 
-class _DiariesState extends State<Diaries> {
+
+class DiaryListpage extends StatelessWidget {
+  const DiaryListpage({Key? key}) : super(key: key);
+
+// Replace this entire method
   List<Card> _buildGridCards(BuildContext context) {
     List<Diary> diaries = DiariesRepository.loadDiaries();
 
@@ -74,6 +73,7 @@ class _DiariesState extends State<Diaries> {
       );
     }).toList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
