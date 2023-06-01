@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.redAccent[50],
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Column(
@@ -180,7 +180,7 @@ class _HomeState extends State<Home> {
             ),
             Divider(
               height: 60.0,
-              color: Colors.black38,
+              color: Colors.grey,
               thickness: 0.5,
             ),
             Calendar2(
