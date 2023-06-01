@@ -22,7 +22,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /*
 로그인 provider
  */
-class LoginProvider extends ChangeNotifier {
+class LoginProvider with ChangeNotifier {
   LoginProvider() {
     init();
   }
@@ -38,10 +38,13 @@ class LoginProvider extends ChangeNotifier {
   String? _userName;
   String? get userName => _userName;
 
-
-
-  Future<void> downloadUserInfo(User? user) async { // 구글 로그인 유저 정보 다운로드
-    FirebaseFirestore.instance.collection('user').doc(user!.uid).get().then((value) {
+  Future<void> downloadUserInfo(User? user) async {
+    // 구글 로그인 유저 정보 다운로드
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((value) {
       _userInformation = UserInformation(
         email: value.data()!['email'] as String,
         name: value.data()!['name'] as String,
@@ -53,33 +56,38 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> downloadAnonymousInfo(User? user) async { // 익명 유저 정보 다운로드
-    FirebaseFirestore.instance.collection('user').doc(user!.uid).get().then((value) {
+  Future<void> downloadAnonymousInfo(User? user) async {
+    // 익명 유저 정보 다운로드
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((value) {
       _userInformation = UserInformation(
         email: "sumday@gmail.com",
         name: "sumday",
         statusMessage: value.data()!['status_message'] as String,
         uid: value.data()!['uid'] as String,
-        profileUrl:  "https://img.freepik.com/free-icon/user_318-749758.jpg",
+        profileUrl: "https://img.freepik.com/free-icon/user_318-749758.jpg",
       );
     });
     notifyListeners();
   }
 
-
-
-  Future<UserCredential> signInWithGoogle() async { // 구글 로그인
+  Future<UserCredential> signInWithGoogle() async {
+    // 구글 로그인
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth = await googleUser
-          ?.authentication;
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       User? user = userCredential.user;
 
       _userName = user!.displayName;
@@ -89,20 +97,21 @@ class LoginProvider extends ChangeNotifier {
       downloadUserInfo(user);
       notifyListeners();
       return userCredential;
-
     } catch (e) {
       print(e);
       rethrow;
     }
   }
 
-  Future<void> signOut() async { // 로그아웃
+  Future<void> signOut() async {
+    // 로그아웃
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
     notifyListeners();
   }
 
-  Future<User?> signInWithAnonymous() async { // 익명 로그인
+  Future<User?> signInWithAnonymous() async {
+    // 익명 로그인
     try {
       UserCredential result = await FirebaseAuth.instance.signInAnonymously();
       User? user = result.user;
@@ -117,13 +126,16 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
-  Future<void>? addUserInfo(User? user) async { // 새로운 구글 로그인 유저 등록
-    var document = await FirebaseFirestore.instance.collection('user').doc(user!.uid).get().then((doc) {
-      if(doc.exists) {
+  Future<void>? addUserInfo(User? user) async {
+    // 새로운 구글 로그인 유저 등록
+    var document = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
         print('already exists'); // 이미 존재하는 유저이면 새로 추가 X
-      }
-
-      else {
+      } else {
         print('hello2');
         return FirebaseFirestore.instance
             .collection('user')
@@ -138,12 +150,10 @@ class LoginProvider extends ChangeNotifier {
       }
     });
     notifyListeners();
-
-
-
   }
 
-  Future<void> addAnonymousInfo(User? user) { // 익명 유저 추가
+  Future<void> addAnonymousInfo(User? user) {
+    // 익명 유저 추가
     return FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
@@ -154,7 +164,8 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateAnonymousInfo(User? user) { // 익명 유저 추가
+  Future<void> updateAnonymousInfo(User? user) {
+    // 익명 유저 추가
     return FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
@@ -164,11 +175,16 @@ class LoginProvider extends ChangeNotifier {
     });
     notifyListeners();
   }
-
 }
 
-class UserInformation { // 유저 정보 저장하는 구조체 (수정 필요)
-  UserInformation({required this.email, required this.name, required this.statusMessage, required this.uid, required this.profileUrl});
+class UserInformation {
+  // 유저 정보 저장하는 구조체 (수정 필요)
+  UserInformation(
+      {required this.email,
+      required this.name,
+      required this.statusMessage,
+      required this.uid,
+      required this.profileUrl});
   final String email;
   final String name;
   final String statusMessage;
