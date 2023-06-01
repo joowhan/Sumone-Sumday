@@ -51,7 +51,7 @@ dependencies:
   get: ^4.6.5
   multi_select_flutter: ^4.1.3
   flutter_titled_container: ^1.0.7
-
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +79,7 @@ flutter:
   assets:
      - assets/day_night.png
      - assets/google.png
+     - assets/jjeri1.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
