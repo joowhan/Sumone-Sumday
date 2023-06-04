@@ -18,12 +18,6 @@ class _PlaceTestState extends State<PlaceTest> {
   Future? _tasks;
   final User? user = auth.currentUser;
   late String uid;
-  late String weather;
-  late double temp;
-  late int humidity;
-  late String description;
-  late Timestamp timestamp;
-  Future<List<VisitedPlaceModel>>? place;
 
   @override
   void initState() {
@@ -45,75 +39,62 @@ class _PlaceTestState extends State<PlaceTest> {
         .where("uid", isEqualTo: uid);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
-    return {
-      weather = docs[0]["weather"],
-      temp = docs[0]["temp"],
-      humidity = docs[0]["humidity"],
-      description = docs[0]["description"],
-      timestamp = docs[0]["timestamp"],
-      place = getPlacesKakao(docs[0]["latitude"], docs[0]["longitude"]),
-    };
+    var dataList = [];
+    for (QueryDocumentSnapshot doc in docs) {
+      dataList.add({
+        "weather": doc["weather"],
+        "temp": doc["temp"],
+        "humidity": doc["humidity"],
+        "description": doc["weather_description"],
+        "timestamp": doc["timestamp"],
+        "place": await getPlacesKakao(doc["latitude"], doc["longitude"]),
+      });
+    }
+    return dataList;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              FutureBuilder(
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Text(snapshot.data!["place"][0].placeName),
-                          Text(snapshot.data!["place"][0].placeAddress),
-                          Text(snapshot.data!["place"][0].placeCategoryName),
-                          Text(snapshot
-                              .data!["place"][0].placeCategoryGroupName),
-                          Text(snapshot.data!["weather"]),
-                          Text(snapshot.data!["temp"].toString()),
-                          Text(snapshot.data!["description"]),
-                          Text(snapshot.data!["timestamp"].toString()),
-                        ],
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  },
-                  future: _tasks),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          children: [
+            FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(snapshot.data[index]["weather"]),
+                              Text("${snapshot.data[index]["temp"]}"),
+                              Text(snapshot.data[index]["description"]),
+                              for (VisitedPlaceModel place
+                                  in snapshot.data[index]["place"])
+                                Column(
+                                  children: [
+                                    Text(place.placeName),
+                                    Text(place.placeAddress),
+                                    Text(place.placeCategoryGroupName),
+                                    Text(place.placeCategoryName),
+                                  ],
+                                )
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+                future: _tasks),
+          ],
         ),
       ),
     );
   }
 }
-// Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-//   return ListView(
-//     padding: const EdgeInsets.only(top: 20.0),
-//     children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-//   );
-// }
-// Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-//   final record = LocationModel.fromSnapshot(data);
-//   return Padding(
-//     key: ValueKey(record.uid),
-//     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-//     child: Container(
-//       decoration: BoxDecoration(
-//         border: Border.all(color: Colors.grey),
-//         borderRadius: BorderRadius.circular(5.0),
-//       ),
-//       child: ListTile(
-//         title: Text(record.uid),
-//         trailing: Text(record.latitude.toString()),
-//         onTap: () => print(record),
-//       ),
-//     ),
-//   );
-// }
