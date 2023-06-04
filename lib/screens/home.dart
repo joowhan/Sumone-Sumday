@@ -20,8 +20,8 @@ class _Calendar2State extends State<Calendar2> {
   Widget build(BuildContext) {
     return TableCalendar(
       focusedDay: DateTime.now(),
-      firstDay: DateTime(2022,1,1),
-      lastDay: DateTime(2023,12,31),
+      firstDay: DateTime(2022, 1, 1),
+      lastDay: DateTime(2023, 12, 31),
       rowHeight: 40,
       daysOfWeekHeight: 20,
       headerVisible: false,
@@ -32,13 +32,12 @@ class _Calendar2State extends State<Calendar2> {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.redAccent[50],
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Column(
           children: [
-            Row(
+            const Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 CircleAvatar(
@@ -54,23 +53,24 @@ class _HomeState extends State<Home> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('쩨리님,',
+                        Text(
+                          '쩨리님,',
                           style: TextStyle(
                               color: Colors.black38,
                               letterSpacing: 2.0,
                               fontFamily: 'Nanum_JangMiCe',
                               fontSize: 40.0,
-                              fontWeight: FontWeight.bold
-                          ),
+                              fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(width:10),
+                        SizedBox(width: 10),
                         Icon(
                           Icons.edit,
                           size: 15.0,
                         ),
                       ],
                     ),
-                    Text('매일을 기록해 보세요!',
+                    Text(
+                      '매일을 기록해 보세요!',
                       style: TextStyle(
                         fontFamily: 'Nanum_JangMiCe',
                         fontSize: 16,
@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 60.0,
               color: Colors.grey,
               thickness: 0.5,
@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
+                const Column(
                   children: [
                     Text(
                       '작성한 일기',
@@ -112,7 +112,7 @@ class _HomeState extends State<Home> {
                   width: 3.0,
                   color: Colors.black38,
                 ),
-                Column(
+                const Column(
                   children: [
                     Text(
                       '이번 달 일기',
@@ -130,12 +130,12 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 ),
-                VerticalDivider(
+                const VerticalDivider(
                   thickness: 1,
                   width: 1,
                   color: Colors.black38,
                 ),
-                Column(
+                const Column(
                   children: [
                     Text(
                       '방문한 장소',
@@ -153,12 +153,12 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 ),
-                VerticalDivider(
+                const VerticalDivider(
                   thickness: 1,
                   width: 1,
                   color: Colors.black38,
                 ),
-                Column(
+                const Column(
                   children: [
                     Text(
                       '현재 등급',
@@ -178,13 +178,12 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               height: 60.0,
               color: Colors.black38,
               thickness: 0.5,
             ),
-            Calendar2(
-            ),
+            const Calendar2(),
           ],
         ),
       ),

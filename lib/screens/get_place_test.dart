@@ -22,7 +22,7 @@ class _PlaceTestState extends State<PlaceTest> {
   late double temp;
   late int humidity;
   late String description;
-  late String timestamp;
+  late Timestamp timestamp;
   Future<List<VisitedPlaceModel>>? place;
 
   @override
@@ -45,12 +45,14 @@ class _PlaceTestState extends State<PlaceTest> {
         .where("uid", isEqualTo: uid);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
-    weather = snap.docs[0]["weather"];
-    temp = snap.docs[0]["temp"];
-    humidity = snap.docs[0]["humidity"];
-    description = snap.docs[0]["description"];
-    timestamp = snap.docs[0]["timestamp"];
-    place = getPlacesKakao(docs[0]["latitude"], docs[0]["longitude"]);
+    return {
+      weather = docs[0]["weather"],
+      temp = docs[0]["temp"],
+      humidity = docs[0]["humidity"],
+      description = docs[0]["description"],
+      timestamp = docs[0]["timestamp"],
+      place = getPlacesKakao(docs[0]["latitude"], docs[0]["longitude"]),
+    };
   }
 
   @override
