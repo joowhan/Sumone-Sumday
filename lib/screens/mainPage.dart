@@ -32,11 +32,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Sumday!',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xffF4C54F),
+        title: const Text('SumDAY', style: TextStyle(fontWeight:FontWeight.bold),),
+        backgroundColor: Color(0xffF4C54F),
+        elevation: 0.0,
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
