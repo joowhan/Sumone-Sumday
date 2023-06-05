@@ -12,7 +12,7 @@ class PlaceTest extends StatefulWidget {
 }
 class _PlaceTestState extends State<PlaceTest> {
   FirebaseFirestore db = FirebaseFirestore.instance;
-  Future? _tasks;
+  late Future? _tasks;
   final User? user = auth.currentUser;
   late String uid;
   late String weather;
@@ -20,7 +20,7 @@ class _PlaceTestState extends State<PlaceTest> {
   late int humidity;
   late String description;
   late Timestamp timestamp;
-  List<VisitedPlaceModel>? place;
+  List<dynamic>? place;
   @override
   void initState() {
     super.initState();
@@ -32,6 +32,7 @@ class _PlaceTestState extends State<PlaceTest> {
     _tasks = _initPlace();
   }
   Future _initPlace() async {
+    print(uid);
     final ref = db
         .collection("location")
         .withConverter(
@@ -40,14 +41,15 @@ class _PlaceTestState extends State<PlaceTest> {
         .where("uid", isEqualTo: uid);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
-    place = await getPlacesKakao(docs[0]["latitude"], docs[0]["longitude"]);
+    place = await getPlace(docs[0]["latitude"], docs[0]["longitude"]);
+
     return {
-      "weather": snap.docs[0]["weather"],
-      "temp": snap.docs[0]["temp"],
-      "humidity": snap.docs[0]["humidity"],
-      "description": snap.docs[0]["weather_description"],
-      "timestamp": snap.docs[0]["timestamp"],
-      "place": place
+      "weather" : docs[0]["weather"],
+      "temp" : docs[0]["temp"],
+      "humidity" : docs[0]["humidity"],
+      "description" : docs[0]["weather_description"],
+      "timestamp" : docs[0]["timestamp"],
+      "place" : place,
     };
   }
   @override
@@ -65,11 +67,11 @@ class _PlaceTestState extends State<PlaceTest> {
                           const SizedBox(
                             height: 30,
                           ),
-                          Text(snapshot.data!["place"][0].placeName),
-                          Text(snapshot.data!["place"][0].placeAddress),
-                          Text(snapshot.data!["place"][0].placeCategoryName),
-                          Text(snapshot
-                              .data!["place"][0].placeCategoryGroupName),
+                          Text(snapshot.data!["place"][0]["place_name"]),
+                          // Text(snapshot.data!["place"][0].placeAddress),
+                          // Text(snapshot.data!["place"][0].placeCategoryName),
+                          // Text(snapshot
+                          //     .data!["place"][0].placeCategoryGroupName),
                           Text(snapshot.data!["weather"]),
                           Text(snapshot.data!["temp"].toString()),
                           Text(snapshot.data!["description"]),
@@ -80,7 +82,7 @@ class _PlaceTestState extends State<PlaceTest> {
                       return const CircularProgressIndicator();
                     }
                   },
-                  future: _tasks),
+                  future: _initPlace()),
             ],
           ),
         ),
@@ -88,27 +90,3 @@ class _PlaceTestState extends State<PlaceTest> {
     );
   }
 }
-// Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-//   return ListView(
-//     padding: const EdgeInsets.only(top: 20.0),
-//     children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-//   );
-// }
-// Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-//   final record = LocationModel.fromSnapshot(data);
-//   return Padding(
-//     key: ValueKey(record.uid),
-//     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-//     child: Container(
-//       decoration: BoxDecoration(
-//         border: Border.all(color: Colors.grey),
-//         borderRadius: BorderRadius.circular(5.0),
-//       ),
-//       child: ListTile(
-//         title: Text(record.uid),
-//         trailing: Text(record.latitude.toString()),
-//         onTap: () => print(record),
-//       ),
-//     ),
-//   );
-// }

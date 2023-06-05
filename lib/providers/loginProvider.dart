@@ -22,7 +22,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /*
 로그인 provider
  */
-class LoginProvider extends ChangeNotifier {
+class LoginProvider with ChangeNotifier {
   LoginProvider() {
     init();
   }
@@ -57,7 +57,7 @@ class LoginProvider extends ChangeNotifier {
     FirebaseFirestore.instance.collection('user').doc(user!.uid).get().then((value) {
       _userInformation = UserInformation(
         email: "sumday@gmail.com",
-        name: "sumday",
+        name: "sumone",
         statusMessage: value.data()!['status_message'] as String,
         uid: value.data()!['uid'] as String,
         profileUrl:  "https://img.freepik.com/free-icon/user_318-749758.jpg",
@@ -148,6 +148,7 @@ class LoginProvider extends ChangeNotifier {
         .collection('user')
         .doc(user!.uid)
         .set(<String, dynamic>{
+
       'status_message': "sumday is all you need",
       'uid': user.uid,
     });

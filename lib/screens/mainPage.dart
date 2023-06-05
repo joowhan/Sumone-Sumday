@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/bookmark.dart';
 import 'package:sumday/screens/diaries.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -15,7 +16,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget> [Home(), Diaries(), NewDiary(), Bookmark(),Settings()];
+  final List<Widget> _widgetOptions = <Widget> [Home(), Diaries(), NewDiary(), PlaceTest(),Settings()];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

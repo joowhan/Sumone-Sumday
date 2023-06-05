@@ -65,16 +65,468 @@ class TitledContainer extends StatelessWidget {
 }
 
 class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
-  // static List<Animal?> _animals = [
-  //   Animal(id: 1, name: "Lion"),
-  //   Animal(id: 2, name: "Flamingo"),
-  //   Animal(id: 3, name: "Hippo"),
-  //   Animal(id: 4, name: "Horse"),
-  //   Animal(id: 5, name: "Tiger"),
-  // ];
-  // final _items = _animals
-  //     .map((animal) => MultiSelectItem<Animal?>(animal, animal!.name))
-  //     .toList();
+  Widget _aiKeywordsForm() {
+    return Center(
+      child: ListView(
+        children: [
+          SizedBox(
+            height: 50,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              // SizedBox(width: 10,),
+              Text(
+                "6월 9일, 오전 10시,",
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff136750)),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TitledContainer(
+                titleText: '장소',
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: _locationId == '1'
+                              ? Color(0xff136750)
+                              : Colors.white,
+                        ),
+                        onPressed: () {
+                          locationClick("스타벅스", "1");
+                        },
+                        child: Text(
+                          "스타벅스",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: _locationId == '1'
+                                  ? Colors.white
+                                  : Color(0xff136750)),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: _locationId == '2'
+                              ? Color(0xff136750)
+                              : Colors.white,
+                        ),
+                        onPressed: () {
+                          locationClick("투썸 플레이스", "2");
+                        },
+                        child: Text(
+                          "투썸 플레이스",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: _locationId == '2'
+                                  ? Colors.white
+                                  : Color(0xff136750)),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: _locationId == '3'
+                              ? Color(0xff136750)
+                              : Colors.white,
+                        ),
+                        onPressed: () {
+                          locationClick("삼성 내과 의원", "3");
+                        },
+                        child: Text(
+                          "삼성 내과 의원",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: _locationId == '3'
+                                  ? Colors.white
+                                  : Color(0xff136750)),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            AskingQuestion(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TitledContainer(
+                titleText: '관계',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.family_restroom_sharp),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "가족",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.favorite),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "연인",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.people_alt),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "친구",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.accessibility_new_rounded),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "혼자",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.business),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          '비즈니스',
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TitledContainer(
+                titleText: '활동',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.menu_book_sharp),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "공부",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.favorite_outline_sharp),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "데이트",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.restaurant),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "식사",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.sports_basketball_outlined),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          "운동",
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.beach_access),
+                            color: Color(0xff136750),
+                            onPressed: () {},
+                          ),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          '휴식',
+                          style: TextStyle(fontSize: 14),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TitledContainer(
+                titleText: '기분',
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    // mainAxisSize: MainAxisSize.max,
+
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: feelingTexts.map((text) {
+                      return Ink(
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        decoration: const ShapeDecoration(
+                          color: Colors.white70,
+                          shape: CircleBorder(),
+                        ),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            text,
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xff136750)),
+                          ),
+                        ),
+                      ); // 버튼 사이에 10픽셀의 간격
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                ),
+                onPressed: () {},
+                child: Text(
+                  "건너뛰기",
+                  style: TextStyle(fontSize: 18, color: Color(0xff136750)),
+                ),
+              ),
+              SizedBox(
+                width: 30,
+              ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                ),
+                onPressed: () {},
+                child: Text(
+                  "완료",
+                  style: TextStyle(fontSize: 18, color: Color(0xff136750)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   var _location = "";
   var _locationId = "";
   var _question = "";
@@ -96,577 +548,15 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
       _locationId = id;
     });
   }
-  List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다','평범하다','지쳤다','최고다'];
+
+  List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다', '평범하다', '지쳤다', '최고다'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // SizedBox(width: 10,),
-                Text(
-                  "6월 9일, 오전 10시,",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff136750)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitledContainer(
-                  titleText: '장소',
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: _locationId == '1'
-                                ? Color(0xff136750)
-                                : Colors.white,
-                          ),
-                          onPressed: () {
-                            locationClick("스타벅스", "1");
-                          },
-                          child: Text(
-                            "스타벅스",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: _locationId == '1'
-                                    ? Colors.white
-                                    : Color(0xff136750)),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: _locationId == '2'
-                                ? Color(0xff136750)
-                                : Colors.white,
-                          ),
-                          onPressed: () {
-                            locationClick("투썸 플레이스", "2");
-                          },
-                          child: Text(
-                            "투썸 플레이스",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: _locationId == '2'
-                                    ? Colors.white
-                                    : Color(0xff136750)),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: _locationId == '3'
-                                ? Color(0xff136750)
-                                : Colors.white,
-                          ),
-                          onPressed: () {
-                            locationClick("삼성 내과 의원", "3");
-                          },
-                          child: Text(
-                            "삼성 내과 의원",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: _locationId == '3'
-                                    ? Colors.white
-                                    : Color(0xff136750)),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              AskingQuestion(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitledContainer(
-                  titleText: '관계',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.family_restroom_sharp),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "가족",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.favorite),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "연인",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.people_alt),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "친구",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.accessibility_new_rounded),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "혼자",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.business),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            '비즈니스',
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitledContainer(
-                  titleText: '활동',
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.menu_book_sharp),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "공부",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.favorite_outline_sharp),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "데이트",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.restaurant),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "식사",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon:
-                                  const Icon(Icons.sports_basketball_outlined),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            "운동",
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Ink(
-                            decoration: const ShapeDecoration(
-                              color: Colors.white70,
-                              shape: CircleBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.beach_access),
-                              color: Color(0xff136750),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Text(
-                            '휴식',
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitledContainer(
-
-                  titleText: '컨디션',
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      // mainAxisSize: MainAxisSize.max,
-
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              "즐겁다",
-                              style: TextStyle(
-                                  fontSize: 18, color: Color(0xff136750)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              "힘들다",
-                              style: TextStyle(
-                                  fontSize: 18, color: Color(0xff136750)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              "보통이다",
-                              style: TextStyle(
-                                  fontSize: 18, color: Color(0xff136750)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              "지쳤다",
-                              style: TextStyle(
-                                  fontSize: 18, color: Color(0xff136750)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-                ),
-              ],
-            ),
-
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitledContainer(
-
-                  titleText: '기분',
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      // mainAxisSize: MainAxisSize.max,
-
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: feelingTexts.map((text) {
-                        return
-                            Ink(
-                              padding: EdgeInsets.fromLTRB(10,0,0,0),
-                              decoration: const ShapeDecoration(
-                                color: Colors.white70,
-                                shape: CircleBorder(),
-                              ),
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                ),
-                                onPressed: () {},
-                                child: Text(
-                                  text,
-                                  style: TextStyle(fontSize: 18, color: Color(0xff136750)),
-                                ),
-                              ),
-                            );// 버튼 사이에 10픽셀의 간격
-                      }).toList(),
-
-                    ),
-                  ),
-
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    "건너뛰기",
-                    style: TextStyle(fontSize: 18, color: Color(0xff136750)),
-                  ),
-                ),
-                SizedBox(
-                  width: 30,
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    "완료",
-                    style: TextStyle(fontSize: 18, color: Color(0xff136750)),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      body: PageView.builder(
+          itemBuilder: (BuildContext context, int index){
+        return _aiKeywordsForm();
+      })
     );
   }
 }
