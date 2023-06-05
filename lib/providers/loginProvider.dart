@@ -65,7 +65,7 @@ class LoginProvider with ChangeNotifier {
         .then((value) {
       _userInformation = UserInformation(
         email: "sumday@gmail.com",
-        name: "sumday",
+        name: "sumone",
         statusMessage: value.data()!['status_message'] as String,
         uid: value.data()!['uid'] as String,
         profileUrl: "https://img.freepik.com/free-icon/user_318-749758.jpg",
@@ -158,6 +158,7 @@ class LoginProvider with ChangeNotifier {
         .collection('user')
         .doc(user!.uid)
         .set(<String, dynamic>{
+
       'status_message': "sumday is all you need",
       'uid': user.uid,
     });

@@ -32,9 +32,11 @@ class _Calendar2State extends State<Calendar2> {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+
         child: Column(
           children: [
             const Row(
@@ -180,7 +182,7 @@ class _HomeState extends State<Home> {
             ),
             const Divider(
               height: 60.0,
-              color: Colors.black38,
+              color: Colors.grey,
               thickness: 0.5,
             ),
             const Calendar2(),
