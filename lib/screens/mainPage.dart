@@ -6,7 +6,6 @@ import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
 
-
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -16,13 +15,18 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget> [Home(), Diaries(), NewDiary(), PlaceTest(),Settings()];
+  final List<Widget> _widgetOptions = <Widget>[
+    const Home(),
+    const Diaries(),
+    const NewDiary(),
+    const PlaceTest(),
+    const Settings()
+  ];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +51,11 @@ class _MainPageState extends State<MainPage> {
             label: '목록',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline, size:45 ,),
-            label:'',
+            icon: Icon(
+              Icons.add_circle_outline,
+              size: 45,
+            ),
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_border),
@@ -60,7 +67,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xff136750),
+        selectedItemColor: const Color(0xff136750),
         backgroundColor: Colors.white,
         onTap: _onItemTapped,
       ),

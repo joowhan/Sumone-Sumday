@@ -184,6 +184,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
       for (final json in jsons) {
         if (json['documents'].length > 0) {
           for (final document in json['documents']) {
+            print(document);
             responses.add(VisitedPlaceModel.fromJson(document));
           }
         }
