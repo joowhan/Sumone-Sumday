@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/utils/variables.dart';
 
 class SettingContainerText extends StatelessWidget {
   final String title;
@@ -25,8 +26,9 @@ class SettingContainerText extends StatelessWidget {
               children: [
                 Text(
                   information ?? "",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
+                    color: AppColors.fontGreyColor(),
                   ),
                 ),
                 const SizedBox(
