@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/models/location_model.dart';
-import 'package:sumday/models/visited_place_model.dart';
 import 'package:sumday/providers/place_api.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -69,20 +68,25 @@ class _PlaceTestState extends State<PlaceTest> {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(snapshot.data[index]["weather"]),
-                              Text("${snapshot.data[index]["temp"]}"),
-                              Text(snapshot.data[index]["description"]),
-                              for (VisitedPlaceModel place
-                                  in snapshot.data[index]["place"])
+                              if (snapshot.data[index]["place"].length > 0)
                                 Column(
                                   children: [
-                                    Text("$place"),
-                                    Text(place.placeName),
-                                    Text(place.placeAddress),
-                                    Text(place.placeCategoryGroupName),
-                                    Text(place.placeCategoryName),
+                                    Text(snapshot.data[index]["weather"]),
+                                    Text("${snapshot.data[index]["temp"]}"),
+                                    Text(snapshot.data[index]["description"]),
+                                    for (var place in snapshot.data[index]
+                                        ["place"])
+                                      Column(
+                                        children: [
+                                          Text(place["place_name"]),
+                                          Text(place["place_address"]),
+                                          Text(place[
+                                              "place_category_group_name"]),
+                                          Text(place["place_category_name"]),
+                                        ],
+                                      ),
                                   ],
-                                )
+                                ),
                             ],
                           );
                         },
