@@ -47,7 +47,7 @@ class _PlaceTestState extends State<PlaceTest> {
         "humidity": doc["humidity"],
         "description": doc["weather_description"],
         "timestamp": doc["timestamp"],
-        "place": await getPlacesKakao(doc["latitude"], doc["longitude"]),
+        "place": await getPlace(doc["latitude"], doc["longitude"]),
       });
     }
     return dataList;
@@ -76,6 +76,7 @@ class _PlaceTestState extends State<PlaceTest> {
                                   in snapshot.data[index]["place"])
                                 Column(
                                   children: [
+                                    Text("$place"),
                                     Text(place.placeName),
                                     Text(place.placeAddress),
                                     Text(place.placeCategoryGroupName),
