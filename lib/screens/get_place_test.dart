@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/models/location_model.dart';
 import 'package:sumday/providers/place_api.dart';
+import 'package:sumday/providers/place_provider.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -26,7 +27,7 @@ class _PlaceTestState extends State<PlaceTest> {
     } else {
       uid = 'guest';
     }
-    _tasks = _initPlace();
+    _tasks = PlaceData(uid: uid).getPlaceData();
   }
 
   Future _initPlace() async {
@@ -78,11 +79,15 @@ class _PlaceTestState extends State<PlaceTest> {
                                         ["place"])
                                       Column(
                                         children: [
-                                          Text(place["place_name"]),
-                                          Text(place["place_address"]),
-                                          Text(place[
-                                              "place_category_group_name"]),
-                                          Text(place["place_category_name"]),
+                                          Text(place.placeName),
+                                          Text(place.placeAddress),
+                                          Text(place.placeCategoryName),
+                                          Text(place.placeCategoryGroupName),
+                                          // Text(place["place_name"]),
+                                          // Text(place["place_address"]),
+                                          // Text(place[
+                                          //     "place_category_group_name"]),
+                                          // Text(place["place_category_name"]),
                                         ],
                                       ),
                                   ],

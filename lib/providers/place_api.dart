@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
 import 'dart:async';
 
-import 'package:sumday/models/visited_place_model.dart';
+import 'package:sumday/models/place_model.dart';
 import 'package:sumday/models/weather_model.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -53,8 +53,8 @@ void _onBackgroundFetch(String taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(6));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(6));
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(5));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(5));
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -120,8 +120,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(6));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(6));
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(5));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(5));
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -163,31 +163,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
 // get place by coordinate
 Future<List<dynamic>> getPlace(var latitude, var longitude) async {
-  final User? user = auth.currentUser;
-  late String uid;
-  if (user != null) {
-    uid = user.uid;
-  } else {
-    uid = 'guest';
-  }
-
   var places = await getPlacesKakao(latitude, longitude);
-  var placeList = [];
-  for (VisitedPlaceModel place in places) {
-    print(place);
-    placeList.add({
-      'uid': uid,
-      'place_id': place.placeId,
-      'distance': place.distance,
-      'place_name': place.placeName,
-      'place_address': place.placeAddress,
-      'place_category_name': place.placeCategoryName,
-      'place_categoty_group_code': place.placeCategoryGroupCode,
-      'place_category_group_name': place.placeCategoryGroupName,
-    });
-  }
-  print(placeList);
-  return placeList;
+  return places;
 }
 
 // KaKao REST API
@@ -231,7 +208,6 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
       for (final json in jsons) {
         if (json['documents'].length > 0) {
           for (final document in json['documents']) {
-            print(document);
             responses.add(VisitedPlaceModel.fromJson(document));
           }
         }
