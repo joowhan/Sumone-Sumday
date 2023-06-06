@@ -336,6 +336,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   var _location = "";
   var _locationId = "";
   var _question = "";
+
   AskingQuestion() {
     if (_location == "") {
       _question = "장소를 선택해주세요!";
