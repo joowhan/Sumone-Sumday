@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
-                    Text('매일을 기록해 보세요!',
+                    Text('오늘을 더해보세요!',
                       style: TextStyle(
                         fontFamily: 'Nanum_JangMiCe',
                         fontSize: 16,
