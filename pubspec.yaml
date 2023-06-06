@@ -52,7 +52,9 @@ dependencies:
   multi_select_flutter: ^4.1.3
   flutter_titled_container: ^1.0.7
   table_calendar: ^3.0.9
+  survey_kit: ^0.1.1
   floating_bottom_bar: ^0.0.2
+
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +84,9 @@ flutter:
      - assets/google.png
      - assets/jjeri1.jpg
      - assets/sorry.png
+     - assets/main_logo.png
+     - assets/small_logo.png
+     - assets/karlo_1.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -31,13 +31,39 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final appBarHeight = screenHeight * 0.15; // 화면 높이의 10%
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'SumDAY',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        leading: IconButton(
+          icon: Image.asset('assets/small_logo.png'),
+          onPressed: (){
+            print('home_icon is clicked');
+          },
         ),
-        backgroundColor: const Color(0xffF4C54F),
+        actions: [
+          IconButton(
+            onPressed:(){
+              print('search Icon');
+            },
+            icon: Icon(Icons.search, color: Colors.black38,),
+          ),
+          IconButton(
+            onPressed:(){
+              print('alarm Icon');
+            },
+            icon: Icon(Icons.alarm, color: Colors.black38,),
+          ),
+          IconButton(
+            onPressed:(){
+              print('edit Icon');
+            },
+            icon: Icon(Icons.edit, color: Colors.black38,),
+          ),
+        ],
+        backgroundColor: Colors.white,
+
         elevation: 0.0,
       ),
       body: Center(
@@ -119,6 +145,7 @@ class _MainPageState extends State<MainPage> {
                 _onItemTapped(value);
               }),
         ],
+
         bottomBarCenterModel: BottomBarCenterModel(
           centerBackgroundColor: variable.AppColors.primaryColor(),
           centerIcon: FloatingCenterButton(
