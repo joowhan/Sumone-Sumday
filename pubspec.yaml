@@ -52,6 +52,7 @@ dependencies:
   multi_select_flutter: ^4.1.3
   flutter_titled_container: ^1.0.7
   table_calendar: ^3.0.9
+  floating_bottom_bar: ^0.0.2
 
 dev_dependencies:
   flutter_test:

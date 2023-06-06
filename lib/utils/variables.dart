@@ -30,7 +30,7 @@ class AppColors {
   }
 
   static Color fontSecondaryColor() {
-    return const Color(0xFF136750);
+    return const Color(0xFF126750);
   }
 
   static Color fontGreyColor() {
