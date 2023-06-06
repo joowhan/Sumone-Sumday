@@ -19,6 +19,9 @@ class _MyAppState extends State<MyApp> {
       },
       initialRoute: '/login',
       home: const LoginPage(),
+      theme: ThemeData(
+        fontFamily: 'Noto_Sans_KR',
+      ),
       onGenerateRoute: _getRoute,
     );
   }
