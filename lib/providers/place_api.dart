@@ -53,8 +53,8 @@ void _onBackgroundFetch(String taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(5));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(5));
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -120,8 +120,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(5));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(5));
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -181,11 +181,9 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
     "SC4",
     "AC5",
     "PK6",
-    "OL7",
     "SW8",
     "BK9",
     "CT1",
-    "AG2",
     "PO3",
     "AT4",
     "AD5",

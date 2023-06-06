@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sumday/models/location_model.dart';
-import 'package:sumday/providers/place_api.dart';
 import 'package:sumday/providers/place_provider.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -30,29 +28,6 @@ class _PlaceTestState extends State<PlaceTest> {
     _tasks = PlaceData(uid: uid).getPlaceData();
   }
 
-  Future _initPlace() async {
-    final ref = db
-        .collection("location")
-        .withConverter(
-            fromFirestore: LocationModel.fromFirestore,
-            toFirestore: (LocationModel location, _) => location.toFirestore())
-        .where("uid", isEqualTo: uid);
-    final snap = await ref.get();
-    final List<QueryDocumentSnapshot> docs = snap.docs;
-    var dataList = [];
-    for (QueryDocumentSnapshot doc in docs) {
-      dataList.add({
-        "weather": doc["weather"],
-        "temp": doc["temp"],
-        "humidity": doc["humidity"],
-        "description": doc["weather_description"],
-        "timestamp": doc["timestamp"],
-        "place": await getPlace(doc["latitude"], doc["longitude"]),
-      });
-    }
-    return dataList;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +50,8 @@ class _PlaceTestState extends State<PlaceTest> {
                                     Text(snapshot.data[index]["weather"]),
                                     Text("${snapshot.data[index]["temp"]}"),
                                     Text(snapshot.data[index]["description"]),
+                                    Text(
+                                        "${snapshot.data[index]["timestamp"].toDate()}"),
                                     for (var place in snapshot.data[index]
                                         ["place"])
                                       Column(
@@ -83,7 +60,6 @@ class _PlaceTestState extends State<PlaceTest> {
                                           Text(place.placeAddress),
                                           Text(place.placeCategoryName),
                                           Text(place.placeCategoryGroupName),
-
                                         ],
                                       ),
                                   ],
