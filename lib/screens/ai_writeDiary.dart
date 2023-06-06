@@ -187,130 +187,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 titleText: '관계',
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
+                  children: relations.map((relation) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: Icon(relation.icon),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
                           ),
-                          child: IconButton(
-                            icon: const Icon(Icons.family_restroom_sharp),
-                            color: Color(0xff136750),
-                            onPressed: () {},
+                          SizedBox(
+                            height: 6,
                           ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "가족",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.favorite),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "연인",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.people_alt),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "친구",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.accessibility_new_rounded),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "혼자",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.business),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          '비즈니스',
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                  ],
+                          Text(
+                            relation.title,
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ],
@@ -325,130 +228,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 titleText: '활동',
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
+                  children: activities.map((activity) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        children: [
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Colors.white70,
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: Icon(activity.icon),
+                              color: Color(0xff136750),
+                              onPressed: () {},
+                            ),
                           ),
-                          child: IconButton(
-                            icon: const Icon(Icons.menu_book_sharp),
-                            color: Color(0xff136750),
-                            onPressed: () {},
+                          SizedBox(
+                            height: 6,
                           ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "공부",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.favorite_outline_sharp),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "데이트",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.restaurant),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "식사",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.sports_basketball_outlined),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          "운동",
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Colors.white70,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.beach_access),
-                            color: Color(0xff136750),
-                            onPressed: () {},
-                          ),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Text(
-                          '휴식',
-                          style: TextStyle(fontSize: 14),
-                        )
-                      ],
-                    ),
-                  ],
+                          Text(
+                            activity.title,
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ],
@@ -553,11 +359,41 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
-          itemBuilder: (BuildContext context, int index){
-        return _aiKeywordsForm();
-      })
-    );
+        body: PageView.builder(itemBuilder: (BuildContext context, int index) {
+      return _aiKeywordsForm();
+    }));
   }
 }
+
+
+
+class Activity {
+  final IconData icon;
+  final String title;
+
+  Activity(this.icon, this.title);
+}
+
+List<Activity> activities = [
+  Activity(Icons.menu_book_sharp, "공부"),
+  Activity(Icons.favorite_outline_sharp, "데이트"),
+  Activity(Icons.restaurant, "식사"),
+  Activity(Icons.sports_basketball_outlined, "운동"),
+  Activity(Icons.beach_access, "휴식"),
+];
+
+class Relation {
+  final IconData icon;
+  final String title;
+
+  Relation(this.icon, this.title);
+}
+
+List<Relation> relations = [
+  Relation(Icons.family_restroom_sharp, "가족"),
+  Relation(Icons.favorite, "연인"),
+  Relation(Icons.people_alt, "친구"),
+  Relation(Icons.accessibility_new_rounded, "혼자"),
+  Relation(Icons.business, "비즈니스"),
+];
 // OutlinedButton(onPressed: null, child:Text("한강대우아파트")),
