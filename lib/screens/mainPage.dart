@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
     const Home(),
     const Diaries(),
     const NewDiary(),
-    const PlaceTest(),
+    const Bookmark(),
     const Settings()
   ];
   void _onItemTapped(int index) {
@@ -32,8 +32,11 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SumDAY', style: TextStyle(fontWeight:FontWeight.bold),),
-        backgroundColor: Color(0xffF4C54F),
+        title: const Text(
+          'SumDAY',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xffF4C54F),
         elevation: 0.0,
       ),
       body: Center(

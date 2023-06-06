@@ -39,7 +39,7 @@ class DiariesRepository {
         id: 5,
         date: DateTime.now(),
         tags: ['Varsity', 'socks', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 6,
@@ -51,7 +51,7 @@ class DiariesRepository {
         id: 7,
         date: DateTime.now(),
         tags: ['Gatsby', 'hat', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 8,
@@ -99,13 +99,13 @@ class DiariesRepository {
         id: 15,
         date: DateTime.now(),
         tags: ['Chambray', 'napkins', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 16,
         date: DateTime.now(),
         tags: ['Succulent', 'planters', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 17,
@@ -135,7 +135,7 @@ class DiariesRepository {
         id: 21,
         date: DateTime.now(),
         tags: ['Plaster', 'tunic', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 22,
@@ -171,7 +171,7 @@ class DiariesRepository {
         id: 27,
         date: DateTime.now(),
         tags: ['Walter', 'henley (white)', 'new'],
-        favorite: false,
+        favorite: true,
       ),
       Diary(
         id: 28,
