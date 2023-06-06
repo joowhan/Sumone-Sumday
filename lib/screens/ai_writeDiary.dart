@@ -24,7 +24,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
             children: [
               // SizedBox(width: 10,),
               Text(
-                "6월 9일, 오전 10시,",
+                "6월 9일, 오전 10시,", //timestamp에서 시간을 불러와야 한다.
                 style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
