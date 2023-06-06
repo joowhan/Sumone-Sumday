@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:sumday/models/location_model.dart';
 import 'package:sumday/providers/place_api.dart';
 import 'package:sumday/providers/place_provider.dart';
@@ -34,8 +35,8 @@ class _PlaceTestState extends State<PlaceTest> {
     final ref = db
         .collection("location")
         .withConverter(
-            fromFirestore: LocationModel.fromFirestore,
-            toFirestore: (LocationModel location, _) => location.toFirestore())
+        fromFirestore: LocationModel.fromFirestore,
+        toFirestore: (LocationModel location, _) => location.toFirestore())
         .where("uid", isEqualTo: uid);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
@@ -76,7 +77,7 @@ class _PlaceTestState extends State<PlaceTest> {
                                     Text("${snapshot.data[index]["temp"]}"),
                                     Text(snapshot.data[index]["description"]),
                                     for (var place in snapshot.data[index]
-                                        ["place"])
+                                    ["place"])
                                       Column(
                                         children: [
                                           Text(place.placeName),
