@@ -195,7 +195,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
   // 정렬기준에는 accuracy와 distance가 있다는데 무슨 차이인지 모르겠음
   for (final categoryGroupCode in categoryGroupCodes) {
     var url = Uri.parse(
-        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=20&sort=distance");
+        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=50&sort=distance");
     var response =
         await http.get(url, headers: {"Authorization": "KakaoAK $key"});
     if (response.statusCode == 200) {
