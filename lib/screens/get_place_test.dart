@@ -50,6 +50,8 @@ class _PlaceTestState extends State<PlaceTest> {
                                     Text(snapshot.data[index]["weather"]),
                                     Text("${snapshot.data[index]["temp"]}"),
                                     Text(snapshot.data[index]["description"]),
+                                    Text(
+                                        "${snapshot.data[index]["timestamp"].toDate()}"),
                                     for (var place in snapshot.data[index]
                                         ["place"])
                                       Column(

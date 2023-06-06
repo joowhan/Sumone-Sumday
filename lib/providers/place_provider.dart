@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sumday/models/location_model.dart';
 import 'package:sumday/providers/place_api.dart';
@@ -34,6 +36,9 @@ class PlaceData {
     dataList.sort(
       (a, b) => a["count"].compareTo(b["count"]),
     );
-    return dataList;
+    var sortedDatalist =
+        dataList.reversed.toList().sublist(0, min(3, dataList.length));
+    sortedDatalist.sort((a, b) => a["timestamp"].compareTo(b["timestamp"]));
+    return sortedDatalist;
   }
 }
