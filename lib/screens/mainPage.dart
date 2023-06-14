@@ -1,7 +1,7 @@
 import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
-import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/exchange_diary_main.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
-    const PlaceTest(),
+    const ExchangeDiaryMain(),
     const Settings(),
     const NewDiary(),
   ];
