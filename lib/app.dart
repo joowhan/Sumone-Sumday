@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/exchange_diary.dart';
 import 'package:sumday/screens/mainPage.dart';
 import 'package:sumday/screens/loginPage.dart';
 
@@ -16,6 +17,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const MainPage(),
+        '/exchangeDiary': (context) => const ExchangeDiary(),
       },
       initialRoute: '/login',
       home: const LoginPage(),
