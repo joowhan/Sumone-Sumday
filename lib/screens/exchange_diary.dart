@@ -26,12 +26,23 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                "KT Aivle School 3기!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "KT Aivle School 3기!",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/exchangeDiary/setting');
+                    },
+                    icon: const Icon(Icons.settings),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10,
