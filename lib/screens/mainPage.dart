@@ -1,7 +1,7 @@
 import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
-import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
-    const PlaceTest(),
+    const ExchangeDiaryList(),
     const Settings(),
     const NewDiary(),
   ];
@@ -38,32 +38,40 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Image.asset('assets/small_logo.png'),
-          onPressed: (){
+          onPressed: () {
             print('home_icon is clicked');
           },
         ),
         actions: [
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('search Icon');
             },
-            icon: Icon(Icons.search, color: Colors.black38,),
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black38,
+            ),
           ),
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('alarm Icon');
             },
-            icon: Icon(Icons.alarm, color: Colors.black38,),
+            icon: const Icon(
+              Icons.alarm,
+              color: Colors.black38,
+            ),
           ),
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('edit Icon');
             },
-            icon: Icon(Icons.edit, color: Colors.black38,),
+            icon: const Icon(
+              Icons.edit,
+              color: Colors.black38,
+            ),
           ),
         ],
         backgroundColor: Colors.white,
-
         elevation: 0.0,
       ),
       body: Center(
@@ -145,7 +153,6 @@ class _MainPageState extends State<MainPage> {
                 _onItemTapped(value);
               }),
         ],
-
         bottomBarCenterModel: BottomBarCenterModel(
           centerBackgroundColor: variable.AppColors.primaryColor(),
           centerIcon: FloatingCenterButton(
