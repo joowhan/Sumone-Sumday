@@ -1,7 +1,7 @@
 import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
-import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -26,6 +26,9 @@ class _MainPageState extends State<MainPage> {
     const Diaries(),
     // const NewDiary(),
     const PlaceTest(),
+
+    const ExchangeDiaryList(),
+
     const Settings(),
   ];
   void _onItemTapped(int index) {
@@ -85,7 +88,7 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('search Icon');
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
               color: Colors.black38,
             ),
@@ -94,7 +97,8 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-            icon: Icon(
+
+            icon: const Icon(
               Icons.alarm,
               color: Colors.black38,
             ),
@@ -103,7 +107,7 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('edit Icon');
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.edit,
               color: Colors.black38,
             ),

@@ -15,6 +15,10 @@ class AppColors {
     return const Color(0xFFF6DC92);
   }
 
+  static Color primaryColorLighter() {
+    return const Color(0xFFFFF3D4);
+  }
+
   static Color primaryColorBackground() {
     return const Color(0xFFF8F4D7);
   }
@@ -22,6 +26,10 @@ class AppColors {
   // 초록색 계열 서브 커러
   static Color secondaryColor() {
     return const Color(0xFF14B690);
+  }
+
+  static Color backgroundGreyColor() {
+    return const Color(0xFFF1EEE7);
   }
 
   // 폰트 컬러
@@ -35,5 +43,9 @@ class AppColors {
 
   static Color fontGreyColor() {
     return const Color(0xFFAAAAAA);
+  }
+
+  static Color fontDarkGreyColor() {
+    return const Color(0xFF606060);
   }
 }
