@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class DiaryCard extends StatelessWidget {
+  final String assetName;
+  final List<String> tags;
+  final DateTime date;
+  final bool favorite;
+
+  const DiaryCard({
+    super.key,
+    required this.assetName,
+    required this.tags,
+    required this.date,
+    required this.favorite,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedDate(DateTime time) =>
+        DateFormat('yyyy-MM-dd').format(time);
+
+    String joinWithHash(List<String> list) {
+      return list.map((item) => '#$item').join(' ');
+    }
+
+    final ThemeData theme = Theme.of(context);
+
+    return Container(
+      height: 122,
+      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 12 / 10,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(4.5, 4.5, 4.5, 4.5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    // border: Border.all(
+                    //   color: Colors.black,
+                    //   width: 1.0,
+                    // ),
+                  ),
+                  child: Image.asset(
+                    'assets/$assetName',
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14.0, 12.0, 14.0, 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(height: 12.0),
+                    Text(
+                      joinWithHash(tags),
+                      style: const TextStyle(
+                          color: Color.fromARGB(0xff, 0x13, 0x67, 0x50),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      formattedDate(date),
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 12.0),
+                    Text(
+                      '여기는 일기 내용이 오는 곳이에요. 일기 내용은 나중에 디비에서 가져와야해요.',
+                      style: TextStyle(
+                          color: Colors.grey.shade900,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 4.5, 4.5, 0.0),
+              child: Icon(
+                favorite ? Icons.favorite : Icons.favorite_border,
+                color: favorite ? Colors.red : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
