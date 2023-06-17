@@ -55,6 +55,7 @@ dependencies:
   survey_kit: ^0.1.1
   floating_bottom_bar: ^0.0.2
   animated_floating_buttons: ^0.0.2
+  loading_animation_widget: ^1.2.0+4
 
 
 dev_dependencies:

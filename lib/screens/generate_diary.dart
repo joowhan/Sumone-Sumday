@@ -4,8 +4,11 @@ import 'package:sumday/screens/ai_writeDiary.dart';
 
 class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
-  final UserForm data;
-  GenerateDiary({required this.data});
+  // final UserForm data;
+  // GenerateDiary({required this.data});
+  final List<UserForm> dataList;
+
+  GenerateDiary({required this.dataList});
   @override
   State<GenerateDiary> createState() => _GenerateDiaryState();
 }
@@ -53,7 +56,8 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                   ),
                 ),
                 Text(
-                  '#${widget.data.userState}#${widget.data.activity}#${widget.data.relation}#${widget.data.location}',
+                  // '#${widget.data.userState}#${widget.data.activity}#${widget.data.relation}#${widget.data.location}',
+                  "hello",
                   style: TextStyle(
                     color: Colors.black38,
                     letterSpacing: 2.0,
