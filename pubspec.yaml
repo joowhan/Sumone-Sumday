@@ -54,6 +54,7 @@ dependencies:
   table_calendar: ^3.0.9
   survey_kit: ^0.1.1
   floating_bottom_bar: ^0.0.2
+  animated_floating_buttons: ^0.0.2
 
 
 dev_dependencies:
@@ -87,6 +88,7 @@ flutter:
      - assets/main_logo.png
      - assets/small_logo.png
      - assets/karlo_1.png
+     - assets/sumday_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/generate_diary.dart';
 // import 'package:multi_select_flutter/multi_select_flutter.dart';
 // import 'package:flutter_titled_container/flutter_titled_container.dart';
 import 'package:sumday/widgets/locationInput.dart';
@@ -220,9 +221,11 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                           child: Text(
                             text,
                             style: TextStyle(
-                                fontSize: 18, color: _feelingId == feelingId.toString()
-                                ? Colors.white
-                                : Color(0xff136750),),
+                              fontSize: 18,
+                              color: _feelingId == feelingId.toString()
+                                  ? Colors.white
+                                  : Color(0xff136750),
+                            ),
                           ),
                         ),
                       ); // 버튼 사이에 10픽셀의 간격
@@ -255,7 +258,17 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  UserForm userForm = UserForm(
+                      location: _location,
+                      relation: _relation,
+                      activity: _activity,
+                      userState: _feeling);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GenerateDiary(data: userForm)));
+                },
                 child: Text(
                   "완료",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
@@ -345,3 +358,17 @@ List<Relation> relations = [
   Relation(Icons.accessibility_new_rounded, "혼자"),
   Relation(Icons.business, "비즈니스"),
 ];
+
+class UserForm {
+  final String location;
+  final String relation;
+  final String activity;
+  final String userState;
+
+  UserForm({
+    required this.location,
+    required this.relation,
+    required this.activity,
+    required this.userState,
+  });
+}
