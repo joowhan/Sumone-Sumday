@@ -11,8 +11,9 @@ const apiUrl = 'https://api.openai.com/v1/completions';
 
 class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
-  final UserForm data;
-  GenerateDiary({required this.data});
+  final List<UserForm> dataList;
+
+  GenerateDiary({required this.dataList});
   @override
   State<GenerateDiary> createState() => _GenerateDiaryState();
 }
@@ -33,7 +34,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     generateContent();
   }
   Future<void> generateContent() async {
-    String textPrompt = '${widget.data.userState} ${widget.data.activity} ${widget.data.relation} ${widget.data.location}';
+    String textPrompt = '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
     String summaryInEnglish = await generateSummary(textPrompt);
 
     final openai = OpenaiDalleWrapper(apiKey: apiKey);
@@ -127,7 +128,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                         ),
                       ),
                       Text(
-                        '#${widget.data.userState}#${widget.data.activity}#${widget.data.relation}#${widget.data.location}',
+                        '#${widget.dataList[0].userState}#${widget.dataList[0].activity}#${widget.dataList[0].relation}#${widget.dataList[0].location}',
                         style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
