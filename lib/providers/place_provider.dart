@@ -11,12 +11,16 @@ class PlaceData {
   PlaceData({required this.uid});
 
   Future<List<dynamic>> getPlaceData() async {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day, 6); //테스트용으로 00시로세팅
+    Timestamp todayTimestamp = Timestamp.fromDate(today);
     final ref = db
         .collection("location")
         .withConverter(
             fromFirestore: LocationModel.fromFirestore,
             toFirestore: (LocationModel location, _) => location.toFirestore())
-        .where("uid", isEqualTo: uid);
+        .where("uid", isEqualTo: uid)
+        .where("timestamp", isGreaterThan: todayTimestamp);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
     var dataList = [];
