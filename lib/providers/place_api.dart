@@ -166,8 +166,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 }
 
 // get place by coordinate
-Future<List<dynamic>> getPlace(var latitude, var longitude) async {
-  var places = await getPlacesKakao(latitude, longitude);
+Future<http.Response> getPlace(var latitude, var longitude) async {
+  var places = await getPlacesGoogle(latitude, longitude);
   return places;
 }
 
@@ -228,7 +228,10 @@ Future<http.Response> getPlacesGoogle(var latitude, var longitude) async {
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
       '$baseUrl?location=$latitude,$longitude&radius=100&type=restaurant&language=ko&key=$key');
   var response = await http.get(url);
-  return response;
+  var body = response.body;
+  var json = jsonDecode(body);
+  print(json);
+  return json;
 }
 
 // Weather API

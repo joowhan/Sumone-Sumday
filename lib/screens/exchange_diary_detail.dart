@@ -146,8 +146,9 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                       width: 300,
                       child: TextField(
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(vertical: 5)),
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 5),
+                        ),
                       ),
                     ),
                     IconButton(
