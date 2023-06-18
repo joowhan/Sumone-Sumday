@@ -36,41 +36,53 @@ class _WriteDiaryState extends State<WriteDiary> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '6월 6일 오후 4시',
-                  style: TextStyle(
-                    color: Colors.black38,
-                    letterSpacing: 2.0,
-                    //fontFamily:
+                Row(
+                  children: [Column(children: [
+                    //날짜 받아오기
+                    Text('6월 6일 오후 4시',
+                        style: TextStyle(
+                          color: Colors.black38,
+                          letterSpacing: 2.0,
+                          // fontFamily: ...
+                        ),
+                      ),
+                      // 해시태그 받아오기
+                      Text('#카페, #강아지, #한강',
+                        style: TextStyle(
+                          color: Colors.black38,
+                          letterSpacing: 2.0,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Text('#카페, #강아지, #한강',
-                style: TextStyle(
-                  color: Colors.black38,
-                  letterSpacing: 2.0,
+                  Row(
+                    children: [
+                      Text('오늘의 날씨',
+                        style: TextStyle(
+
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                      Icon(
+                        Icons.sunny,
+                        size: 15.0,
+                      )
+                    ],
                   ),
-                ),SizedBox(
+                ],),
+
+                SizedBox(
                   height: 20,
                 ),
                 Container(
                   child: Image.asset('assets/karlo_1.png'),
                 ),
-                Row(
-                  children: [
-                    Text('오늘의 날씨',
-                    style: TextStyle(
-
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                    Icon(
-                      Icons.sunny,
-                      size: 15.0,
-                    )
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
+
                 Container(
                   child: Text('오늘 강아지와 한강변을 따라 산책했다. 스타벅스도 들렸다. 날씨가 맑아서 행복했다.',
                     style: TextStyle(
