@@ -6,7 +6,10 @@ import 'package:sumday/widgets/locationInput.dart';
 import 'package:sumday/models/diary_model.dart';
 
 class Ai_WriteDiary extends StatefulWidget {
-  const Ai_WriteDiary({Key? key}) : super(key: key);
+  // const Ai_WriteDiary({Key? key}) : super(key: key);
+  final int pageIndex;
+  final List<UserForm> dataList;
+  Ai_WriteDiary({super.key, required this.pageIndex, required this.dataList});
 
   @override
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
@@ -19,6 +22,13 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
         children: [
           SizedBox(
             height: 50,
+          ),
+          Text(
+            "${widget.pageIndex+1}", //timestamp에서 시간을 불러와야 한다.
+            style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff136750)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -264,10 +274,32 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
-                  Navigator.push(
+                  widget.dataList.add(userForm);
+
+                  if (widget.pageIndex < 2) {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => GenerateDiary(data: userForm)));
+                        builder: (context) => Ai_WriteDiary(
+                          pageIndex: widget.pageIndex + 1,
+                          dataList: widget.dataList,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GenerateDiary(dataList: widget.dataList),
+                      ),
+                    );
+                  }
+
+
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => GenerateDiary(data: userForm)));
                 },
                 child: Text(
                   "완료",
@@ -371,4 +403,12 @@ class UserForm {
     required this.activity,
     required this.userState,
   });
+  @override
+  String toString() {
+    return 'UserForm{location: $location, relation: $relation, activity: $activity, userState: $userState}';
+  }
+  
+  
 }
+
+

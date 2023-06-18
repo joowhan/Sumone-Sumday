@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 50.0),
             Image.asset(
-              "assets/sumday_logo.png",
+              "assets/main_logo.png",
               width: 300,
               height: 300,
             ),

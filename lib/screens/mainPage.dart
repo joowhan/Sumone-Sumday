@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -26,7 +27,7 @@ class _MainPageState extends State<MainPage> {
     const Home(),
     const Diaries(),
     // const NewDiary(),
-    const PlaceTest(),
+    //const PlaceTest(),
 
     const ExchangeDiaryList(),
 
@@ -41,23 +42,28 @@ class _MainPageState extends State<MainPage> {
   // floating action button
   Widget float1() {
     return Container(
-      child: FloatingActionButton(
+      child: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Ai_WriteDiary()),
+            MaterialPageRoute(
+                builder: (context) => Ai_WriteDiary(
+                      pageIndex: 0,
+                      dataList: const [],
+                    )),
           );
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        child: Icon(Icons.add),
+        label: const Text('AI와 일기 작성 '),
+        icon: const Icon(Icons.add),
       ),
     );
   }
 
   Widget float2() {
     return Container(
-      child: FloatingActionButton(
+      child: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -66,7 +72,8 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        child: Icon(Icons.add),
+        label: const Text("교환일기"),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -98,7 +105,6 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-
             icon: const Icon(
               Icons.alarm,
               color: Colors.black38,

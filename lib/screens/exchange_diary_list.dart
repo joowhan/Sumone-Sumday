@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
+import 'package:sumday/screens/exchange_diary.dart';
 import 'package:sumday/utils/variables.dart';
 
 class ExchangeDiaryList extends StatefulWidget {
@@ -65,7 +66,12 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/exchangeDiary');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ExchangeDiary(),
+                  ),
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
