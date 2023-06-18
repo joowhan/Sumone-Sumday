@@ -39,11 +39,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 50.0),
             Image.asset(
-              "assets/day_night.png",
-              width: 200,
-              height: 200,
+              "assets/sumday_logo.png",
+              width: 300,
+              height: 300,
             ),
-            SizedBox(height: 80.0),
+            SizedBox(height: 10.0),
             OutlinedButton.icon(
               onPressed: () async {
                 try {
