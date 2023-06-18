@@ -2,6 +2,7 @@ import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -49,7 +50,7 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -65,7 +66,7 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -97,7 +98,6 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-
             icon: const Icon(
               Icons.alarm,
               color: Colors.black38,

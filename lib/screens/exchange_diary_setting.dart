@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sumday/utils/variables.dart';
+import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/setting_widget.dart';
 
 class ExchangeDiarySetting extends StatefulWidget {
@@ -13,6 +14,7 @@ class _ExchangeDiarySettingState extends State<ExchangeDiarySetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyAppBar(title: "교환일기장 설정", appBar: AppBar()),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(color: AppColors.primaryColorBackground()),
