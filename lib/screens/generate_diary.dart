@@ -32,7 +32,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     super.initState();
     generateContent();
   }
-   Future<void> generateContent() async {
+  Future<void> generateContent() async {
     String textPrompt = '${widget.data.userState} ${widget.data.activity} ${widget.data.relation} ${widget.data.location}';
     String summaryInEnglish = await generateSummary(textPrompt);
 
@@ -138,8 +138,8 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                       ),
                       Container(
                         child: diaryImageURL == null
-                        ? const CircularProgressIndicator() // null이면 로딩 표시
-                        : Image.network(diaryImageURL!), // null이 아니면 이미지 출력 
+                            ? const CircularProgressIndicator() // null이면 로딩 표시
+                            : Image.network(diaryImageURL!), // null이 아니면 이미지 출력
                       ),
                       const Row(
                         children: [
@@ -158,10 +158,10 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                       ),
                       Container(
                         child: diaryText == null
-                        ? const CircularProgressIndicator() // null이면 로딩 표시
-                          : Text(
-                            diaryText!,
-                            style: const TextStyle(),
+                            ? const CircularProgressIndicator() // null이면 로딩 표시
+                            : Text(
+                          diaryText!,
+                          style: const TextStyle(),
                         ),
                       )
                     ],

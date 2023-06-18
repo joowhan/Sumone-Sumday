@@ -2,6 +2,7 @@ import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
