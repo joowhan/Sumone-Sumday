@@ -371,4 +371,12 @@ class UserForm {
     required this.activity,
     required this.userState,
   });
+  @override
+  String toString() {
+    return 'UserForm{location: $location, relation: $relation, activity: $activity, userState: $userState}';
+  }
+  
+  
 }
+
+
