@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -45,13 +46,17 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Ai_WriteDiary(pageIndex: 0,dataList: [],)),
+            MaterialPageRoute(
+                builder: (context) => Ai_WriteDiary(
+                      pageIndex: 0,
+                      dataList: const [],
+                    )),
           );
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        label: Text('AI와 일기 작성 '),
-        icon: Icon(Icons.add),
+        label: const Text('AI와 일기 작성 '),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -67,8 +72,8 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        label: Text("교환일기"),
-        icon: Icon(Icons.add),
+        label: const Text("교환일기"),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -100,7 +105,6 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-
             icon: const Icon(
               Icons.alarm,
               color: Colors.black38,
