@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sumday/screens/bookmark2.dart';
+import 'package:sumday/screens/bookmark.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
