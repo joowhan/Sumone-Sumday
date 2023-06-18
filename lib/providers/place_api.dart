@@ -53,21 +53,20 @@ void _onBackgroundFetch(String taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
+  int latitude = (currentLocation.latitude * 3600).round();
+  int longitude = (currentLocation.longitude * 3600).round();
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
-  DateTime now = DateTime.now();
-  DateTime today = DateTime(now.year, now.month, now.day, 0); //테스트용으로 00시로세팅
+  var utcNow = DateTime.now();
+  var now = utcNow.add(const Duration(hours: 9));
+  DateTime today = DateTime(now.year, now.month, now.day, 6); //테스트용으로 00시로세팅
   Timestamp todayTimestamp = Timestamp.fromDate(today);
   final exists = await locationRef
       .where("uid", isEqualTo: uid)
       .where("timestamp", isGreaterThan: todayTimestamp)
-      .where("latitude", isGreaterThanOrEqualTo: latitude - 0.0002)
-      .where("latitude", isLessThanOrEqualTo: latitude + 0.0002)
-      .where("longitude", isGreaterThanOrEqualTo: longitude - 0.0002)
-      .where("longitude", isLessThanOrEqualTo: longitude + 0.0002)
+      .where("latitude", isEqualTo: latitude)
+      .where("longitude", isEqualTo: longitude)
       .get();
   if (exists.docs.isNotEmpty) {
     FirebaseFirestore.instance
@@ -122,21 +121,21 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
-  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
+  int latitude = (currentLocation.latitude * 3600).round();
+  int longitude = (currentLocation.longitude * 3600).round();
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
-  DateTime now = DateTime.now();
-  DateTime today = DateTime(now.year, now.month, now.day, 6);
+  var utcNow = DateTime.now();
+  var now = utcNow.add(const Duration(hours: 9));
+  DateTime today =
+      DateTime(now.year, now.month, now.day, 6); //현재 GMT 기준인데, KST로 바꿔야함
   Timestamp todayTimestamp = Timestamp.fromDate(today);
   final exists = await locationRef
       .where("uid", isEqualTo: uid)
       .where("timestamp", isGreaterThan: todayTimestamp)
-      .where("latitude", isGreaterThanOrEqualTo: latitude - 0.0002)
-      .where("latitude", isLessThanOrEqualTo: latitude + 0.0002)
-      .where("longitude", isGreaterThanOrEqualTo: longitude - 0.0002)
-      .where("longitude", isLessThanOrEqualTo: longitude + 0.0002)
+      .where("latitude", isEqualTo: latitude)
+      .where("longitude", isEqualTo: longitude)
       .get();
   if (exists.docs.isNotEmpty) {
     FirebaseFirestore.instance
@@ -166,40 +165,37 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 }
 
 // get place by coordinate
-Future<http.Response> getPlace(var latitude, var longitude) async {
-  var places = await getPlacesGoogle(latitude, longitude);
+Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
+  var lat = latitude / 3600;
+  var lon = longitude / 3600;
+  var json = await getPlacesGoogle(lat, lon);
+  var placeNames = [
+    ...json['results'].map((e) {
+      int spaceIndex = e['name'].toString().indexOf(" ");
+      if (spaceIndex == -1) {
+        return e['name'];
+      } else {
+        return e['name'].toString().substring(0, spaceIndex);
+      }
+    }).toList()
+  ];
+  var places = await getPlacesKakao(placeNames, lat, lon);
   return places;
 }
 
 // KaKao REST API
+
 Future<List<VisitedPlaceModel>> getPlacesKakao(
-    var latitude, var longitude) async {
+    var placeNames, var latitude, var longitude) async {
   var key = "916168db2740df8a80a776ae4751c981";
-  var baseUrl = "https://dapi.kakao.com/v2/local/search/category.json";
+  var baseUrl = "https://dapi.kakao.com/v2/local/search/keyword.json";
   List<VisitedPlaceModel> responses = [];
   // group_code 참조 : https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-category-request-category-group-code
-  var categoryGroupCodes = [
-    "MT1",
-    "CS2",
-    "PS3",
-    "SC4",
-    "AC5",
-    "PK6",
-    "SW8",
-    "BK9",
-    "CT1",
-    "PO3",
-    "AT4",
-    "AD5",
-    "FD6",
-    "CE7",
-    "HP8",
-    "PM9"
-  ];
+
   // 정렬기준에는 accuracy와 distance가 있다는데 무슨 차이인지 모르겠음
-  for (final categoryGroupCode in categoryGroupCodes) {
+  for (final placeName in placeNames) {
     var url = Uri.parse(
-        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=100&sort=distance");
+        "$baseUrl?query=$placeName&x=$longitude&y=$latitude&radius=500&sort=distance");
     var response =
         await http.get(url, headers: {"Authorization": "KakaoAK $key"});
     if (response.statusCode == 200) {
@@ -209,9 +205,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
       }
       for (final json in jsons) {
         if (json['documents'].length > 0) {
-          for (final document in json['documents']) {
-            responses.add(VisitedPlaceModel.fromJson(document));
-          }
+          responses.add(VisitedPlaceModel.fromJson(json['documents'][0]));
         }
       }
     }
@@ -219,14 +213,61 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
 
   return responses;
 }
+// Future<List<VisitedPlaceModel>> getPlacesKakao(
+//     var latitude, var longitude) async {
+//   var key = "916168db2740df8a80a776ae4751c981";
+//   var baseUrl = "https://dapi.kakao.com/v2/local/search/category.json";
+//   List<VisitedPlaceModel> responses = [];
+//   // group_code 참조 : https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-category-request-category-group-code
+//   var categoryGroupCodes = [
+//     "MT1",
+//     "CS2",
+//     "PS3",
+//     "SC4",
+//     "AC5",
+//     "PK6",
+//     "SW8",
+//     "BK9",
+//     "CT1",
+//     "PO3",
+//     "AT4",
+//     "AD5",
+//     "FD6",
+//     "CE7",
+//     "HP8",
+//     "PM9"
+//   ];
+//   // 정렬기준에는 accuracy와 distance가 있다는데 무슨 차이인지 모르겠음
+//   for (final categoryGroupCode in categoryGroupCodes) {
+//     var url = Uri.parse(
+//         "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=100&sort=distance");
+//     var response =
+//         await http.get(url, headers: {"Authorization": "KakaoAK $key"});
+//     if (response.statusCode == 200) {
+//       var jsons = await jsonDecode(response.body);
+//       if (jsons is! List) {
+//         jsons = [jsons];
+//       }
+//       for (final json in jsons) {
+//         if (json['documents'].length > 0) {
+//           for (final document in json['documents']) {
+//             responses.add(VisitedPlaceModel.fromJson(document));
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   return responses;
+// }
 
 // Google Place API
-Future<http.Response> getPlacesGoogle(var latitude, var longitude) async {
+Future<dynamic> getPlacesGoogle(var latitude, var longitude) async {
   var key = "AIzaSyDo2dnIDCoU02BXMP6lR9sVSsXjJiJ7qsg";
   var baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
   var url = Uri.parse(
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
-      '$baseUrl?location=$latitude,$longitude&radius=100&type=restaurant&language=ko&key=$key');
+      '$baseUrl?location=$latitude,$longitude&radius=100&language=ko&key=$key');
   var response = await http.get(url);
   var body = response.body;
   var json = jsonDecode(body);
@@ -243,7 +284,6 @@ Future<WeatherModel> getWeather(var latitude, var longitude) async {
   var response = await http.get(url);
   if (response.statusCode == 200) {
     var json = await jsonDecode(response.body);
-    print(json);
     return WeatherModel.fromJson(json);
   } else {
     throw Exception('${response.statusCode}');
