@@ -26,7 +26,7 @@ class _MainPageState extends State<MainPage> {
     const Home(),
     const Diaries(),
     // const NewDiary(),
-    const PlaceTest(),
+    //const PlaceTest(),
 
     const ExchangeDiaryList(),
 
