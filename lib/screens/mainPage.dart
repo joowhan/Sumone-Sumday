@@ -121,7 +121,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0.0,
+        elevation: 0.25,
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
