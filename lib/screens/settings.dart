@@ -30,13 +30,6 @@ class _SettingsState extends State<Settings> {
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: Column(
                 children: [
-                  const Text(
-                    "일반",
-                    style: TextStyle(
-                      color: Color(0xffF09C99),
-                      fontSize: 16,
-                    ),
-                  ),
                   SettingContainerText(
                     title: "닉네임",
                     information: user?.name ?? "누렁이",
@@ -47,6 +40,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   const SettingContainerText(
                     title: "폰트 변경",
+                    information: "Noto Sans KR",
                   ),
                 ],
               ),
@@ -58,18 +52,12 @@ class _SettingsState extends State<Settings> {
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: const Column(
                 children: [
-                  Text(
-                    "텍스트 생성",
-                    style: TextStyle(
-                      color: Color(0xffF09C99),
-                      fontSize: 16,
-                    ),
-                  ),
                   SettingContainerText(
                     title: "금지 장소",
                   ),
                   SettingContainerText(
                     title: "주제 개수",
+                    information: "3",
                   ),
                 ],
               ),
@@ -81,13 +69,6 @@ class _SettingsState extends State<Settings> {
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: const Column(
                 children: [
-                  Text(
-                    "계정 및 백업",
-                    style: TextStyle(
-                      color: Color(0xffF09C99),
-                      fontSize: 16,
-                    ),
-                  ),
                   SettingContainerText(
                     title: "백업",
                   ),
@@ -108,6 +89,9 @@ class _SettingsState extends State<Settings> {
                   ),
                   SettingContainerText(
                     title: "문의하기",
+                  ),
+                  SettingContainerText(
+                    title: "개인정보 관리",
                   ),
                 ],
               ),

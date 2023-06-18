@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/exchange_diary.dart';
+import 'package:sumday/screens/exchange_diary_setting.dart';
 import 'package:sumday/screens/mainPage.dart';
 import 'package:sumday/screens/loginPage.dart';
 
@@ -16,9 +18,14 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const MainPage(),
+        '/exchangeDiary': (context) => const ExchangeDiary(),
+        '/exchangeDiary/setting': (context) => const ExchangeDiarySetting(),
       },
       initialRoute: '/login',
       home: const LoginPage(),
+      theme: ThemeData(
+        fontFamily: 'Noto_Sans_KR',
+      ),
       onGenerateRoute: _getRoute,
     );
   }
