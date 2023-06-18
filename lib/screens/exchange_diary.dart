@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
+import 'package:sumday/screens/exchange_diary_detail.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 
@@ -134,69 +135,75 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                     ),
                   ],
                 ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 15),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGreyColor(),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: const Image(
-                            image: AssetImage(
-                                'assets/images/test/test_image_000.jpg'),
-                            width: double.maxFinite,
-                            height: 185,
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.center,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ExchangeDiaryDetail())),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 15),
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundGreyColor(),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: const Image(
+                              image: AssetImage(
+                                  'assets/images/test/test_image_000.jpg'),
+                              width: double.maxFinite,
+                              height: 185,
+                              fit: BoxFit.fitWidth,
+                              alignment: Alignment.center,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        // 추후에 리스트로 하나하나 불러와야 할 듯
-                        const Row(
-                          children: [
-                            Text(
-                              "#서울숲",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "#산책",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "#해피",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "2023년 5월 2일 (화)",
-                              style: TextStyle(
-                                color: AppColors.fontGreyColor(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // 추후에 리스트로 하나하나 불러와야 할 듯
+                          const Row(
+                            children: [
+                              Text(
+                                "#서울숲",
+                                style: TextStyle(fontWeight: FontWeight.w600),
                               ),
-                            ),
-                            Text(
-                              "by. 이주현",
-                              style: TextStyle(
-                                  color: AppColors.fontSecondaryColor()),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Text(
+                                "#산책",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "#해피",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "2023년 5월 2일 (화)",
+                                style: TextStyle(
+                                  color: AppColors.fontGreyColor(),
+                                ),
+                              ),
+                              Text(
+                                "by. 이주현",
+                                style: TextStyle(
+                                    color: AppColors.fontSecondaryColor()),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

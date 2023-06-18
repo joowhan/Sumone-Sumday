@@ -133,8 +133,10 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   final exists = await locationRef
       .where("uid", isEqualTo: uid)
       .where("timestamp", isGreaterThan: todayTimestamp)
-      .where("latitude", isEqualTo: latitude)
-      .where("longitude", isEqualTo: longitude)
+      .where("latitude", isGreaterThanOrEqualTo: latitude - 0.0002)
+      .where("latitude", isLessThanOrEqualTo: latitude + 0.0002)
+      .where("longitude", isGreaterThanOrEqualTo: longitude - 0.0002)
+      .where("longitude", isLessThanOrEqualTo: longitude + 0.0002)
       .get();
   if (exists.docs.isNotEmpty) {
     FirebaseFirestore.instance
