@@ -30,12 +30,13 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Image.asset('assets/small_logo.png'),
-          onPressed: (){
-            print('home_icon is clicked');
-          },
-        ),
+        leading:
+          IconButton(
+            icon: Image.asset('assets/small_logo.png'),
+            onPressed: (){
+              print('home_icon is clicked');
+            },
+          ),
         actions: [
           IconButton(
             onPressed:(){
