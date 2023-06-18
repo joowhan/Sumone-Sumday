@@ -25,6 +25,9 @@ class _DiariesState extends State<Diaries> {
       itemCount: diaries.length,
       itemBuilder: (context, index) {
         final diary = diaries[index];
+        void favoriteClickHandler() {
+          diaries[index].favorite = !diaries[index].favorite;
+        }
 
         return Dismissible(
           key: UniqueKey(),
@@ -60,10 +63,8 @@ class _DiariesState extends State<Diaries> {
             ),
           ),
           child: DiaryCard(
-            assetName: diary.assetName,
-            tags: diary.tags,
-            date: diary.date,
-            favorite: diary.favorite,
+            diary: diary,
+            favoriteClickHandler: favoriteClickHandler,
           ),
         );
       },

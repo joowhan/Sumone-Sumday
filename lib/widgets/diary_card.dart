@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sumday/models/diary_model.dart';
 
-class DiaryCard extends StatelessWidget {
-  final String assetName;
-  final List<String> tags;
-  final DateTime date;
-  final bool favorite;
+class DiaryCard extends StatefulWidget {
+  final Diary diary;
+  final Function favoriteClickHandler;
 
   const DiaryCard({
     super.key,
-    required this.assetName,
-    required this.tags,
-    required this.date,
-    required this.favorite,
+    required this.diary,
+    required this.favoriteClickHandler,
   });
 
+  @override
+  State<DiaryCard> createState() => _DiaryCardState();
+}
+
+class _DiaryCardState extends State<DiaryCard> {
   @override
   Widget build(BuildContext context) {
     String formattedDate(DateTime time) =>
@@ -50,7 +52,7 @@ class DiaryCard extends StatelessWidget {
                     // ),
                   ),
                   child: Image.asset(
-                    'assets/$assetName',
+                    'assets/${widget.diary.assetName}',
                   ),
                 ),
               ),
@@ -63,7 +65,7 @@ class DiaryCard extends StatelessWidget {
                   children: <Widget>[
                     const SizedBox(height: 12.0),
                     Text(
-                      joinWithHash(tags),
+                      joinWithHash(widget.diary.tags),
                       style: const TextStyle(
                           color: Color.fromARGB(0xff, 0x13, 0x67, 0x50),
                           fontSize: 14,
@@ -73,7 +75,7 @@ class DiaryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10.0),
                     Text(
-                      formattedDate(date),
+                      formattedDate(widget.diary.date),
                       style: theme.textTheme.titleSmall,
                     ),
                     const SizedBox(height: 12.0),
@@ -92,9 +94,19 @@ class DiaryCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 4.5, 4.5, 0.0),
-              child: Icon(
-                favorite ? Icons.favorite : Icons.favorite_border,
-                color: favorite ? Colors.red : null,
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    widget.favoriteClickHandler();
+                  });
+                },
+                icon: Icon(
+                  widget.diary.favorite
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: widget.diary.favorite ? Colors.red : null,
+                ),
+                isSelected: widget.diary.favorite,
               ),
             ),
           ],
