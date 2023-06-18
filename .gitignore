@@ -161,3 +161,6 @@ coverage/
 
 #Firebase
 firebase_options.dart
+
+#pubspec.lock
+pubspec.lock

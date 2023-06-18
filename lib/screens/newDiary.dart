@@ -40,44 +40,41 @@ class NewDiary extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               "AI와 일기를 작성할까요?",
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Ai_WriteDiary()),
+                  MaterialPageRoute(
+                      builder: (context) => const Ai_WriteDiary()),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
-                minimumSize: Size(300,100)
-              ),
-              label: Text('AI와 일기 작성'),
-              icon: Icon(Icons.comment_bank_rounded),
-
+                  backgroundColor: Colors.deepOrange,
+                  minimumSize: const Size(300, 100)),
+              label: const Text('AI와 일기 작성'),
+              icon: const Icon(Icons.comment_bank_rounded),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WriteDiary()),
+                  MaterialPageRoute(builder: (context) => const WriteDiary()),
                 );
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
-                  minimumSize: Size(300,100)
-              ),
-              label: Text('스스로 일기 작성'),
-              icon: Icon(Icons.comment_bank_rounded),
-
+                  minimumSize: const Size(300, 100)),
+              label: const Text('스스로 일기 작성'),
+              icon: const Icon(Icons.comment_bank_rounded),
             ),
             // ratio >= 1 ? twoBoxedContainer() : oneBoxedContainer()
           ],

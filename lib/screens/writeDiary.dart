@@ -37,7 +37,8 @@ class _WriteDiaryState extends State<WriteDiary> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  Column(children: [
+                  children: [Column(children: [
+                    //날짜 받아오기
                     Text('6월 6일 오후 4시',
                         style: TextStyle(
                           color: Colors.black38,
@@ -45,6 +46,7 @@ class _WriteDiaryState extends State<WriteDiary> {
                           // fontFamily: ...
                         ),
                       ),
+                      // 해시태그 받아오기
                       Text('#카페, #강아지, #한강',
                         style: TextStyle(
                           color: Colors.black38,
@@ -69,7 +71,7 @@ class _WriteDiaryState extends State<WriteDiary> {
                       )
                     ],
                   ),
-                ),
+                ],),
 
                 SizedBox(
                   height: 20,

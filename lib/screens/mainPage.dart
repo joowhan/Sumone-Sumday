@@ -1,10 +1,15 @@
+import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:sumday/screens/bookmark.dart';
 import 'package:sumday/screens/diaries.dart';
+import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
-
+import 'package:sumday/utils/variables.dart' as variable;
+import 'package:animated_floating_buttons/animated_floating_buttons.dart';
+import 'package:sumday/screens/ai_writeDiary.dart';
+import 'package:sumday/screens/writeDiary.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -15,13 +20,56 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget> [Home(), Diaries(), NewDiary(), Bookmark(),Settings()];
+  final GlobalKey<AnimatedFloatingActionButtonState> key =
+      GlobalKey<AnimatedFloatingActionButtonState>();
+  final List<Widget> _widgetOptions = <Widget>[
+    const Home(),
+    const Diaries(),
+    // const NewDiary(),
+    const PlaceTest(),
+
+    const ExchangeDiaryList(),
+
+    const Settings(),
+  ];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  // floating action button
+  Widget float1() {
+    return Container(
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Ai_WriteDiary()),
+          );
+        },
+        heroTag: "btn1",
+        tooltip: 'First button',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget float2() {
+    return Container(
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const WriteDiary()),
+          );
+        },
+        heroTag: "btn2",
+        tooltip: 'Second button',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,35 +78,44 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading:
-          IconButton(
-            icon: Image.asset('assets/small_logo.png'),
-            onPressed: (){
-              print('home_icon is clicked');
-            },
-          ),
+        leading: IconButton(
+          icon: Image.asset('assets/small_logo.png'),
+          onPressed: () {
+            print('home_icon is clicked');
+          },
+        ),
         actions: [
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('search Icon');
             },
-            icon: Icon(Icons.search, color: Colors.black38,),
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black38,
+            ),
           ),
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('alarm Icon');
             },
-            icon: Icon(Icons.alarm, color: Colors.black38,),
+
+            icon: const Icon(
+              Icons.alarm,
+              color: Colors.black38,
+            ),
           ),
           IconButton(
-            onPressed:(){
+            onPressed: () {
               print('edit Icon');
             },
-            icon: Icon(Icons.edit, color: Colors.black38,),
+            icon: const Icon(
+              Icons.edit,
+              color: Colors.black38,
+            ),
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0.0,
+        elevation: 0.25,
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
@@ -74,10 +131,13 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.library_books_rounded),
             label: '목록',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline, size:45 ,),
-            label:'',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.add_circle_outline,
+          //     size: 45,
+          //   ),
+          //   label: '',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_border),
             label: '북마크',
@@ -88,10 +148,18 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        backgroundColor: Color(0xffF4C54F),
+        selectedItemColor: const Color(0xff136750),
+        backgroundColor: Colors.white,
         onTap: _onItemTapped,
       ),
+      floatingActionButton: AnimatedFloatingActionButton(
+          //Fab list
+          fabButtons: <Widget>[float1(), float2()],
+          key: key,
+          colorStartAnimation: Colors.blue,
+          colorEndAnimation: Colors.red,
+          animatedIconData: AnimatedIcons.menu_close //To principal button
+          ),
     );
   }
 }

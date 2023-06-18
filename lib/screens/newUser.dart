@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:survey_kit/survey_kit.dart';
 
+
 class newUser extends StatefulWidget {
   const newUser({Key? key}) : super(key: key);
 
@@ -17,7 +18,9 @@ class _UserForm extends State<newUser> {
         padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: <Widget>[
+
               Text('추가 정보를 입력해주시면 더 상세한 그림을 그릴 수 있어요!',
                   style: TextStyle(
                     color: Colors.black38,
@@ -51,11 +54,11 @@ class _UserForm extends State<newUser> {
               ),
             ),
 
+
           ],
         ),
       )
     );
   }
 }
-
 

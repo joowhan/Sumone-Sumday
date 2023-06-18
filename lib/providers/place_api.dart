@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
 import 'dart:async';
 
-import 'package:sumday/models/visited_place_model.dart';
+import 'package:sumday/models/place_model.dart';
 import 'package:sumday/models/weather_model.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -53,20 +53,43 @@ void _onBackgroundFetch(String taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
   final locationRef = FirebaseFirestore.instance.collection("location");
-  var timestamp = Timestamp.now();
 
-  locationRef.add({
-    'uid': uid,
-    'latitude': currentLocation.latitude,
-    'longitude': currentLocation.longitude,
-    'speed': currentLocation.speed,
-    'temp': weather.temp,
-    'humidity': weather.humidity,
-    'weather': weather.weather,
-    'weather_description': weather.description,
-    'timestamp': timestamp,
-  });
+  // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
+  DateTime now = DateTime.now();
+  DateTime today = DateTime(now.year, now.month, now.day, 0); //테스트용으로 00시로세팅
+  Timestamp todayTimestamp = Timestamp.fromDate(today);
+  final exists = await locationRef
+      .where("uid", isEqualTo: uid)
+      .where("timestamp", isGreaterThan: todayTimestamp)
+      .where("latitude", isEqualTo: latitude)
+      .where("longitude", isEqualTo: longitude)
+      .get();
+  if (exists.docs.isNotEmpty) {
+    FirebaseFirestore.instance
+        .collection("location")
+        .doc(exists.docs[0].id)
+        .update({'count': FieldValue.increment(1)});
+    BackgroundFetch.finish(taskId);
+    return;
+  } else {
+    var timestamp = Timestamp.now();
+
+    locationRef.add({
+      'count': 1,
+      'uid': uid,
+      'latitude': latitude,
+      'longitude': longitude,
+      'speed': currentLocation.speed,
+      'temp': weather.temp,
+      'humidity': weather.humidity,
+      'weather': weather.weather,
+      'weather_description': weather.description,
+      'timestamp': timestamp,
+    });
+  }
 
   BackgroundFetch.finish(taskId);
 }
@@ -97,50 +120,51 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
+  double latitude = double.parse(currentLocation.latitude.toStringAsFixed(4));
+  double longitude = double.parse(currentLocation.longitude.toStringAsFixed(4));
   final locationRef = FirebaseFirestore.instance.collection("location");
-  var timestamp = Timestamp.now();
 
-  locationRef.add({
-    'uid': uid,
-    'latitude': currentLocation.latitude,
-    'longitude': currentLocation.longitude,
-    'speed': currentLocation.speed,
-    'temp': weather.temp,
-    'humidity': weather.humidity,
-    'weather': weather.weather,
-    'weather_description': weather.description,
-    'timestamp': timestamp,
-  });
+  // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
+  DateTime now = DateTime.now();
+  DateTime today = DateTime(now.year, now.month, now.day, 0); //테스트용으로 00시로세팅
+  Timestamp todayTimestamp = Timestamp.fromDate(today);
+  final exists = await locationRef
+      .where("uid", isEqualTo: uid)
+      .where("timestamp", isGreaterThan: todayTimestamp)
+      .where("latitude", isEqualTo: latitude)
+      .where("longitude", isEqualTo: longitude)
+      .get();
+  if (exists.docs.isNotEmpty) {
+    FirebaseFirestore.instance
+        .collection("location")
+        .doc(exists.docs[0].id)
+        .update({'count': FieldValue.increment(1)});
+    BackgroundFetch.finish(taskId);
+    return;
+  } else {
+    var timestamp = Timestamp.now();
+
+    locationRef.add({
+      'count': 1,
+      'uid': uid,
+      'latitude': latitude,
+      'longitude': longitude,
+      'speed': currentLocation.speed,
+      'temp': weather.temp,
+      'humidity': weather.humidity,
+      'weather': weather.weather,
+      'weather_description': weather.description,
+      'timestamp': timestamp,
+    });
+  }
 
   BackgroundFetch.finish(taskId);
 }
 
 // get place by coordinate
 Future<List<dynamic>> getPlace(var latitude, var longitude) async {
-  final User? user = auth.currentUser;
-  late String uid;
-  if (user != null) {
-    uid = user.uid;
-  } else {
-    uid = 'guest';
-  }
-
   var places = await getPlacesKakao(latitude, longitude);
-  var placeList = [];
-  for (VisitedPlaceModel place in places) {
-    placeList.add({
-      'uid': uid,
-      'place_id': place.placeId,
-      'distance': place.distance,
-      'place_name': place.placeName,
-      'place_address': place.placeAddress,
-      'place_category_name': place.placeCategoryName,
-      'place_categoty_group_code': place.placeCategoryGroupCode,
-      'place_category_group_name': place.placeCategoryGroupName,
-    });
-  }
-
-  return placeList;
+  return places;
 }
 
 // KaKao REST API
@@ -157,11 +181,9 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
     "SC4",
     "AC5",
     "PK6",
-    "OL7",
     "SW8",
     "BK9",
     "CT1",
-    "AG2",
     "PO3",
     "AT4",
     "AD5",
@@ -173,7 +195,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
   // 정렬기준에는 accuracy와 distance가 있다는데 무슨 차이인지 모르겠음
   for (final categoryGroupCode in categoryGroupCodes) {
     var url = Uri.parse(
-        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=5&sort=distance");
+        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=100&sort=distance");
     var response =
         await http.get(url, headers: {"Authorization": "KakaoAK $key"});
     if (response.statusCode == 200) {
