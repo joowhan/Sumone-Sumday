@@ -126,7 +126,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
   DateTime now = DateTime.now();
-  DateTime today = DateTime(now.year, now.month, now.day, 0); //테스트용으로 00시로세팅
+  DateTime today = DateTime(now.year, now.month, now.day, 6);
   Timestamp todayTimestamp = Timestamp.fromDate(today);
   final exists = await locationRef
       .where("uid", isEqualTo: uid)
