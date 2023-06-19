@@ -1,13 +1,8 @@
-import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/get_place_test.dart';
-import 'package:sumday/screens/get_place_test.dart';
-import 'package:sumday/screens/newDiary.dart';
-import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
-import 'package:sumday/utils/variables.dart' as variable;
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'package:sumday/screens/writeDiary.dart';
@@ -31,7 +26,8 @@ class _MainPageState extends State<MainPage> {
 
     const ExchangeDiaryList(),
 
-    const Settings(),
+    const PlaceTest(),
+    // const Settings(),
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -47,7 +43,7 @@ class _MainPageState extends State<MainPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Ai_WriteDiary(
+                builder: (context) => const Ai_WriteDiary(
                       pageIndex: 0,
                       dataList: [],
                     )),
@@ -121,7 +117,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0.0,
+        elevation: 0.25,
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],

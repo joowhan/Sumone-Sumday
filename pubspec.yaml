@@ -54,8 +54,10 @@ dependencies:
     survey_kit: ^0.1.1
     floating_bottom_bar: ^0.0.2
     animated_floating_buttons: ^0.0.2
+    syncfusion_flutter_calendar: ^21.2.10
     loading_animation_widget: ^1.2.0+4
     openai_dalle_wrapper: ^1.0.0
+    timezone: ^0.9.2
 
 dev_dependencies:
     flutter_test:

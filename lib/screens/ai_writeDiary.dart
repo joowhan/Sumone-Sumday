@@ -9,7 +9,8 @@ class Ai_WriteDiary extends StatefulWidget {
   // const Ai_WriteDiary({Key? key}) : super(key: key);
   final int pageIndex;
   final List<UserForm> dataList;
-  Ai_WriteDiary({super.key, required this.pageIndex, required this.dataList});
+  const Ai_WriteDiary(
+      {super.key, required this.pageIndex, required this.dataList});
 
   @override
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
@@ -20,17 +21,17 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
     return Center(
       child: ListView(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Text(
-            "${widget.pageIndex+1}", //timestamp에서 시간을 불러와야 한다.
-            style: TextStyle(
+            "${widget.pageIndex + 1}", //timestamp에서 시간을 불러와야 한다.
+            style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: Color(0xff136750)),
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // SizedBox(width: 10,),
@@ -43,7 +44,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Row(
@@ -62,7 +63,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                             style: OutlinedButton.styleFrom(
                               backgroundColor:
                                   _locationId == locationId.toString()
-                                      ? Color(0xff136750)
+                                      ? const Color(0xff136750)
                                       : Colors.white,
                             ),
                             onPressed: () {
@@ -74,11 +75,11 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                                 fontSize: 18,
                                 color: _locationId == locationId.toString()
                                     ? Colors.white
-                                    : Color(0xff136750),
+                                    : const Color(0xff136750),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 8,
                           ),
                         ],
@@ -89,18 +90,18 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Text(
             AskingQuestion(),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -113,33 +114,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   children: relations.map((relation) {
                     final relationId = relations.indexOf(relation) + 1;
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Column(
                         children: [
                           Ink(
                             decoration: ShapeDecoration(
                               color: _relationId == relationId.toString()
-                                  ? Color(0xff136750)
+                                  ? const Color(0xff136750)
                                   : Colors.white,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: IconButton(
                               icon: Icon(relation.icon),
                               color: _relationId == relationId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                               onPressed: () {
                                 relationClick(
                                     relation.title, relationId.toString());
                               },
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 6,
                           ),
                           Text(
                             relation.title,
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           )
                         ],
                       ),
@@ -149,7 +150,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -162,33 +163,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   children: activities.map((activity) {
                     final activityId = activities.indexOf(activity) + 1;
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Column(
                         children: [
                           Ink(
                             decoration: ShapeDecoration(
                               color: _activityId == activityId.toString()
-                                  ? Color(0xff136750)
+                                  ? const Color(0xff136750)
                                   : Colors.white,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: IconButton(
                               icon: Icon(activity.icon),
                               color: _activityId == activityId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                               onPressed: () {
                                 activityClick(
                                     activity.title, activityId.toString());
                               },
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 6,
                           ),
                           Text(
                             activity.title,
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           )
                         ],
                       ),
@@ -198,7 +199,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -214,15 +215,15 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                     children: feelingTexts.map((text) {
                       final feelingId = feelingTexts.indexOf(text) + 1;
                       return Ink(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        decoration: ShapeDecoration(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        decoration: const ShapeDecoration(
                           color: Colors.white70,
                           shape: CircleBorder(),
                         ),
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             backgroundColor: _feelingId == feelingId.toString()
-                                ? Color(0xff136750)
+                                ? const Color(0xff136750)
                                 : Colors.white,
                           ),
                           onPressed: () {
@@ -234,7 +235,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                               fontSize: 18,
                               color: _feelingId == feelingId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                             ),
                           ),
                         ),
@@ -245,7 +246,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Row(
@@ -256,12 +257,12 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   backgroundColor: Colors.white,
                 ),
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   "건너뛰기",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 30,
               ),
               OutlinedButton(
@@ -290,18 +291,18 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GenerateDiary(dataList: widget.dataList),
+                        builder: (context) =>
+                            GenerateDiary(dataList: widget.dataList),
                       ),
                     );
                   }
-
 
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(
                   //         builder: (context) => GenerateDiary(data: userForm)));
                 },
-                child: Text(
+                child: const Text(
                   "완료",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
                 ),
@@ -407,8 +408,4 @@ class UserForm {
   String toString() {
     return 'UserForm{location: $location, relation: $relation, activity: $activity, userState: $userState}';
   }
-  
-  
 }
-
-
