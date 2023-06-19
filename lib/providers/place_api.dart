@@ -164,8 +164,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 }
 
 // get place by coordinate
-Future<List<dynamic>> getPlace(var latitude, var longitude) async {
-  var places = await getPlacesKakao(latitude, longitude);
+Future<dynamic> getPlace(var latitude, var longitude) async {
+  var places = await getPlacesGoogle(latitude, longitude);
   return places;
 }
 
@@ -197,7 +197,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
   // 정렬기준에는 accuracy와 distance가 있다는데 무슨 차이인지 모르겠음
   for (final categoryGroupCode in categoryGroupCodes) {
     var url = Uri.parse(
-        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=100&sort=distance");
+        "$baseUrl?category_group_code=$categoryGroupCode&x=$longitude&y=$latitude&radius=60&sort=distance");
     var response =
         await http.get(url, headers: {"Authorization": "KakaoAK $key"});
     if (response.statusCode == 200) {
@@ -224,8 +224,9 @@ Future<http.Response> getPlacesGoogle(var latitude, var longitude) async {
   var baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
   var url = Uri.parse(
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
-      '$baseUrl?location=$latitude,$longitude&radius=100&type=restaurant&language=ko&key=$key');
+      '$baseUrl?location=$latitude,$longitude&radius=10&type=restaurant&language=ko&key=$key');
   var response = await http.get(url);
+  print(response.body);
   return response;
 }
 

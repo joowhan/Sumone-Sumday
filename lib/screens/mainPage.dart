@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
     const Home(),
     const Diaries(),
     // const NewDiary(),
-    //const PlaceTest(),
+    const PlaceTest(),
 
     const ExchangeDiaryList(),
 
@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
             MaterialPageRoute(
                 builder: (context) => Ai_WriteDiary(
                       pageIndex: 0,
-                      dataList: const [],
+                      dataList: [],
                     )),
           );
         },
@@ -147,6 +147,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_border),
             label: '북마크',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit_note_sharp),
+            label: '교환일기',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

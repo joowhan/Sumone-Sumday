@@ -90,7 +90,6 @@ flutter:
         - assets/images/test/test_image_000.jpg
         - assets/images/test/test_image_001.jpg
         - assets/images/test/test_image_002.jpg
-        - assets/sumday_logo.png
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages
