@@ -57,6 +57,7 @@ dependencies:
     syncfusion_flutter_calendar: ^21.2.10
     loading_animation_widget: ^1.2.0+4
     openai_dalle_wrapper: ^1.0.0
+    timezone: ^0.9.2
 
 dev_dependencies:
     flutter_test:
@@ -91,7 +92,6 @@ flutter:
         - assets/images/test/test_image_000.jpg
         - assets/images/test/test_image_001.jpg
         - assets/images/test/test_image_002.jpg
-        - assets/sumday_logo.png
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages
