@@ -25,8 +25,15 @@ class _PlaceTestState extends State<PlaceTest> {
     } else {
       uid = 'guest';
     }
-    _tasks = PlaceData(uid: uid).getPlaceData();
-    print(_tasks);
+    // _tasks = PlaceData(uid: uid).getPlaceData();
+    // print(_tasks);
+    test();
+  }
+  void test() async {
+    var test = await PlaceData(uid: uid).getPlaceData();
+    for (var element in test) {
+      print(element["place"].length);
+    }
   }
 
   @override
