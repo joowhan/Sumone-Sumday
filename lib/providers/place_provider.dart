@@ -22,6 +22,7 @@ class PlaceData {
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
     var dataList = [];
+    print(2);
     for (QueryDocumentSnapshot doc in docs) {
       if (doc.exists == true) {
         dataList.add({

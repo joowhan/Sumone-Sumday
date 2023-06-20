@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 
 // ignore: unused_import
 import 'dart:async';
@@ -168,7 +169,9 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
   var lat = latitude / 3600;
   var lon = longitude / 3600;
+
   var json = await getPlacesGoogle(lat, lon);
+  print(3);
   var placeNames = [
     ...json['results'].map((e) {
       int spaceIndex = e['name'].toString().indexOf(" ");
@@ -179,7 +182,10 @@ Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
       }
     }).toList()
   ];
+  print(4);
   var places = await getPlacesKakao(placeNames, lat, lon);
+  print(5);
+  print(places);
   return places;
 }
 
@@ -196,16 +202,31 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
   for (final placeName in placeNames) {
     var url = Uri.parse(
         "$baseUrl?query=$placeName&x=$longitude&y=$latitude&radius=500&sort=distance");
-    var response =
-        await http.get(url, headers: {"Authorization": "KakaoAK $key"});
+
+    final dio = Dio();
+
+    Future<Response<dynamic>> getHttp() async {
+      final response = await dio.get(
+        url.toString(),
+        options: Options(
+          headers: {"Authorization": "KakaoAK $key"},
+        ),
+      );
+      return response;
+    }
+
+    var response = await getHttp();
     if (response.statusCode == 200) {
-      var jsons = await jsonDecode(response.body);
+      var jsons = response.data;
+      print(jsons);
       if (jsons is! List) {
         jsons = [jsons];
       }
       for (final json in jsons) {
         if (json['documents'].length > 0) {
-          responses.add(VisitedPlaceModel.fromJson(json['documents'][0]));
+          for (final document in json['documents']) {
+            responses.add(VisitedPlaceModel.fromJson(document));
+          }
         }
       }
     }
@@ -268,11 +289,16 @@ Future<dynamic> getPlacesGoogle(var latitude, var longitude) async {
   var url = Uri.parse(
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
       '$baseUrl?location=$latitude,$longitude&radius=100&language=ko&key=$key');
-  var response = await http.get(url);
-  var body = response.body;
-  var json = jsonDecode(body);
-  print(json);
-  return json;
+  final dio = Dio();
+  Future<Response<dynamic>> getHttp() async {
+    final response = await dio.get(url.toString());
+    print(response.data);
+    return response;
+  }
+
+  final response = await getHttp();
+  print(response.data);
+  return response.data;
 }
 
 // Weather API

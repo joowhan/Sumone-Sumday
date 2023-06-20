@@ -25,55 +25,64 @@ class _PlaceTestState extends State<PlaceTest> {
     } else {
       uid = 'guest';
     }
-    _tasks = PlaceData(uid: uid).getPlaceData();
+    print("hello?");
+    // _tasks = PlaceData(uid: uid).getPlaceData();
+    test();
+  }
+
+  void test() async {
+    var test = await PlaceData(uid: uid).getPlaceData();
+    for (var element in test) {
+      print(element["place"].length);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           children: [
-            FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (snapshot.data[index]["place"].length > 0)
-                                Column(
-                                  children: [
-                                    Text(snapshot.data[index]["weather"]),
-                                    Text("${snapshot.data[index]["temp"]}"),
-                                    Text(snapshot.data[index]["description"]),
-                                    Text(
-                                        "${snapshot.data[index]["timestamp"].toDate()}"),
-                                    for (var place in snapshot.data[index]
-                                        ["place"])
-                                      Column(
-                                        children: [
-                                          Text(place.placeName),
-                                          Text(place.placeAddress),
-                                          Text(place.placeCategoryName),
-                                          Text(place.placeCategoryGroupName),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-                future: _tasks),
+            // FutureBuilder(
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasData) {
+            //         return Expanded(
+            //           child: ListView.builder(
+            //             itemCount: snapshot.data.length,
+            //             itemBuilder: (context, index) {
+            //               return Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   if (snapshot.data[index]["place"].length > 0)
+            //                     Column(
+            //                       children: [
+            //                         Text(snapshot.data[index]["weather"]),
+            //                         Text("${snapshot.data[index]["temp"]}"),
+            //                         Text(snapshot.data[index]["description"]),
+            //                         Text(
+            //                             "${snapshot.data[index]["timestamp"].toDate()}"),
+            //                         for (var place in snapshot.data[index]
+            //                             ["place"])
+            //                           Column(
+            //                             children: [
+            //                               Text(place.placeName),
+            //                               Text(place.placeAddress),
+            //                               Text(place.placeCategoryName),
+            //                               Text(place.placeCategoryGroupName),
+            //                             ],
+            //                           ),
+            //                       ],
+            //                     ),
+            //                 ],
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       } else {
+            //         return const CircularProgressIndicator();
+            //       }
+            //     },
+            //     future: _tasks),
           ],
         ),
       ),
