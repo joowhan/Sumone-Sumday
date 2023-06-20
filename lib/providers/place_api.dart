@@ -42,20 +42,12 @@ Future<Position> getLocation() async {
   return currentPosition;
 }
 
-void _onBackgroundFetch(String taskId) async {
-  print("[BackgroundFetch] Event received $taskId");
-  final User? user = auth.currentUser;
-  late String uid;
-  if (user != null) {
-    uid = user.uid;
-  } else {
-    uid = 'guest';
-  }
+void _saveLocation(uid, taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  int latitude = (currentLocation.latitude * 3600).round();
-  int longitude = (currentLocation.longitude * 3600).round();
+  int latitude = (currentLocation.latitude * 1800).round();
+  int longitude = (currentLocation.longitude * 1800).round();
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -74,10 +66,11 @@ void _onBackgroundFetch(String taskId) async {
         .collection("location")
         .doc(exists.docs[0].id)
         .update({'count': FieldValue.increment(1)});
-    BackgroundFetch.finish(taskId);
+
     return;
   } else {
     var timestamp = Timestamp.now();
+    var places = await getPlace(latitude, longitude);
 
     locationRef.add({
       'count': 1,
@@ -90,8 +83,22 @@ void _onBackgroundFetch(String taskId) async {
       'weather': weather.weather,
       'weather_description': weather.description,
       'timestamp': timestamp,
+      'place': places.map((e) => e.toJson()).toList(),
     });
   }
+}
+
+void _onBackgroundFetch(String taskId) async {
+  print("[BackgroundFetch] Event received $taskId");
+  final User? user = auth.currentUser;
+  late String uid;
+  if (user != null) {
+    uid = user.uid;
+  } else {
+    uid = 'guest';
+  }
+
+  _saveLocation(uid, taskId);
 
   BackgroundFetch.finish(taskId);
 }
@@ -119,59 +126,17 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   } else {
     uid = 'guest';
   }
-  var currentLocation = await getLocation();
-  var weather =
-      await getWeather(currentLocation.latitude, currentLocation.longitude);
-  int latitude = (currentLocation.latitude * 3600).round();
-  int longitude = (currentLocation.longitude * 3600).round();
-  final locationRef = FirebaseFirestore.instance.collection("location");
-
-  // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
-  var utcNow = DateTime.now();
-  var now = utcNow.add(const Duration(hours: 9));
-  DateTime today =
-      DateTime(now.year, now.month, now.day, 6); //현재 GMT 기준인데, KST로 바꿔야함
-  Timestamp todayTimestamp = Timestamp.fromDate(today);
-  final exists = await locationRef
-      .where("uid", isEqualTo: uid)
-      .where("timestamp", isGreaterThan: todayTimestamp)
-      .where("latitude", isEqualTo: latitude)
-      .where("longitude", isEqualTo: longitude)
-      .get();
-  if (exists.docs.isNotEmpty) {
-    FirebaseFirestore.instance
-        .collection("location")
-        .doc(exists.docs[0].id)
-        .update({'count': FieldValue.increment(1)});
-    BackgroundFetch.finish(taskId);
-    return;
-  } else {
-    var timestamp = Timestamp.now();
-
-    locationRef.add({
-      'count': 1,
-      'uid': uid,
-      'latitude': latitude,
-      'longitude': longitude,
-      'speed': currentLocation.speed,
-      'temp': weather.temp,
-      'humidity': weather.humidity,
-      'weather': weather.weather,
-      'weather_description': weather.description,
-      'timestamp': timestamp,
-    });
-  }
+  _saveLocation(uid, taskId);
 
   BackgroundFetch.finish(taskId);
 }
 
 // get place by coordinate
 Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
-  var lat = latitude / 3600;
-  var lon = longitude / 3600;
+  var lat = latitude / 1800;
+  var lon = longitude / 1800;
 
   var json = await getPlacesGoogle(lat, lon);
-  print(3);
   var placeNames = [
     ...json['results'].map((e) {
       int spaceIndex = e['name'].toString().indexOf(" ");
@@ -182,10 +147,7 @@ Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
       }
     }).toList()
   ];
-  print(4);
   var places = await getPlacesKakao(placeNames, lat, lon);
-  print(5);
-  print(places);
   return places;
 }
 
@@ -218,7 +180,6 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
     var response = await getHttp();
     if (response.statusCode == 200) {
       var jsons = response.data;
-      print(jsons);
       if (jsons is! List) {
         jsons = [jsons];
       }
@@ -231,7 +192,6 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
       }
     }
   }
-
   return responses;
 }
 // Future<List<VisitedPlaceModel>> getPlacesKakao(
@@ -288,16 +248,14 @@ Future<dynamic> getPlacesGoogle(var latitude, var longitude) async {
   var baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
   var url = Uri.parse(
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
-      '$baseUrl?location=$latitude,$longitude&radius=100&language=ko&key=$key');
+      '$baseUrl?location=$latitude,$longitude&radius=40&language=ko&key=$key');
   final dio = Dio();
   Future<Response<dynamic>> getHttp() async {
     final response = await dio.get(url.toString());
-    print(response.data);
     return response;
   }
 
   final response = await getHttp();
-  print(response.data);
   return response.data;
 }
 
