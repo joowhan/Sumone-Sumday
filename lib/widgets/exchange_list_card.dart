@@ -4,6 +4,7 @@ import 'package:sumday/screens/exchange_diary.dart';
 import 'package:sumday/utils/variables.dart';
 
 class ExchangeListCard extends StatelessWidget {
+  final String id;
   final String title;
   final int numberOfPeople;
   final String currentWriter;
@@ -14,6 +15,7 @@ class ExchangeListCard extends StatelessWidget {
 
   const ExchangeListCard({
     super.key,
+    required this.id,
     required this.user,
     required this.title,
     required this.numberOfPeople,
@@ -33,7 +35,7 @@ class ExchangeListCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ExchangeDiary(),
+            builder: (context) => ExchangeDiary(id: id),
           ),
         );
       },

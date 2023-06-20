@@ -196,6 +196,7 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
               height: 50,
             ),
             ExchangeListCard(
+              id: "iYG4AVt6EzzmKEzXsiji",
               user: user,
               color: Colors.red,
               title: "KT Aivle School 3기!",

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
-import 'package:sumday/screens/exchange_diary_detail.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
+import 'package:sumday/widgets/exchange_diary_card.dart';
 
 class ExchangeDiary extends StatefulWidget {
-  const ExchangeDiary({super.key});
+  final String id;
+  const ExchangeDiary({super.key, required this.id});
 
   @override
   State<ExchangeDiary> createState() => _ExchangeDiaryState();
 }
 
 class _ExchangeDiaryState extends State<ExchangeDiary> {
+  // 일기장 제목 등은 프로바이더에서 받아온다고 생각하고 일단은 하드코딩 함
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<LoginProvider>(context);
@@ -135,143 +137,19 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                     ),
                   ],
                 ),
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ExchangeDiaryDetail())),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.backgroundGreyColor(),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: const Image(
-                              image: AssetImage(
-                                  'assets/images/test/test_image_000.jpg'),
-                              width: double.maxFinite,
-                              height: 185,
-                              fit: BoxFit.fitWidth,
-                              alignment: Alignment.center,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          // 추후에 리스트로 하나하나 불러와야 할 듯
-                          const Row(
-                            children: [
-                              Text(
-                                "#서울숲",
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                "#산책",
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                "#해피",
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "2023년 5월 2일 (화)",
-                                style: TextStyle(
-                                  color: AppColors.fontGreyColor(),
-                                ),
-                              ),
-                              Text(
-                                "by. 이주현",
-                                style: TextStyle(
-                                    color: AppColors.fontSecondaryColor()),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                ExchangeDiaryCard(
+                  diaryId: "pzc1lokeYTPlwi5ukp40",
+                  tags: const ["서울숲", "산책", "해피"],
+                  date: DateTime.now(),
+                  writer: "이주현",
+                  thumbSource: "이게 무슨값이 될지 모르겠네요",
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGreyColor(),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: const Image(
-                            image: AssetImage(
-                                'assets/images/test/test_image_001.jpg'),
-                            width: double.maxFinite,
-                            height: 185,
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        // 추후에 리스트로 하나하나 불러와야 할 듯
-                        const Row(
-                          children: [
-                            Text(
-                              "#스타벅스",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "#커피",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "#맑음",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "2023년 5월 2일 (화)",
-                              style: TextStyle(
-                                color: AppColors.fontGreyColor(),
-                              ),
-                            ),
-                            Text(
-                              "by. 강승진",
-                              style: TextStyle(
-                                  color: AppColors.fontSecondaryColor()),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                ExchangeDiaryCard(
+                    diaryId: "hello",
+                    tags: const ["스타벅스", "커피", "맑음"],
+                    date: DateTime.utc(2023, 6, 15),
+                    writer: "강승진",
+                    thumbSource: "솰라솰라")
               ],
             ),
           ),
