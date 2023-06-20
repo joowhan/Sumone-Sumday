@@ -5,6 +5,7 @@ import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/home.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
+import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/writeDiary.dart';
 
 class MainPage extends StatefulWidget {
@@ -26,8 +27,8 @@ class _MainPageState extends State<MainPage> {
 
     const ExchangeDiaryList(),
 
-    const PlaceTest(),
-    // const Settings(),
+    // const PlaceTest(),
+    const Settings(),
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -43,7 +44,7 @@ class _MainPageState extends State<MainPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const Ai_WriteDiary(
+                builder: (context) => Ai_WriteDiary(
                       pageIndex: 0,
                       dataList: [],
                     )),

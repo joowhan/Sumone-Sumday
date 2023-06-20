@@ -26,6 +26,7 @@ class _PlaceTestState extends State<PlaceTest> {
       uid = 'guest';
     }
     _tasks = PlaceData(uid: uid).getPlaceData();
+    print(_tasks);
   }
 
   @override
@@ -34,46 +35,46 @@ class _PlaceTestState extends State<PlaceTest> {
       body: Center(
         child: Column(
           children: [
-            FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (snapshot.data[index]["place"].length > 0)
-                                Column(
-                                  children: [
-                                    Text(snapshot.data[index]["weather"]),
-                                    Text("${snapshot.data[index]["temp"]}"),
-                                    Text(snapshot.data[index]["description"]),
-                                    Text(
-                                        "${snapshot.data[index]["timestamp"].toDate()}"),
-                                    for (var place in snapshot.data[index]
-                                        ["place"])
-                                      Column(
-                                        children: [
-                                          Text(place.placeName),
-                                          Text(place.placeAddress),
-                                          Text(place.placeCategoryName),
-                                          Text(place.placeCategoryGroupName),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-                future: _tasks),
+            // FutureBuilder(
+            //     builder: (context, snapshot) {
+            //       if (snapshot.hasData) {
+            //         return Expanded(
+            //           child: ListView.builder(
+            //             itemCount: snapshot.data.length,
+            //             itemBuilder: (context, index) {
+            //               return Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   if (snapshot.data[index]["place"].length > 0)
+            //                     Column(
+            //                       children: [
+            //                         Text(snapshot.data[index]["weather"]),
+            //                         Text("${snapshot.data[index]["temp"]}"),
+            //                         Text(snapshot.data[index]["description"]),
+            //                         Text(
+            //                             "${snapshot.data[index]["timestamp"].toDate()}"),
+            //                         for (var place in snapshot.data[index]
+            //                             ["place"])
+            //                           Column(
+            //                             children: [
+            //                               Text(place.placeName),
+            //                               Text(place.placeAddress),
+            //                               Text(place.placeCategoryName),
+            //                               Text(place.placeCategoryGroupName),
+            //                             ],
+            //                           ),
+            //                       ],
+            //                     ),
+            //                 ],
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       } else {
+            //         return const CircularProgressIndicator();
+            //       }
+            //     },
+            //     future: _tasks),
           ],
         ),
       ),

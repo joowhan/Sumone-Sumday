@@ -17,6 +17,7 @@ class Ai_WriteDiary extends StatefulWidget {
 }
 
 class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
+  final _controller = TextEditingController();
   Widget _aiKeywordsForm() {
     return Center(
       child: ListView(
@@ -93,6 +94,42 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
           const SizedBox(
             height: 20,
           ),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '방문한 장소가 없다면 추가해주세요!',
+                    hintText: '장소 추가',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter your message to continue';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                // onPressed: () async {
+                //   if (_formKey.currentState!.validate()) {
+                //     await widget.addMessage(_controller.text);
+                //     _controller.clear();
+                //   }
+                // },
+                onPressed: null,
+                child: Row(
+                  children: const [
+                    Icon(Icons.send),
+
+                  ],
+                ),
+              ),
+            ],
+          ),
           Text(
             AskingQuestion(),
             textAlign: TextAlign.center,
@@ -101,6 +138,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(
             height: 20,
           ),
@@ -270,13 +308,15 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   backgroundColor: Colors.white,
                 ),
                 onPressed: () {
+
                   UserForm userForm = UserForm(
                       location: _location,
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
                   widget.dataList.add(userForm);
-
+                  print(widget.dataList);
+                  print(widget.pageIndex);
                   if (widget.pageIndex < 2) {
                     Navigator.push(
                       context,
@@ -323,6 +363,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   var _activityId = "";
   var _feelingId = "";
   var _question = "";
+  var _userInputloc = "";
 
   AskingQuestion() {
     if (_location == "") {
@@ -364,15 +405,18 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
       _feelingId = id;
     });
   }
-
+  PageController pageController = PageController();
   final List<String> locations = ['스타벅스', '투썸 플레이스', '삼성 내과 의원'];
   List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다', '평범하다', '지쳤다', '최고다'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(itemBuilder: (BuildContext context, int index) {
-      return _aiKeywordsForm();
-    }));
+      body: _aiKeywordsForm(),
+    //     body: PageView.builder(itemBuilder: (BuildContext context, int index) {
+    //   return _aiKeywordsForm();
+    // }
+    // )
+    );
   }
 }
 
