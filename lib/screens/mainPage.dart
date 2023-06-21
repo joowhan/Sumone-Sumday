@@ -1,5 +1,6 @@
 import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/BookMarks.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/fb_test.dart';
@@ -26,9 +27,10 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
+    const Bookmarks(),
     // const NewDiary(),
     // const PlaceTest(),
-    const FBTest(),
+    // const FBTest(),
 
     const ExchangeDiaryList(),
 

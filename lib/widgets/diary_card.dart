@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sumday/models/diary_model.dart';
+import 'package:sumday/models/rdiary_model.dart';
 
 class DiaryCard extends StatefulWidget {
   final Diary diary;
@@ -22,7 +22,7 @@ class _DiaryCardState extends State<DiaryCard> {
     String formattedDate(DateTime time) =>
         DateFormat('yyyy-MM-dd').format(time);
 
-    String joinWithHash(List<String> list) {
+    String joinWithHash(List list) {
       return list.map((item) => '#$item').join(' ');
     }
 
@@ -52,7 +52,7 @@ class _DiaryCardState extends State<DiaryCard> {
                     // ),
                   ),
                   child: Image.asset(
-                    'assets/${widget.diary.assetName}',
+                    'assets/${widget.diary.photos[0]}',
                   ),
                 ),
               ),
@@ -80,7 +80,7 @@ class _DiaryCardState extends State<DiaryCard> {
                     ),
                     const SizedBox(height: 12.0),
                     Text(
-                      '여기는 일기 내용이 오는 곳이에요. 일기 내용은 나중에 디비에서 가져와야해요.',
+                      widget.diary.context,
                       style: TextStyle(
                           color: Colors.grey.shade900,
                           fontSize: 14,

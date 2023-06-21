@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/models/rdiary_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 
 class FBTest extends StatefulWidget {
   const FBTest({super.key});
@@ -11,39 +15,25 @@ class FBTest extends StatefulWidget {
 class _FBTestState extends State<FBTest> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Appbar Test"),
-      ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              // var pushData = TestSet(
-              //     A: 'this is test input',
-              //     B: 10,
-              //     C: DateTime.now(),
-              //     D: <String>['test1', 'test2', 'test3', 'test4']);
-              // db.collection("firebase_test").add(pushData.getMap()).then(
-              //       (DocumentReference doc) =>
-              //           print('DocumentSnapshot added with ID: ${doc.id}'),
-              //     );
-              // print('DocumentSnapshot added with ID: ${pushData}');
-              print('do this!');
-              final db = FirebaseFirestore.instance;
-              await db.collection("cars").doc().set(
-                {
-                  "brand": "Genesis22222",
-                  "name": "G80",
-                  "price": 7000,
-                },
-              );
-            },
-            child: Text('Click'),
-          ),
-        ],
-      ),
-    );
+    return Consumer<DiariesProvider>(builder: (context, diariesProvider, _) {
+      List<Diary> diaries = diariesProvider.diaries;
+
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Appbar Test"),
+        ),
+        body: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                diariesProvider.printDocNames();
+              },
+              child: Text('Click'),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
