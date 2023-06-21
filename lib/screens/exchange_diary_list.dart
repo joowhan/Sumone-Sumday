@@ -201,7 +201,7 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
               color: Colors.red,
               title: "KT Aivle School 3기!",
               numberOfPeople: 4,
-              currentWriter: user!.name,
+              currentWriter: user != null ? user.name : "임시",
             ),
           ],
         ),

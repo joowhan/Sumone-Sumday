@@ -25,7 +25,6 @@ class _PlaceTestState extends State<PlaceTest> {
     } else {
       uid = 'guest';
     }
-    print("hello?");
     // _tasks = PlaceData(uid: uid).getPlaceData();
     test();
   }

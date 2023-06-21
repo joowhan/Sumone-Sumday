@@ -152,33 +152,27 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addAnonymousInfo(User? user) async {
+  Future<void> addAnonymousInfo(User? user) {
     // 익명 유저 추가
-    FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
         .set(<String, dynamic>{
-      'username': "게스트{user.uid[0:5]}",
+      'status_message': "sumday is all you need",
       'uid': user.uid,
-      'gender': 'none',
-      'birthday': DateTime.utc(2000, 1, 1),
     });
     notifyListeners();
   }
 
-  Future<void> updateAnonymousInfo(
-      User? user, String? username, String? gender, DateTime? birthday) async {
+  Future<void> updateAnonymousInfo(User? user) {
     // 익명 유저 추가
-    final document =
-        FirebaseFirestore.instance.collection('user').doc(user!.uid);
-
-    username != null
-        ? document.update(<String, String>{'username': username})
-        : null;
-    gender != null ? document.update(<String, String>{'gender': gender}) : null;
-    birthday != null
-        ? document.update(<String, DateTime>{'gender': birthday})
-        : null;
+    return FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .update(<String, dynamic>{
+      'status_message': "New sumday user.",
+      'uid': user.uid,
+    });
     notifyListeners();
   }
 }
