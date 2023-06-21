@@ -2,12 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
@@ -31,6 +33,7 @@ class GenerateDiary extends StatefulWidget {
 class _GenerateDiaryState extends State<GenerateDiary> {
   String? diaryText;
   String? diaryImageURL;
+  String? imageUuid;  // 클래스 레벨에서 imageUuid 선언
   @override
   // void initState() {
   //   super.initState();
@@ -92,7 +95,13 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
+Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? uuid) async {
+    final response = await http.get(Uri.parse(imageUrl!));
+    final Uint8List imageBytes = response.bodyBytes;
 
+    final imageRef = FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+    await imageRef.putData(imageBytes);
+  }
   Future<void> saveDiaryToFirestore() async {
   final db = FirebaseFirestore.instance;
 
@@ -106,7 +115,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   DateTime date = DateTime.now(); 
   List<String> tags = [widget.data.userState, widget.data.activity, widget.data.relation, widget.data.location];
   String context = diaryText!;
-  String photos = diaryImageURL!;
+  String photos = imageUuid!+'.png';
   bool favorite = false;
 
   await db.collection("diary").doc().set(
@@ -142,7 +151,9 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                      await generateContent();
+                      var uuid = Uuid();
+                      imageUuid = uuid.v1();
+                      saveImageToFirebaseStorage(diaryImageURL, uid, imageUuid);
                       saveDiaryToFirestore(); //일기 저장 
                     },
                     icon: const Icon(

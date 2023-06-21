@@ -53,6 +53,8 @@ dependencies:
     floating_bottom_bar: ^0.0.2
     animated_floating_buttons: ^0.0.2
     openai_dalle_wrapper: ^1.0.0
+    uuid: ^3.0.7
+    firebase_storage: ^11.2.3
 
 dev_dependencies:
     flutter_test:
