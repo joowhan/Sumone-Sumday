@@ -4,6 +4,7 @@ import 'package:sumday/screens/exchange_diary_list.dart';
 import 'package:sumday/screens/home.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
+import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/writeDiary.dart';
 import 'package:sumday/screens/settings.dart';
 
@@ -21,11 +22,8 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
-    // const NewDiary(),
-    const PlaceTest(),
-
+    const NewDiary(),
     const ExchangeDiaryList(),
-
     const Settings(),
   ];
   void _onItemTapped(int index) {

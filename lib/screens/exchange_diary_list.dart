@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:sumday/models/exchange_diary_list_model.dart';
+import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
@@ -21,10 +25,24 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
     });
   }
 
+  var isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      Provider.of<ExchangeDiaryListProvider>(context).fetchDiaryList();
+    }
+    isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<LoginProvider>(context);
     final user = userData.userInformation;
+    final diaryList = Provider.of<ExchangeDiaryListProvider>(context);
+    final diaries = diaryList.diaries;
+    final docIds = diaryList.docIds;
 
     return Container(
       child: Padding(
@@ -45,20 +63,20 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
                           Text(
                             user?.name ?? "누렁이",
                             style: TextStyle(
-                              fontSize: 36,
+                              fontSize: 28,
                               color: AppColors.fontSecondaryColor(),
                             ),
                           ),
                           const Text(
                             "님의",
-                            style: TextStyle(fontSize: 36),
+                            style: TextStyle(fontSize: 28),
                           ),
                         ],
                       ),
                       const Text(
                         "교환일기장",
                         style: TextStyle(
-                          fontSize: 36,
+                          fontSize: 28,
                         ),
                       ),
                     ],
@@ -93,24 +111,6 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
                                           icon: const Icon(Icons.chevron_left),
                                         ),
                                         const Text("교환일기장 만들기"),
-                                        TextButton(
-                                          onPressed: () {
-                                            String title =
-                                                titleController.text.trim();
-                                            if (title.isNotEmpty) {
-                                              Navigator.pop(context);
-                                            }
-                                          },
-                                          child: Text(
-                                            "생성",
-                                            style: TextStyle(
-                                                color: (titleController.text
-                                                        .trim()
-                                                        .isNotEmpty)
-                                                    ? Colors.black
-                                                    : Colors.grey),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                     Container(
@@ -162,20 +162,47 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
                                           },
                                         ),
                                         OutlinedButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            String title =
+                                                titleController.text.trim();
+                                            if (title.isNotEmpty) {
+                                              Provider.of<ExchangeDiaryListProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .addDiaryList(
+                                                      ExchangeDiaryListModel(
+                                                          title: title,
+                                                          owner: user!.uid,
+                                                          participants: [
+                                                            user.uid
+                                                          ],
+                                                          hexColor: ColorToHex(
+                                                                  _currentColor)
+                                                              .hex,
+                                                          order: 0,
+                                                          createdAt:
+                                                              Timestamp.now()));
+                                            }
+                                            Navigator.pop(context);
+                                          },
                                           style: ButtonStyle(
                                             backgroundColor:
                                                 MaterialStateProperty.all<
-                                                    Color>(
-                                              AppColors.primaryColor(),
-                                            ),
+                                                    Color>(titleController.text
+                                                        .trim()
+                                                        .isNotEmpty
+                                                    ? AppColors.primaryColor()
+                                                    : AppColors
+                                                        .backgroundGreyColor()),
                                           ),
                                           child: Text(
                                             "생성",
                                             style: TextStyle(
-                                              color: AppColors
-                                                  .fontSecondaryColor(),
-                                            ),
+                                                color: (titleController.text
+                                                        .trim()
+                                                        .isNotEmpty)
+                                                    ? Colors.black
+                                                    : Colors.grey),
                                           ),
                                         ),
                                       ],
@@ -195,14 +222,15 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
             const SizedBox(
               height: 50,
             ),
-            ExchangeListCard(
-              id: "iYG4AVt6EzzmKEzXsiji",
-              user: user,
-              color: Colors.red,
-              title: "KT Aivle School 3기!",
-              numberOfPeople: 4,
-              currentWriter: user != null ? user.name : "임시",
-            ),
+            for (int i = 0; i < diaries.length; i++)
+              ExchangeListCard(
+                id: docIds[i],
+                user: user,
+                color: HexColor(diaries[i].hexColor),
+                title: diaries[i].title,
+                numberOfPeople: diaries[i].participants.length,
+                currentWriter: diaries[i].participants[diaries[i].order],
+              ),
           ],
         ),
       ),
