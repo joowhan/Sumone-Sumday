@@ -16,33 +16,46 @@ class DiariesProvider with ChangeNotifier {
     userID = auth.currentUser?.uid;
   }
 
-  void printDocNames() {
-    print(docNames);
-  }
-
-  void toggleFavorite(/* Diary diary,  */ int index) {
+  void toggleFavorite(/* Diary diary,  */ int index) async {
     // final idx = diaries.indexOf(diary);
     diaries[index].favorite = !diaries[index].favorite;
+
+    await db.collection("diary").doc(docNames[index]).update({
+      "favorite": diaries[index].favorite,
+    });
     notifyListeners();
   }
 
   // 일기 배열에 추가
-  void addDiary(int index, Diary diary, String docName) {
+  void addDiary(int index, Diary diary, String? docName) async {
     diaries.insert(index, diary);
-    docNames.insert(index, docName);
+    var _docName = await saveDiary(diary, docName);
+
+    docNames.insert(index, _docName);
     notifyListeners();
   }
 
   // 일기 배열에서 삭제
-  void removeDiary(int index) {
+  void removeDiary(int index) async {
     diaries.removeAt(index);
+
+    await db.collection("diary").doc(docNames[index]).delete();
     docNames.removeAt(index);
+
     notifyListeners();
   }
 
   // 일기 하나만 파베에 저장
-  void saveDiary(Diary diary) async {
-    await db.collection("diary").doc().set(diary.toJson());
+  Future<String> saveDiary(Diary diary, String? docName) async {
+    if (docName == null) {
+      DocumentReference documentReference =
+          await db.collection("diary").add(diary.toJson());
+      docName = documentReference.id;
+    } else {
+      await db.collection("diary").doc().set(diary.toJson());
+    }
+
+    return docName;
   }
 
   // 일기 파베에서 로딩

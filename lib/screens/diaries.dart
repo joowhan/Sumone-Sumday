@@ -27,10 +27,11 @@ class _DiariesState extends State<Diaries> {
 
             void favoriteClickHandler() {
               diariesProvider.toggleFavorite(index);
+              print(docName);
             }
 
             return Dismissible(
-              key: UniqueKey(),
+              key: UniqueKey() /* Key(docName) */,
               direction: DismissDirection.endToStart,
               onDismissed: (direction) {
                 diariesProvider.removeDiary(index);
