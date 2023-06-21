@@ -13,7 +13,7 @@ class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
   final List<UserForm> dataList;
 
-  GenerateDiary({required this.dataList});
+  const GenerateDiary({super.key, required this.dataList});
   @override
   State<GenerateDiary> createState() => _GenerateDiaryState();
 }
