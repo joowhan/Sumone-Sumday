@@ -29,7 +29,7 @@ class _DiaryCardState extends State<DiaryCard> {
     final ThemeData theme = Theme.of(context);
 
     return Container(
-      height: 122,
+      height: 125,
       padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
       child: Card(
         shape: RoundedRectangleBorder(

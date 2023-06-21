@@ -2,6 +2,8 @@ import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/fb_test.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -25,7 +27,8 @@ class _MainPageState extends State<MainPage> {
     const Home(),
     const Diaries(),
     // const NewDiary(),
-    const PlaceTest(),
+    // const PlaceTest(),
+    const FBTest(),
 
     const ExchangeDiaryList(),
 
@@ -44,7 +47,11 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Ai_WriteDiary(pageIndex: 0,dataList: [],)),
+            MaterialPageRoute(
+                builder: (context) => Ai_WriteDiary(
+                    // pageIndex: 0,
+                    // dataList: [],
+                    )),
           );
         },
         heroTag: "btn1",
@@ -89,6 +96,7 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             onPressed: () {
               print('search Icon');
+              print('${ModalRoute.of(context)?.settings.name}');
             },
             icon: const Icon(
               Icons.search,
@@ -99,7 +107,6 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-
             icon: const Icon(
               Icons.alarm,
               color: Colors.black38,

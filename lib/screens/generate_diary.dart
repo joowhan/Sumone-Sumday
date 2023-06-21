@@ -18,6 +18,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
         leading: IconButton(
           onPressed: () {
             print('back');
+            Navigator.of(context).pop();
           },
           icon: Icon(
             Icons.arrow_back_ios_new,
