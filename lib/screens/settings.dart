@@ -18,16 +18,17 @@ class _SettingsState extends State<Settings> {
 
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xffEDEDE5),
+        color: Color(0xffFBE8B8),
       ),
       child: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
               ),
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               child: Column(
                 children: [
                   SettingContainerText(
@@ -46,10 +47,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: const Column(
                 children: [
                   SettingContainerText(
@@ -63,10 +65,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: const Column(
                 children: [
                   SettingContainerText(
@@ -79,9 +82,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
               ),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: const Column(
                 children: [
                   SettingContainerText(
