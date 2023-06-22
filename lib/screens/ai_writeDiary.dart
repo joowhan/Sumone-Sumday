@@ -32,6 +32,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   // int hour = timestamp.hour;
   final TextEditingController _controller = TextEditingController();
   Widget _aiKeywordsForm() {
+    List<UserForm> dataList = widget.dataList;
     return Center(
       child: ListView(
         children: [
@@ -342,8 +343,9 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
-                  widget.dataList.add(userForm);
+                  dataList = [...widget.dataList, userForm];
                   print(widget.dataList);
+                  print(dataList);
                   print(widget.pageIndex);
                   if (widget.pageIndex < 2) {
                     Navigator.push(
@@ -351,16 +353,16 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       MaterialPageRoute(
                         builder: (context) => Ai_WriteDiary(
                           pageIndex: widget.pageIndex + 1,
-                          dataList: widget.dataList,
+                          dataList: dataList,
                         ),
                       ),
                     );
                   } else {
+                    print(dataList);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            GenerateDiary(dataList: widget.dataList),
+                        builder: (context) => GenerateDiary(dataList: dataList),
                       ),
                     );
                   }

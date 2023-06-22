@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
+import 'package:sumday/screens/exchange_diary_setting.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/exchange_diary_card.dart';
@@ -24,6 +25,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
     final diaryList = diaryListProvider.diaryList;
     final docIds = diaryListProvider.docIds;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: MyAppBar(
         title: "교환일기",
         appBar: AppBar(),
@@ -51,7 +53,11 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/exchangeDiary/setting');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ExchangeDiarySetting(idx: widget.idx)));
                       },
                       icon: const Icon(Icons.settings),
                     ),
@@ -62,7 +68,10 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primaryColorLighter(),
+                    border: Border.all(
+                      color: AppColors.fontGreyColor(),
+                    ),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -70,7 +79,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                       children: [
                         if (diaryList[widget.idx]
                                 .participants[diaryList[widget.idx].order] !=
-                            user!.uid)
+                            user!.uid) ...[
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -99,25 +108,59 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                               ),
                             ],
                           ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "본인차례가 되면 작성할 수 있어요!",
-                              style: TextStyle(
-                                color: AppColors.fontDarkGreyColor(),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "본인차례가 되면 작성할 수 있어요!",
+                                style: TextStyle(
+                                  color: AppColors.fontDarkGreyColor(),
+                                ),
                               ),
+                              Text(
+                                "눈치주기",
+                                style: TextStyle(
+                                    color: AppColors.fontSecondaryColor()),
+                              ),
+                            ],
+                          ),
+                        ] else ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 10),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Text(
+                                      "일기를 작성해보세요!",
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.add_box_outlined,
+                                        size: 50,
+                                        color: AppColors.fontSecondaryColor(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
                             ),
-                            Text(
-                              "눈치주기",
-                              style: TextStyle(
-                                  color: AppColors.fontSecondaryColor()),
-                            ),
-                          ],
-                        ),
+                          )
+                        ]
                       ],
                     ),
                   ),

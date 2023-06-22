@@ -23,14 +23,16 @@ class ExchangeDiaryListProvider with ChangeNotifier {
         .collection('exchangeDiaryList')
         .where("participants", arrayContains: uid)
         .get();
-    final List<ExchangeDiaryListModel> loadedDiaries = [];
-    final List<String> loadedDocIds = [];
+    List<ExchangeDiaryListModel> loadedDiaries = [];
+    List<String> loadedDocIds = [];
 
     for (var i = 0; i < snapshot.docs.length; i++) {
       final data = snapshot.docs[i].data() as Map<String, dynamic>?;
       final diary = ExchangeDiaryListModel.fromJson(data!);
-      loadedDiaries.add(diary);
-      loadedDocIds.add(snapshot.docs[i].id);
+      // loadedDiaries.add(diary);
+      // loadedDocIds.add(snapshot.docs[i].id);
+      loadedDiaries = [...loadedDiaries, diary];
+      loadedDocIds = [...loadedDocIds, snapshot.docs[i].id];
     }
     diaryList = loadedDiaries;
     docIds = loadedDocIds;
@@ -50,8 +52,10 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       order: diary.order,
       createdAt: diary.createdAt,
     );
-    diaryList.add(newDiary);
-    docIds.add(doc.id);
+    // diaryList.add(newDiary);
+    // docIds.add(doc.id);
+    diaryList = [...diaryList, newDiary];
+    docIds = [...docIds, doc.id];
     notifyListeners();
   }
 
@@ -65,7 +69,8 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     if (existingDiaries == null) {
       existingDiaries = [diaryObject];
     } else {
-      existingDiaries.add(diaryObject);
+      // existingDiaries.add(diaryObject);
+      existingDiaries = [...existingDiaries, diaryObject];
     }
 
     await docRef.update({'diaries': existingDiaries});
@@ -85,6 +90,22 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       diaryList[index] = diary;
       notifyListeners();
     }
+  }
+
+  // participants에 사용자 추가
+  Future<void> addParticipants(String docId, String uid) async {
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    final snapshot = await docRef.get();
+    List<dynamic>? existingParticipants = snapshot.data()?['participants'];
+
+    if (existingParticipants == null) {
+      existingParticipants = [uid];
+    } else {
+      existingParticipants = [...existingParticipants, uid];
+    }
+
+    await docRef.update({'participants': existingParticipants});
+    notifyListeners();
   }
 
   // Delete

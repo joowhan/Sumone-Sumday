@@ -5,11 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
@@ -172,7 +173,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                      var uuid = Uuid();
+                      var uuid = const Uuid();
                       imageUuid = uuid.v1();
                       saveImageToFirebaseStorage(
                           diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장

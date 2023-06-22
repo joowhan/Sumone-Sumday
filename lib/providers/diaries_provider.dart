@@ -66,8 +66,10 @@ class DiariesProvider with ChangeNotifier {
           await db.collection('diary').where("userID", isEqualTo: userID).get();
 
       for (var doc in snapshot.docs) {
-        docNames.add(doc.id);
-        diaries.add(Diary.fromJson(doc.data()));
+        // docNames.add(doc.id);
+        // diaries.add(Diary.fromJson(doc.data()));
+        docNames = [...docNames, doc.id];
+        diaries = [...diaries, Diary.fromJson(doc.data())];
       }
       // diaries = snapshot.docs.map((e) => Diary.fromJson(e.data())).toList();
     }
