@@ -46,286 +46,290 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          user?.name ?? "누렁이",
-                          style: TextStyle(
-                            fontSize: 28,
-                            color: AppColors.fontSecondaryColor(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            user?.name ?? "누렁이",
+                            style: TextStyle(
+                              fontSize: 28,
+                              color: AppColors.fontSecondaryColor(),
+                            ),
                           ),
-                        ),
-                        const Text(
-                          "님의",
-                          style: TextStyle(fontSize: 28),
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      "교환일기장",
-                      style: TextStyle(
-                        fontSize: 28,
+                          const Text(
+                            "님의",
+                            style: TextStyle(fontSize: 28),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const Text(
+                        "교환일기장",
+                        style: TextStyle(
+                          fontSize: 28,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(
-                iconSize: 80,
-                icon: Icon(
-                  Icons.add_box_outlined,
-                  size: 80,
-                  color: AppColors.fontSecondaryColor(),
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (
-                      BuildContext context,
-                    ) {
-                      final titleController = TextEditingController();
-                      return StatefulBuilder(
-                        builder: (context, setNewState) {
-                          return SingleChildScrollView(
-                            child: AlertDialog(
-                              content: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: const Icon(Icons.chevron_left),
-                                      ),
-                                      const Text("교환일기장 만들기"),
-                                    ],
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: _currentColor,
+                IconButton(
+                  iconSize: 80,
+                  icon: Icon(
+                    Icons.add_box_outlined,
+                    size: 80,
+                    color: AppColors.fontSecondaryColor(),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (
+                        BuildContext context,
+                      ) {
+                        final titleController = TextEditingController();
+                        return StatefulBuilder(
+                          builder: (context, setNewState) {
+                            return SingleChildScrollView(
+                              child: AlertDialog(
+                                content: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(Icons.chevron_left),
+                                        ),
+                                        const Text("교환일기장 만들기"),
+                                      ],
                                     ),
-                                    child: TextField(
-                                      controller: titleController,
-                                      onChanged: (value) {
-                                        setNewState(() {});
-                                      },
-                                      decoration: const InputDecoration(
-                                        hintText: "제목을 입력해주세요",
-                                        hintStyle: TextStyle(
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: _currentColor,
+                                      ),
+                                      child: TextField(
+                                        controller: titleController,
+                                        onChanged: (value) {
+                                          setNewState(() {});
+                                        },
+                                        decoration: const InputDecoration(
+                                          hintText: "제목을 입력해주세요",
+                                          hintStyle: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          isCollapsed: true,
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 30,
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
-                                        isCollapsed: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                          vertical: 20,
-                                          horizontal: 30,
-                                        ),
-                                        border: InputBorder.none,
-                                      ),
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
                                       ),
                                     ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      ColorPicker(
-                                        width: 35,
-                                        height: 35,
-                                        borderRadius: 5,
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        columnSpacing: 24,
-                                        color: Colors.white,
-                                        enableShadesSelection: false,
-                                        selectedColorIcon: Icons.check,
-                                        onColorChanged: (Color color) {
-                                          setNewState(() {
-                                            _currentColor = color;
-                                          });
-                                        },
-                                      ),
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          String title =
-                                              titleController.text.trim();
-                                          if (title.isNotEmpty) {
-                                            Provider.of<ExchangeDiaryListProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .addDiaryList(
-                                                    ExchangeDiaryListModel(
-                                                        title: title,
-                                                        owner: user!.uid,
-                                                        participants: [
-                                                          user.uid
-                                                        ],
-                                                        diaryList: [],
-                                                        hexColor: ColorToHex(
-                                                                _currentColor)
-                                                            .hex,
-                                                        order: 0,
-                                                        createdAt:
-                                                            Timestamp.now()));
-                                          }
-                                          Navigator.pop(context);
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty
-                                              .all<Color>(titleController.text
-                                                      .trim()
-                                                      .isNotEmpty
-                                                  ? AppColors.primaryColor()
-                                                  : AppColors
-                                                      .backgroundGreyColor()),
+                                    Column(
+                                      children: [
+                                        ColorPicker(
+                                          width: 35,
+                                          height: 35,
+                                          borderRadius: 5,
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          columnSpacing: 24,
+                                          color: Colors.white,
+                                          enableShadesSelection: false,
+                                          selectedColorIcon: Icons.check,
+                                          onColorChanged: (Color color) {
+                                            setNewState(() {
+                                              _currentColor = color;
+                                            });
+                                          },
                                         ),
-                                        child: Text(
-                                          "생성",
-                                          style: TextStyle(
-                                              color: (titleController.text
-                                                      .trim()
-                                                      .isNotEmpty)
-                                                  ? Colors.black
-                                                  : Colors.grey),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            String title =
+                                                titleController.text.trim();
+                                            if (title.isNotEmpty) {
+                                              Provider.of<ExchangeDiaryListProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .addDiaryList(
+                                                      ExchangeDiaryListModel(
+                                                          title: title,
+                                                          owner: user!.uid,
+                                                          participants: [
+                                                            user.uid
+                                                          ],
+                                                          diaryList: [],
+                                                          hexColor: ColorToHex(
+                                                                  _currentColor)
+                                                              .hex,
+                                                          order: 0,
+                                                          createdAt:
+                                                              Timestamp.now()));
+                                            }
+                                            Navigator.pop(context);
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(titleController.text
+                                                        .trim()
+                                                        .isNotEmpty
+                                                    ? AppColors.primaryColor()
+                                                    : AppColors
+                                                        .backgroundGreyColor()),
+                                          ),
+                                          child: Text(
+                                            "생성",
+                                            style: TextStyle(
+                                                color: (titleController.text
+                                                        .trim()
+                                                        .isNotEmpty)
+                                                    ? Colors.black
+                                                    : Colors.grey),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          TextButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return StatefulBuilder(builder: (context, setNewState) {
-                      final codeController = TextEditingController();
-                      return AlertDialog(
-                        content: Row(
-                          children: [
-                            SizedBox(
-                              width: 200,
-                              child: TextField(
-                                controller: codeController,
-                                decoration: const InputDecoration(
-                                  hintText: "초대코드를 입력해주세요",
-                                  hintStyle: TextStyle(
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return StatefulBuilder(builder: (context, setNewState) {
+                        final codeController = TextEditingController();
+                        return AlertDialog(
+                          content: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                child: TextField(
+                                  controller: codeController,
+                                  decoration: const InputDecoration(
+                                    hintText: "초대코드를 입력해주세요",
+                                    hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    isCollapsed: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 20,
+                                      horizontal: 10,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
-                                  isCollapsed: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 20,
-                                    horizontal: 10,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
                                 ),
                               ),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  String inviteCode =
-                                      codeController.text.trim();
-                                  if (inviteCode.isNotEmpty) {
-                                    Provider.of<ExchangeDiaryListProvider>(
-                                            context,
-                                            listen: false)
-                                        .addParticipants(inviteCode, user!.uid);
-                                  }
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("완료"))
-                          ],
-                        ),
-                      );
+                              TextButton(
+                                  onPressed: () {
+                                    String inviteCode =
+                                        codeController.text.trim();
+                                    if (inviteCode.isNotEmpty) {
+                                      Provider.of<ExchangeDiaryListProvider>(
+                                              context,
+                                              listen: false)
+                                          .addParticipants(
+                                              inviteCode, user!.uid);
+                                    }
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("완료"))
+                            ],
+                          ),
+                        );
+                      });
                     });
-                  });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2,
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "초대코드 입력하기",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "초대코드 입력하기",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Icon(Icons.add),
-                  ],
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Icon(Icons.add),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          for (int i = 0; i < diaries.length; i++)
-            Column(
-              children: [
-                ExchangeListCard(
-                  idx: i,
-                  id: docIds[i],
-                  user: user,
-                  color: HexColor("#${diaries[i].hexColor}"),
-                  title: diaries[i].title,
-                  numberOfPeople: diaries[i].participants.length,
-                  currentWriter: diaries[i].participants[diaries[i].order],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-              ],
-            )
-        ],
+            const SizedBox(
+              height: 20,
+            ),
+            for (int i = 0; i < diaries.length; i++)
+              Column(
+                children: [
+                  ExchangeListCard(
+                    idx: i,
+                    id: docIds[i],
+                    user: user,
+                    color: HexColor("#${diaries[i].hexColor}"),
+                    title: diaries[i].title,
+                    numberOfPeople: diaries[i].participants.length,
+                    currentWriter: diaries[i].participants[diaries[i].order],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                ],
+              )
+          ],
+        ),
       ),
     );
   }

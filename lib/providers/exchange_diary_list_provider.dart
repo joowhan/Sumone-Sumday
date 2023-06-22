@@ -94,6 +94,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
 
   // participants에 사용자 추가
   Future<void> addParticipants(String docId, String uid) async {
+    final index = diaryList.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
     List<dynamic>? existingParticipants = snapshot.data()?['participants'];
@@ -105,6 +106,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     }
 
     await docRef.update({'participants': existingParticipants});
+    diaryList[index].participants = existingParticipants;
     notifyListeners();
   }
 
