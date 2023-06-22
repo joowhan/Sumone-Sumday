@@ -40,23 +40,28 @@ class _MainPageState extends State<MainPage> {
   // floating action button
   Widget float1() {
     return Container(
-      child: FloatingActionButton(
+      child: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Ai_WriteDiary()),
+            MaterialPageRoute(
+                builder: (context) => Ai_WriteDiary(
+                    // pageIndex: 0,
+                    // dataList: [],
+                    )),
           );
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        child: Icon(Icons.add),
+        label: Text('AI와 일기 작성 '),
+        icon: Icon(Icons.add),
       ),
     );
   }
 
   Widget float2() {
     return Container(
-      child: FloatingActionButton(
+      child: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -65,7 +70,8 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        child: Icon(Icons.add),
+        label: Text("교환일기"),
+        icon: Icon(Icons.add),
       ),
     );
   }
@@ -87,6 +93,7 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             onPressed: () {
               print('search Icon');
+              print('${ModalRoute.of(context)?.settings.name}');
             },
             icon: const Icon(
               Icons.search,
@@ -97,7 +104,6 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {
               print('alarm Icon');
             },
-
             icon: const Icon(
               Icons.alarm,
               color: Colors.black38,

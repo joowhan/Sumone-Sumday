@@ -153,7 +153,7 @@ Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? u
                       print('save');
                       var uuid = Uuid();
                       imageUuid = uuid.v1();
-                      saveImageToFirebaseStorage(diaryImageURL, uid, imageUuid);
+                      saveImageToFirebaseStorage(diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
                       saveDiaryToFirestore(); //일기 저장 
                     },
                     icon: const Icon(
