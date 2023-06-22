@@ -1,14 +1,15 @@
 //ai_resultDiary.dart
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
-import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 
 const apiKey = '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';
@@ -60,9 +61,15 @@ void printContents() {
       String textPrompt = '${data.userState} ${data.activity} ${data.relation} ${data.location}';
       String summaryInEnglish = await generateSummary(textPrompt);
 
+<<<<<<< HEAD
       final openai = OpenaiDalleWrapper(apiKey: apiKey);
       String diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
       diaryImageURLs.add(diaryImageURL);  // 생성된 이미지 URL을 리스트에 추가
+=======
+    final openai = OpenaiDalleWrapper(apiKey: apiKey);
+    diaryImageURL = await openai
+        .generateImage("$summaryInEnglish, a painting of illustration");
+>>>>>>> main
 
       String diaryText = await translateToKorean(summaryInEnglish);
       diaryTexts.add(diaryText);  // 생성된 일기 내용을 리스트에 추가
@@ -90,7 +97,7 @@ void printContents() {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -104,7 +111,7 @@ void printContents() {
       },
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "Please write it in a Korean diary format : '$text' ",
+        'prompt': "'$text' 를 50자 이내 한국어 한 문장으로 요약해줘",
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -114,7 +121,7 @@ void printContents() {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -124,11 +131,39 @@ void printContents() {
   //   final response = await http.get(Uri.parse(imageUrl!));
   //   final Uint8List imageBytes = response.bodyBytes;
 
+<<<<<<< HEAD
   //   final imageRef =
   //   FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
   //   await imageRef.putData(imageBytes);
   // }
 
+=======
+    final imageRef =
+        FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+    await imageRef.putData(imageBytes);
+  }
+
+  Future<void> saveDiaryToFirestore() async {
+    final db = FirebaseFirestore.instance;
+
+    final User? user = _auth.currentUser;
+    late String uid;
+    if (user != null) {
+      uid = user.uid;
+    } else {
+      uid = 'guest';
+    }
+    DateTime date = DateTime.now();
+    List<String> tags = [
+      widget.dataList[0].userState,
+      widget.dataList[0].activity,
+      widget.dataList[0].relation,
+      widget.dataList[0].location
+    ];
+    String context = diaryText!;
+    String photos = '${imageUuid!}.png';
+    bool favorite = false;
+>>>>>>> main
 
 
   @override
@@ -153,7 +188,7 @@ void printContents() {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                      var uuid = Uuid();
+                      var uuid = const Uuid();
                       imageUuid = uuid.v1();
                       printContents();
                       // saveImageToFirebaseStorage(
@@ -178,7 +213,7 @@ void printContents() {
                       Text(
                         DateFormat('y년 M월 d일 a h:mm')
                             .format(DateTime.now().toLocal()),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
                         ),
@@ -213,6 +248,17 @@ void printContents() {
                           )
                         ],
                       ),
+<<<<<<< HEAD
+=======
+                      Container(
+                        child: diaryText == null
+                            ? const CircularProgressIndicator() // null이면 로딩 표시
+                            : Text(
+                                diaryText!,
+                                style: const TextStyle(),
+                              ),
+                      )
+>>>>>>> main
                     ],
                   ),
                 ],

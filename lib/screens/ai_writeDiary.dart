@@ -15,8 +15,9 @@ class Ai_WriteDiary extends StatefulWidget {
   @override
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
 }
+
 //count 높은 순으로 좌표 불러오기
-  // 날씨도 불러오기 -> 각 페이지에 날씨 기본 저장
+// 날씨도 불러오기 -> 각 페이지에 날씨 기본 저장
 //좌표로 근처 위치 리스트 데려오기
 //위치 리스트에서 place_name 들을 따로 불러와서 list에 저장
 // 카테고리 list도 순서대로 저장 혹은 dictionary로 key value로 저장
@@ -31,6 +32,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   // int hour = timestamp.hour;
   final TextEditingController _controller = TextEditingController();
   Widget _aiKeywordsForm() {
+    List<UserForm> dataList = widget.dataList;
     return Center(
       child: ListView(
         children: [
@@ -76,7 +78,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children:  locations.map((location) {
+                    children: locations.map((location) {
                       final locationId = locations.indexOf(location) + 1;
                       return Row(
                         children: [
@@ -116,12 +118,11 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
           ),
           Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Expanded(
                 child: TextFormField(
-
                   controller: _controller,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -141,14 +142,13 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   //   }
                   //   return null;
                   // },
-
                 ),
               ),
               const SizedBox(width: 8),
               OutlinedButton(
                 onPressed: () async {
                   setState(() {
-                    locations.insert(0,textValue); // textValue를 버튼 리스트에 추가
+                    locations.insert(0, textValue); // textValue를 버튼 리스트에 추가
                     textValue = '';
                     _controller.clear(); // textValue 초기화
                   });
@@ -158,17 +158,15 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   //   _controller.clear();
                   // }
                 },
-
-
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.send),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           const SizedBox(
@@ -345,8 +343,9 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
-                  widget.dataList.add(userForm);
+                  dataList = [...widget.dataList, userForm];
                   print(widget.dataList);
+                  print(dataList);
                   print(widget.pageIndex);
                   if (widget.pageIndex < 2) {
                     Navigator.push(
@@ -354,16 +353,16 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       MaterialPageRoute(
                         builder: (context) => Ai_WriteDiary(
                           pageIndex: widget.pageIndex + 1,
-                          dataList: widget.dataList,
+                          dataList: dataList,
                         ),
                       ),
                     );
                   } else {
+                    print(dataList);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            GenerateDiary(dataList: widget.dataList),
+                        builder: (context) => GenerateDiary(dataList: dataList),
                       ),
                     );
                   }

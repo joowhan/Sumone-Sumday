@@ -3,6 +3,7 @@ import 'package:sumday/screens/exchange_diary_detail.dart';
 import 'package:sumday/utils/variables.dart';
 
 class ExchangeDiaryCard extends StatelessWidget {
+  final int idx;
   final String diaryId;
   final List<String> tags;
   final DateTime date;
@@ -11,6 +12,7 @@ class ExchangeDiaryCard extends StatelessWidget {
 
   const ExchangeDiaryCard({
     super.key,
+    required this.idx,
     required this.diaryId,
     required this.tags,
     required this.date,

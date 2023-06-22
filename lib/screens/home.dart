@@ -40,29 +40,28 @@ class _HomeState extends State<Home> {
         Provider.of<DiariesProvider>(context, listen: false);
     diariesProvider.setUserID();
     diariesProvider.setUserID();
-    diariesProvider.loadAllDiaries();
+    // diariesProvider.loadAllDiaries();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xF5F5F5),
+      backgroundColor: const Color(0x00f5f5f5),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
-
+          padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
           child: Column(
             children: [
               Container(
-                  decoration: BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
                   border: Border.all(
                     color: Colors.grey,
                   ),
                 ),
-                padding: EdgeInsets.all(20),
-                child: Row(
+                padding: const EdgeInsets.all(20),
+                child: const Row(
                   children: [
                     CircleAvatar(
                       backgroundImage: AssetImage('assets/jjeri1.jpg'),
@@ -93,7 +92,8 @@ class _HomeState extends State<Home> {
                             ),
                           ],
                         ),
-                        Text('오늘을 더해보세요!',
+                        Text(
+                          '오늘을 더해보세요!',
                           style: TextStyle(
                             fontFamily: 'Nanum_JangMiCe',
                             fontSize: 8,
@@ -106,53 +106,72 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
-              Text('이번주 미션'),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('이번주 미션'),
               Container(
                 decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-                border: Border.all(
-                color: Colors.grey,
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
                 ),
-                ),
-                padding: EdgeInsets.all(20),
-                child: Column(
+                padding: const EdgeInsets.all(20),
+                child: const Column(
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.star, size: 15,),
-                        SizedBox(width: 20, ),
+                        Icon(
+                          Icons.star,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
                         Text('3일 연속 일기 작성!'),
                       ],
                     ),
                     Row(
                       children: [
-                        Icon(Icons.star, size: 15,),
-                        SizedBox(width: 20, ),
+                        Icon(
+                          Icons.star,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
                         Text('SNS 공유하기 1회'),
                       ],
                     ),
                     Row(
                       children: [
-                        Icon(Icons.star, size: 15,),
-                        SizedBox(width: 20, ),
+                        Icon(
+                          Icons.star,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
                         Text('교환일기 친구 초대하기'),
                       ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
                   border: Border.all(
-                  color: Colors.white,
+                    color: Colors.white,
                   ),
                 ),
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: SfCalendar(
                   view: CalendarView.month,
                   initialSelectedDate: DateTime.now(),
