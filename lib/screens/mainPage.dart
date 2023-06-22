@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/BookMarks.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/newDiary.dart';
+import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
-import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/writeDiary.dart';
-import 'package:sumday/screens/settings.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -88,6 +90,7 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             onPressed: () {
               print('search Icon');
+              print('${ModalRoute.of(context)?.settings.name}');
             },
             icon: const Icon(
               Icons.search,

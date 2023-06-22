@@ -2,12 +2,25 @@
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
+
+
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+// 이곳에서 로그인된 사용자의 uid를 가져옵니다.
+final User? user = _auth.currentUser;
+final uid = user?.uid;
 
 class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
@@ -21,6 +34,7 @@ class GenerateDiary extends StatefulWidget {
 class _GenerateDiaryState extends State<GenerateDiary> {
   String? diaryText;
   String? diaryImageURL;
+  String? imageUuid;  // 클래스 레벨에서 imageUuid 선언
   @override
   // void initState() {
   //   super.initState();
@@ -50,7 +64,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $apiKey'},
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "'$prompt' 를 50자 이내 영어 한 문장으로 요약해줘",
+        'prompt': "Please make it into one sentence in English : " '$prompt' ,
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -69,7 +83,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $apiKey'},
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "'$text' 를 50자 이내 한국어 한 문장으로 요약해줘",
+        'prompt': "Please write it in a Korean diary format : '$text' ",
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -82,28 +96,91 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
+Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? uuid) async {
+    final response = await http.get(Uri.parse(imageUrl!));
+    final Uint8List imageBytes = response.bodyBytes;
+
+    final imageRef = FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+    await imageRef.putData(imageBytes);
+  }
+  Future<void> saveDiaryToFirestore() async {
+  final db = FirebaseFirestore.instance;
+
+  final User? user = _auth.currentUser;
+  late String uid;
+  if (user != null) {
+    uid = user.uid;
+  } else {
+    uid = 'guest';
+  }
+  DateTime date = DateTime.now(); 
+  List<String> tags = [widget.data.userState, widget.data.activity, widget.data.relation, widget.data.location];
+  String context = diaryText!;
+  String photos = imageUuid!+'.png';
+  bool favorite = false;
+
+  await db.collection("diary").doc().set(
+    {
+      "userID": uid, 
+      "date": date,
+      "tags": tags,
+      "context": context,
+      "photos": photos,
+      "favorite": favorite,
+    },
+  );
+}
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: generateContent(),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        // 데이터 로드가 완료되었다면
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  print('back');
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black38,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            print('back');
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black38,
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                print('save');
+              },
+              icon: Icon(
+                Icons.done,
+                color: Colors.black38,
+              ))
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '6월 6일 오후 4시',
+                  style: TextStyle(
+                    color: Colors.black38,
+                    letterSpacing: 2.0,
+                    //fontFamily:
+                  ),
                 ),
               ),
               actions: [
                 IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       print('save');
+                      var uuid = Uuid();
+                      imageUuid = uuid.v1();
+                      saveImageToFirebaseStorage(diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
+                      saveDiaryToFirestore(); //일기 저장 
                     },
                     icon: const Icon(
                       Icons.done,
@@ -120,8 +197,8 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '6월 6일 오후 4시',
+                      Text(
+                        DateFormat('y년 M월 d일 a h:mm').format(DateTime.now().toLocal()),
                         style: TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -31,6 +32,16 @@ class _Calendar2State extends State<Calendar2> {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    super.initState();
+    final diariesProvider =
+        Provider.of<DiariesProvider>(context, listen: false);
+    diariesProvider.setUserID();
+    diariesProvider.setUserID();
+    diariesProvider.loadAllDiaries();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

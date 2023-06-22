@@ -28,7 +28,6 @@ class _PlaceTestState extends State<PlaceTest> {
     // _tasks = PlaceData(uid: uid).getPlaceData();
     test();
   }
-
   void test() async {
     var test = await PlaceData(uid: uid).getPlaceData();
     for (var element in test) {

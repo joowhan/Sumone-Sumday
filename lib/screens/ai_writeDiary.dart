@@ -15,8 +15,21 @@ class Ai_WriteDiary extends StatefulWidget {
   @override
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
 }
-
+//count 높은 순으로 좌표 불러오기
+  // 날씨도 불러오기 -> 각 페이지에 날씨 기본 저장
+//좌표로 근처 위치 리스트 데려오기
+//위치 리스트에서 place_name 들을 따로 불러와서 list에 저장
+// 카테고리 list도 순서대로 저장 혹은 dictionary로 key value로 저장
+//ai_writeDiary로 위치 리스트, 날씨 pass
+//ai writeDiary는 현재 list 형태로 위치가 저장되어 있음, 날씨도 제대로 표시할 것
 class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
+  // Timestamp 불러와서 변환
+  // DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(yourTimestamp);
+  // int year = timestamp.year;
+  // int month = timestamp.month;
+  // int day = timestamp.day;
+  // int hour = timestamp.hour;
+  final TextEditingController _controller = TextEditingController();
   Widget _aiKeywordsForm() {
     return Center(
       child: ListView(
@@ -25,7 +38,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
             height: 50,
           ),
           Text(
-            "${widget.pageIndex + 1}", //timestamp에서 시간을 불러와야 한다.
+            "${widget.pageIndex + 1}/3", //timestamp에서 시간을 불러와야 한다.
             style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -47,6 +60,14 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
           const SizedBox(
             height: 50,
           ),
+          Text(
+            AskingQuestion(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -55,7 +76,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: locations.map((location) {
+                    children:  locations.map((location) {
                       final locationId = locations.indexOf(location) + 1;
                       return Row(
                         children: [
@@ -93,13 +114,62 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
           const SizedBox(
             height: 20,
           ),
-          Text(
-            AskingQuestion(),
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: TextFormField(
+
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.yellow), // 테두리 색상 설정
+                    ),
+                    labelText: '방문한 장소가 없다면 추가해주세요!',
+                    hintText: '장소 추가',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      textValue = value;
+                    });
+                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Enter your message to continue';
+                  //   }
+                  //   return null;
+                  // },
+
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                onPressed: () async {
+                  setState(() {
+                    locations.insert(0,textValue); // textValue를 버튼 리스트에 추가
+                    textValue = '';
+                    _controller.clear(); // textValue 초기화
+                  });
+
+                  // if (_formKey.currentState!.validate()) {
+                  //   await widget.addMessage(_controller.text);
+                  //   _controller.clear();
+                  // }
+                },
+
+
+                child: Row(
+                  children: const [
+                    Icon(Icons.send),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
           ),
           const SizedBox(
             height: 20,
@@ -276,7 +346,8 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       activity: _activity,
                       userState: _feeling);
                   widget.dataList.add(userForm);
-
+                  print(widget.dataList);
+                  print(widget.pageIndex);
                   if (widget.pageIndex < 2) {
                     Navigator.push(
                       context,
@@ -323,6 +394,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   var _activityId = "";
   var _feelingId = "";
   var _question = "";
+  String textValue = '';
 
   AskingQuestion() {
     if (_location == "") {
@@ -365,14 +437,19 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
     });
   }
 
+  PageController pageController = PageController();
+  List<String> userLocations = [];
   final List<String> locations = ['스타벅스', '투썸 플레이스', '삼성 내과 의원'];
   List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다', '평범하다', '지쳤다', '최고다'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(itemBuilder: (BuildContext context, int index) {
-      return _aiKeywordsForm();
-    }));
+      body: _aiKeywordsForm(),
+      //     body: PageView.builder(itemBuilder: (BuildContext context, int index) {
+      //   return _aiKeywordsForm();
+      // }
+      // )
+    );
   }
 }
 
