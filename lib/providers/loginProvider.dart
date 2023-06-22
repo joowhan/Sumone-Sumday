@@ -158,7 +158,6 @@ class LoginProvider with ChangeNotifier {
         .collection('user')
         .doc(user!.uid)
         .set(<String, dynamic>{
-
       'status_message': "sumday is all you need",
       'uid': user.uid,
     });
