@@ -30,7 +30,8 @@ class GenerateDiary extends StatefulWidget {
 }
 
 class _GenerateDiaryState extends State<GenerateDiary> {
-  String? diaryText;
+  List<String> diaryTexts = [];
+  List<String> diaryImageURLs = [];
   String? diaryImageURL;
   String? imageUuid; // 클래스 레벨에서 imageUuid 선언
   @override
@@ -43,21 +44,32 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   // }
   void initState() {
     super.initState();
-    generateContent();
+    generateAllContents();
+  }
+void printContents() {
+  diaryTexts.forEach((text) {
+    print(text);
+  });
+
+  diaryImageURLs.forEach((url) {
+    print(url);
+  });
+}
+  Future<void> generateAllContents() async {
+    await Future.forEach(widget.dataList, (UserForm data) async {
+      String textPrompt = '${data.userState} ${data.activity} ${data.relation} ${data.location}';
+      String summaryInEnglish = await generateSummary(textPrompt);
+
+      final openai = OpenaiDalleWrapper(apiKey: apiKey);
+      String diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
+      diaryImageURLs.add(diaryImageURL);  // 생성된 이미지 URL을 리스트에 추가
+
+      String diaryText = await translateToKorean(summaryInEnglish);
+      diaryTexts.add(diaryText);  // 생성된 일기 내용을 리스트에 추가
+    });
   }
 
-  Future<void> generateContent() async {
-    String textPrompt =
-        '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
-    String summaryInEnglish = await generateSummary(textPrompt);
 
-    final openai = OpenaiDalleWrapper(apiKey: apiKey);
-    diaryImageURL = await openai
-        .generateImage(summaryInEnglish + ", a painting of illustration");
-
-    String translatedText = await translateToKorean(summaryInEnglish);
-    diaryText = translatedText;
-  }
 
   Future<String> generateSummary(String prompt) async {
     final response = await http.post(
@@ -107,53 +119,22 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     return newresponse['choices'][0]['text'].trim();
   }
 
-  Future<void> saveImageToFirebaseStorage(
-      String? imageUrl, String? uid, String? uuid) async {
-    final response = await http.get(Uri.parse(imageUrl!));
-    final Uint8List imageBytes = response.bodyBytes;
+  // Future<void> saveImageToFirebaseStorage(
+  //     String? imageUrl, String? uid, String? uuid) async {
+  //   final response = await http.get(Uri.parse(imageUrl!));
+  //   final Uint8List imageBytes = response.bodyBytes;
 
-    final imageRef =
-    FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
-    await imageRef.putData(imageBytes);
-  }
+  //   final imageRef =
+  //   FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+  //   await imageRef.putData(imageBytes);
+  // }
 
-  Future<void> saveDiaryToFirestore() async {
-    final db = FirebaseFirestore.instance;
 
-    final User? user = _auth.currentUser;
-    late String uid;
-    if (user != null) {
-      uid = user.uid;
-    } else {
-      uid = 'guest';
-    }
-    DateTime date = DateTime.now();
-    List<String> tags = [
-      widget.dataList[0].userState,
-      widget.dataList[0].activity,
-      widget.dataList[0].relation,
-      widget.dataList[0].location
-    ];
-    String context = diaryText!;
-    String photos = imageUuid! + '.png';
-    bool favorite = false;
-
-    await db.collection("diary").doc().set(
-      {
-        "userID": uid,
-        "date": date,
-        "tags": tags,
-        "context": context,
-        "photos": photos,
-        "favorite": favorite,
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generateContent(),
+      future: generateAllContents(),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         // 데이터 로드가 완료되었다면
         if (snapshot.connectionState == ConnectionState.done) {
@@ -174,9 +155,10 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                       print('save');
                       var uuid = Uuid();
                       imageUuid = uuid.v1();
-                      saveImageToFirebaseStorage(
-                          diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
-                      saveDiaryToFirestore(); //일기 저장
+                      printContents();
+                      // saveImageToFirebaseStorage(
+                      //     diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
+                      //saveDiaryToFirestore(); //일기 저장
                     },
                     icon: const Icon(
                       Icons.done,
@@ -231,14 +213,6 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                           )
                         ],
                       ),
-                      Container(
-                        child: diaryText == null
-                            ? const CircularProgressIndicator() // null이면 로딩 표시
-                            : Text(
-                          diaryText!,
-                          style: const TextStyle(),
-                        ),
-                      )
                     ],
                   ),
                 ],
