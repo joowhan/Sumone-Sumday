@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/exchange_diary_list_provider.dart';
+import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/setting_widget.dart';
 
 class ExchangeDiarySetting extends StatefulWidget {
-  const ExchangeDiarySetting({super.key});
+  final int idx;
+  const ExchangeDiarySetting({super.key, required this.idx});
 
   @override
   State<ExchangeDiarySetting> createState() => _ExchangeDiarySettingState();
@@ -13,6 +18,12 @@ class ExchangeDiarySetting extends StatefulWidget {
 class _ExchangeDiarySettingState extends State<ExchangeDiarySetting> {
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<LoginProvider>(context);
+    final user = userData.userInformation;
+    final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
+    final diaryList = diaryListProvider.diaryList;
+    final docIds = diaryListProvider.docIds;
+
     return Scaffold(
       appBar: MyAppBar(title: "교환일기장 설정", appBar: AppBar()),
       body: SingleChildScrollView(
@@ -38,15 +49,19 @@ class _ExchangeDiarySettingState extends State<ExchangeDiarySetting> {
                     ),
                     width: 320,
                   ),
-                  const Text(
-                    "39Tx83hsW",
-                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  Text(
+                    docIds[widget.idx],
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 30,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Clipboard.setData(
+                          ClipboardData(text: docIds[widget.idx]));
+                    },
                     style: TextButton.styleFrom(
                         foregroundColor: Colors.black,
                         backgroundColor: AppColors.primaryColor(),

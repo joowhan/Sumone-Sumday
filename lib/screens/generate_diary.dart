@@ -1,14 +1,15 @@
 //ai_resultDiary.dart
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
-import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 
 const apiKey = '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';
@@ -53,7 +54,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 
     final openai = OpenaiDalleWrapper(apiKey: apiKey);
     diaryImageURL = await openai
-        .generateImage(summaryInEnglish + ", a painting of illustration");
+        .generateImage("$summaryInEnglish, a painting of illustration");
 
     String translatedText = await translateToKorean(summaryInEnglish);
     diaryText = translatedText;
@@ -78,7 +79,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -92,7 +93,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       },
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "Please write it in a Korean diary format : '$text' ",
+        'prompt': "'$text' 를 50자 이내 한국어 한 문장으로 요약해줘",
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -102,7 +103,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -113,7 +114,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     final Uint8List imageBytes = response.bodyBytes;
 
     final imageRef =
-    FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+        FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
     await imageRef.putData(imageBytes);
   }
 
@@ -135,7 +136,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       widget.dataList[0].location
     ];
     String context = diaryText!;
-    String photos = imageUuid! + '.png';
+    String photos = '${imageUuid!}.png';
     bool favorite = false;
 
     await db.collection("diary").doc().set(
@@ -172,7 +173,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                      var uuid = Uuid();
+                      var uuid = const Uuid();
                       imageUuid = uuid.v1();
                       saveImageToFirebaseStorage(
                           diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
@@ -196,7 +197,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                       Text(
                         DateFormat('y년 M월 d일 a h:mm')
                             .format(DateTime.now().toLocal()),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
                         ),
@@ -235,9 +236,9 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                         child: diaryText == null
                             ? const CircularProgressIndicator() // null이면 로딩 표시
                             : Text(
-                          diaryText!,
-                          style: const TextStyle(),
-                        ),
+                                diaryText!,
+                                style: const TextStyle(),
+                              ),
                       )
                     ],
                   ),
