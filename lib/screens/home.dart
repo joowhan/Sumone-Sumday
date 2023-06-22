@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -31,162 +33,132 @@ class _Calendar2State extends State<Calendar2> {
 
 class _HomeState extends State<Home> {
   @override
+  void initState() {
+    super.initState();
+    final diariesProvider =
+        Provider.of<DiariesProvider>(context, listen: false);
+    diariesProvider.setUserID();
+    diariesProvider.setUserID();
+    diariesProvider.loadAllDiaries();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 0.0),
+      backgroundColor: Color(0xF5F5F5),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
 
-        child: Column(
-          children: [
-            const Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/jjeri1.jpg'),
-                  radius: 70.0,
+          child: Column(
+            children: [
+              Container(
+                  decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
                 ),
-                SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: EdgeInsets.all(20),
+                child: Row(
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/jjeri1.jpg'),
+                      radius: 40.0,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '쩨리님,',
-                          style: TextStyle(
-                              color: Colors.black38,
-                              letterSpacing: 2.0,
-                              fontFamily: 'Nanum_JangMiCe',
-                              fontSize: 40.0,
-                              fontWeight: FontWeight.bold),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '쩨리님,',
+                              style: TextStyle(
+                                  color: Colors.black38,
+                                  letterSpacing: 2.0,
+                                  fontFamily: 'Nanum_JangMiCe',
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.edit,
+                              size: 15.0,
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.edit,
-                          size: 15.0,
+                        Text('오늘을 더해보세요!',
+                          style: TextStyle(
+                            fontFamily: 'Nanum_JangMiCe',
+                            fontSize: 8,
+                            color: Colors.black38,
+                            letterSpacing: 2.0,
+                          ),
                         ),
                       ],
                     ),
-                    Text('오늘을 더해보세요!',
-
-                      style: TextStyle(
-                        fontFamily: 'Nanum_JangMiCe',
-                        fontSize: 16,
-                        color: Colors.black38,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
                   ],
                 ),
-              ],
-            ),
-            const Divider(
-              height: 60.0,
-              color: Colors.grey,
-              thickness: 0.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Column(
+              ),
+              SizedBox(height: 20,),
+              Text('이번주 미션'),
+              Container(
+                decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+                border: Border.all(
+                color: Colors.grey,
+                ),
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
                   children: [
-                    Text(
-                      '작성한 일기',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 1.0,
-                      ),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 15,),
+                        SizedBox(width: 20, ),
+                        Text('3일 연속 일기 작성!'),
+                      ],
                     ),
-                    Text(
-                      'n',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 3.0,
-                      ),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 15,),
+                        SizedBox(width: 20, ),
+                        Text('SNS 공유하기 1회'),
+                      ],
                     ),
-                  ],
-                ),
-                Container(
-                  width: 3.0,
-                  color: Colors.black38,
-                ),
-                const Column(
-                  children: [
-                    Text(
-                      '이번 달 일기',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    Text(
-                      'n',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 3.0,
-                      ),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 15,),
+                        SizedBox(width: 20, ),
+                        Text('교환일기 친구 초대하기'),
+                      ],
                     ),
                   ],
                 ),
-                const VerticalDivider(
-                  thickness: 1,
-                  width: 1,
-                  color: Colors.black38,
+              ),
+              SizedBox(height: 20,),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  border: Border.all(
+                  color: Colors.white,
+                  ),
                 ),
-                const Column(
-                  children: [
-                    Text(
-                      '방문한 장소',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    Text(
-                      'n',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 3.0,
-                      ),
-                    ),
-                  ],
+                padding: EdgeInsets.all(20),
+                child: SfCalendar(
+                  view: CalendarView.month,
+                  initialSelectedDate: DateTime.now(),
                 ),
-                const VerticalDivider(
-                  thickness: 1,
-                  width: 1,
-                  color: Colors.black38,
-                ),
-                const Column(
-                  children: [
-                    Text(
-                      '현재 등급',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    Text(
-                      'n',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        letterSpacing: 3.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              height: 60.0,
-              color: Colors.grey,
-              thickness: 0.5,
-            ),
-            const Calendar2(),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

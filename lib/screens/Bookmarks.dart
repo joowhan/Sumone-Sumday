@@ -4,19 +4,20 @@ import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/models/rdiary_model.dart';
 import 'package:sumday/widgets/diary_card.dart';
 
-class Diaries extends StatefulWidget {
-  const Diaries({Key? key}) : super(key: key);
+class Bookmarks extends StatefulWidget {
+  const Bookmarks({Key? key}) : super(key: key);
 
   @override
-  State<Diaries> createState() => _DiariesState();
+  State<Bookmarks> createState() => _BookmarksState();
 }
 
-class _DiariesState extends State<Diaries> {
+class _BookmarksState extends State<Bookmarks> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DiariesProvider>(
       builder: (context, diariesProvider, _) {
-        List<Diary> diaries = diariesProvider.diaries;
+        List<Diary> diaries =
+            diariesProvider.diaries.where((diary) => diary.favorite).toList();
         List<String> docNames = diariesProvider.docNames;
 
         return ListView.builder(
@@ -27,11 +28,10 @@ class _DiariesState extends State<Diaries> {
 
             void favoriteClickHandler() {
               diariesProvider.toggleFavorite(index);
-              print(docName);
             }
 
             return Dismissible(
-              key: UniqueKey() /* Key(docName) */,
+              key: UniqueKey(),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) {
                 diariesProvider.removeDiary(index);

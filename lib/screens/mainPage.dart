@@ -1,14 +1,16 @@
-import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/BookMarks.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
-import 'package:sumday/utils/variables.dart' as variable;
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
+import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/writeDiary.dart';
+import 'package:sumday/screens/settings.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -24,11 +26,12 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
-    // const NewDiary(),
-    //const PlaceTest(),
+    // const Bookmarks(),
+    const NewDiary(),
+    // const PlaceTest(),
+    // const FBTest(),
 
     const ExchangeDiaryList(),
-
     const Settings(),
   ];
   void _onItemTapped(int index) {
@@ -46,15 +49,15 @@ class _MainPageState extends State<MainPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => Ai_WriteDiary(
-                    // pageIndex: 0,
-                    // dataList: [],
+                      pageIndex: 0,
+                      dataList: [],
                     )),
           );
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        label: Text('AI와 일기 작성 '),
-        icon: Icon(Icons.add),
+        label: const Text('AI와 일기 작성 '),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -70,8 +73,8 @@ class _MainPageState extends State<MainPage> {
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        label: Text("교환일기"),
-        icon: Icon(Icons.add),
+        label: const Text("교환일기"),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -120,7 +123,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         backgroundColor: Colors.white,
-        elevation: 0.0,
+        elevation: 0.25,
       ),
       body: Center(
         child: _widgetOptions[_selectedIndex],
@@ -146,6 +149,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_border),
             label: '북마크',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit_note_sharp),
+            label: '교환일기',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

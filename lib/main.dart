@@ -2,6 +2,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/app.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/place_api.dart';
 import 'firebase_options.dart';
 // ignore: unused_import
@@ -22,6 +23,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider()),
+        ChangeNotifierProvider(create: (context) => DiariesProvider()),
+
         // ChangeNotifierProvider(create: (context) => ReviewProvider()),
       ],
       child: const MyApp(),

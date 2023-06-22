@@ -6,21 +6,45 @@ import 'package:sumday/widgets/locationInput.dart';
 import 'package:sumday/models/diary_model.dart';
 
 class Ai_WriteDiary extends StatefulWidget {
-  const Ai_WriteDiary({Key? key}) : super(key: key);
+  // const Ai_WriteDiary({Key? key}) : super(key: key);
+  final int pageIndex;
+  final List<UserForm> dataList;
+  const Ai_WriteDiary(
+      {super.key, required this.pageIndex, required this.dataList});
 
   @override
   State<Ai_WriteDiary> createState() => _Ai_WriteDiaryState();
 }
-
+//count 높은 순으로 좌표 불러오기
+  // 날씨도 불러오기 -> 각 페이지에 날씨 기본 저장
+//좌표로 근처 위치 리스트 데려오기
+//위치 리스트에서 place_name 들을 따로 불러와서 list에 저장
+// 카테고리 list도 순서대로 저장 혹은 dictionary로 key value로 저장
+//ai_writeDiary로 위치 리스트, 날씨 pass
+//ai writeDiary는 현재 list 형태로 위치가 저장되어 있음, 날씨도 제대로 표시할 것
 class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
+  // Timestamp 불러와서 변환
+  // DateTime timestamp = DateTime.fromMillisecondsSinceEpoch(yourTimestamp);
+  // int year = timestamp.year;
+  // int month = timestamp.month;
+  // int day = timestamp.day;
+  // int hour = timestamp.hour;
+  final TextEditingController _controller = TextEditingController();
   Widget _aiKeywordsForm() {
     return Center(
       child: ListView(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
-          Row(
+          Text(
+            "${widget.pageIndex + 1}/3", //timestamp에서 시간을 불러와야 한다.
+            style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff136750)),
+          ),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // SizedBox(width: 10,),
@@ -33,8 +57,16 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
+          ),
+          Text(
+            AskingQuestion(),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +76,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: locations.map((location) {
+                    children:  locations.map((location) {
                       final locationId = locations.indexOf(location) + 1;
                       return Row(
                         children: [
@@ -52,7 +84,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                             style: OutlinedButton.styleFrom(
                               backgroundColor:
                                   _locationId == locationId.toString()
-                                      ? Color(0xff136750)
+                                      ? const Color(0xff136750)
                                       : Colors.white,
                             ),
                             onPressed: () {
@@ -64,11 +96,11 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                                 fontSize: 18,
                                 color: _locationId == locationId.toString()
                                     ? Colors.white
-                                    : Color(0xff136750),
+                                    : const Color(0xff136750),
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 8,
                           ),
                         ],
@@ -79,18 +111,67 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          Text(
-            AskingQuestion(),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: TextFormField(
+
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.yellow), // 테두리 색상 설정
+                    ),
+                    labelText: '방문한 장소가 없다면 추가해주세요!',
+                    hintText: '장소 추가',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      textValue = value;
+                    });
+                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Enter your message to continue';
+                  //   }
+                  //   return null;
+                  // },
+
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                onPressed: () async {
+                  setState(() {
+                    locations.insert(0,textValue); // textValue를 버튼 리스트에 추가
+                    textValue = '';
+                    _controller.clear(); // textValue 초기화
+                  });
+
+                  // if (_formKey.currentState!.validate()) {
+                  //   await widget.addMessage(_controller.text);
+                  //   _controller.clear();
+                  // }
+                },
+
+
+                child: Row(
+                  children: const [
+                    Icon(Icons.send),
+                  ],
+                ),
+              ),
+            ],
           ),
           SizedBox(
+            height: 10,
+          ),
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -103,33 +184,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   children: relations.map((relation) {
                     final relationId = relations.indexOf(relation) + 1;
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Column(
                         children: [
                           Ink(
                             decoration: ShapeDecoration(
                               color: _relationId == relationId.toString()
-                                  ? Color(0xff136750)
+                                  ? const Color(0xff136750)
                                   : Colors.white,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: IconButton(
                               icon: Icon(relation.icon),
                               color: _relationId == relationId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                               onPressed: () {
                                 relationClick(
                                     relation.title, relationId.toString());
                               },
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 6,
                           ),
                           Text(
                             relation.title,
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           )
                         ],
                       ),
@@ -139,7 +220,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -152,33 +233,33 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   children: activities.map((activity) {
                     final activityId = activities.indexOf(activity) + 1;
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Column(
                         children: [
                           Ink(
                             decoration: ShapeDecoration(
                               color: _activityId == activityId.toString()
-                                  ? Color(0xff136750)
+                                  ? const Color(0xff136750)
                                   : Colors.white,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: IconButton(
                               icon: Icon(activity.icon),
                               color: _activityId == activityId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                               onPressed: () {
                                 activityClick(
                                     activity.title, activityId.toString());
                               },
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 6,
                           ),
                           Text(
                             activity.title,
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           )
                         ],
                       ),
@@ -188,7 +269,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Row(
@@ -204,15 +285,15 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                     children: feelingTexts.map((text) {
                       final feelingId = feelingTexts.indexOf(text) + 1;
                       return Ink(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        decoration: ShapeDecoration(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        decoration: const ShapeDecoration(
                           color: Colors.white70,
                           shape: CircleBorder(),
                         ),
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             backgroundColor: _feelingId == feelingId.toString()
-                                ? Color(0xff136750)
+                                ? const Color(0xff136750)
                                 : Colors.white,
                           ),
                           onPressed: () {
@@ -224,7 +305,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                               fontSize: 18,
                               color: _feelingId == feelingId.toString()
                                   ? Colors.white
-                                  : Color(0xff136750),
+                                  : const Color(0xff136750),
                             ),
                           ),
                         ),
@@ -235,7 +316,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Row(
@@ -246,12 +327,12 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   backgroundColor: Colors.white,
                 ),
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   "건너뛰기",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 30,
               ),
               OutlinedButton(
@@ -264,12 +345,35 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
-                  Navigator.push(
+                  widget.dataList.add(userForm);
+                  print(widget.dataList);
+                  print(widget.pageIndex);
+                  if (widget.pageIndex < 2) {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => GenerateDiary(data: userForm)));
+                        builder: (context) => Ai_WriteDiary(
+                          pageIndex: widget.pageIndex + 1,
+                          dataList: widget.dataList,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            GenerateDiary(dataList: widget.dataList),
+                      ),
+                    );
+                  }
+
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => GenerateDiary(data: userForm)));
                 },
-                child: Text(
+                child: const Text(
                   "완료",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
                 ),
@@ -290,6 +394,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   var _activityId = "";
   var _feelingId = "";
   var _question = "";
+  String textValue = '';
 
   AskingQuestion() {
     if (_location == "") {
@@ -332,14 +437,19 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
     });
   }
 
+  PageController pageController = PageController();
+  List<String> userLocations = [];
   final List<String> locations = ['스타벅스', '투썸 플레이스', '삼성 내과 의원'];
   List<String> feelingTexts = ['즐겁다', '슬프다', '힘들다', '평범하다', '지쳤다', '최고다'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(itemBuilder: (BuildContext context, int index) {
-      return _aiKeywordsForm();
-    }));
+      body: _aiKeywordsForm(),
+      //     body: PageView.builder(itemBuilder: (BuildContext context, int index) {
+      //   return _aiKeywordsForm();
+      // }
+      // )
+    );
   }
 }
 
@@ -375,8 +485,4 @@ class UserForm {
   String toString() {
     return 'UserForm{location: $location, relation: $relation, activity: $activity, userState: $userState}';
   }
-  
-  
 }
-
-

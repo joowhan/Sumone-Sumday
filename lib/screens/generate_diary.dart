@@ -24,8 +24,9 @@ final uid = user?.uid;
 
 class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
-  final UserForm data;
-  GenerateDiary({required this.data});
+  final List<UserForm> dataList;
+
+  const GenerateDiary({super.key, required this.dataList});
   @override
   State<GenerateDiary> createState() => _GenerateDiaryState();
 }
@@ -46,8 +47,8 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     super.initState();
     generateContent();
   }
-   Future<void> generateContent() async {
-    String textPrompt = '${widget.data.userState} ${widget.data.activity} ${widget.data.relation} ${widget.data.location}';
+  Future<void> generateContent() async {
+    String textPrompt = '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
     String summaryInEnglish = await generateSummary(textPrompt);
 
     final openai = OpenaiDalleWrapper(apiKey: apiKey);
@@ -131,20 +132,45 @@ Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? u
 }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: generateContent(),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        // 데이터 로드가 완료되었다면
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  print('back');
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black38,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            print('back');
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black38,
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                print('save');
+              },
+              icon: Icon(
+                Icons.done,
+                color: Colors.black38,
+              ))
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '6월 6일 오후 4시',
+                  style: TextStyle(
+                    color: Colors.black38,
+                    letterSpacing: 2.0,
+                    //fontFamily:
+                  ),
                 ),
               ),
               actions: [
@@ -179,7 +205,7 @@ Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? u
                         ),
                       ),
                       Text(
-                        '#${widget.data.userState}#${widget.data.activity}#${widget.data.relation}#${widget.data.location}',
+                        '#${widget.dataList[0].userState}#${widget.dataList[0].activity}#${widget.dataList[0].relation}#${widget.dataList[0].location}',
                         style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
@@ -190,8 +216,8 @@ Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? u
                       ),
                       Container(
                         child: diaryImageURL == null
-                        ? const CircularProgressIndicator() // null이면 로딩 표시
-                        : Image.network(diaryImageURL!), // null이 아니면 이미지 출력 
+                            ? const CircularProgressIndicator() // null이면 로딩 표시
+                            : Image.network(diaryImageURL!), // null이 아니면 이미지 출력
                       ),
                       const Row(
                         children: [
@@ -210,10 +236,10 @@ Future<void> saveImageToFirebaseStorage(String? imageUrl, String? uid, String? u
                       ),
                       Container(
                         child: diaryText == null
-                        ? const CircularProgressIndicator() // null이면 로딩 표시
-                          : Text(
-                            diaryText!,
-                            style: const TextStyle(),
+                            ? const CircularProgressIndicator() // null이면 로딩 표시
+                            : Text(
+                          diaryText!,
+                          style: const TextStyle(),
                         ),
                       )
                     ],
