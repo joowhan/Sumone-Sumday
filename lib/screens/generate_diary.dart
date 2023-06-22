@@ -84,20 +84,45 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: generateContent(),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        // 데이터 로드가 완료되었다면
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  print('back');
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black38,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            print('back');
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black38,
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                print('save');
+              },
+              icon: Icon(
+                Icons.done,
+                color: Colors.black38,
+              ))
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '6월 6일 오후 4시',
+                  style: TextStyle(
+                    color: Colors.black38,
+                    letterSpacing: 2.0,
+                    //fontFamily:
+                  ),
                 ),
               ),
               actions: [

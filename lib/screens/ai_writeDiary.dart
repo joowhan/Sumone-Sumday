@@ -370,9 +370,16 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(itemBuilder: (BuildContext context, int index) {
-      return _aiKeywordsForm();
-    }));
+      body: PageView.builder(
+        itemBuilder: (
+          BuildContext context,
+          int index,
+        ) {
+          return _aiKeywordsForm();
+        },
+        physics: NeverScrollableScrollPhysics(),
+      ),
+    );
   }
 }
 

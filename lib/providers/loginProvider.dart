@@ -56,6 +56,10 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Future<void> performLogout() async {
+  //   await FirebaseAuth.instance.signOut();
+  // }
+
   Future<void> downloadAnonymousInfo(User? user) async {
     // 익명 유저 정보 다운로드
     FirebaseFirestore.instance
@@ -95,6 +99,7 @@ class LoginProvider with ChangeNotifier {
       addUserInfo(user);
       print("hello");
       downloadUserInfo(user);
+      // FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
       notifyListeners();
       return userCredential;
     } catch (e) {
@@ -118,6 +123,7 @@ class LoginProvider with ChangeNotifier {
       addAnonymousInfo(user);
       downloadAnonymousInfo(user);
       _userName = "Guest";
+      // FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
       notifyListeners();
       return user;
     } catch (e) {

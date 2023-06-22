@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/BookMarks.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
+import 'package:sumday/screens/get_place_test.dart';
+import 'package:sumday/screens/newDiary.dart';
+import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
@@ -21,8 +25,10 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Diaries(),
-    // const NewDiary(),
-    const PlaceTest(),
+    // const Bookmarks(),
+    const NewDiary(),
+    // const PlaceTest(),
+    // const FBTest(),
 
     const ExchangeDiaryList(),
 
@@ -90,6 +96,7 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             onPressed: () {
               print('search Icon');
+              print('${ModalRoute.of(context)?.settings.name}');
             },
             icon: const Icon(
               Icons.search,
