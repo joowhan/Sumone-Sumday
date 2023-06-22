@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/exchange_diary_card.dart';
 
 class ExchangeDiary extends StatefulWidget {
-  final String id;
-  const ExchangeDiary({super.key, required this.id});
+  final int idx;
+  const ExchangeDiary({super.key, required this.idx});
 
   @override
   State<ExchangeDiary> createState() => _ExchangeDiaryState();
@@ -19,6 +20,9 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
   Widget build(BuildContext context) {
     final userData = Provider.of<LoginProvider>(context);
     final user = userData.userInformation;
+    final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
+    final diaryList = diaryListProvider.diaryList;
+    final docIds = diaryListProvider.docIds;
     return Scaffold(
       appBar: MyAppBar(
         title: "교환일기",
@@ -38,9 +42,9 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "KT Aivle School 3기!",
-                      style: TextStyle(
+                    Text(
+                      diaryList[widget.idx].title,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -68,7 +72,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              "${user?.name ?? "누렁이"}님",
+                              "${diaryList[widget.idx].participants[diaryList[widget.idx].order].toString().substring(0, 5)}님",
                               style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -118,38 +122,35 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      "2023.05",
-                      style: TextStyle(
-                        color: AppColors.fontGreyColor(),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Flexible(
-                      child: Container(
-                        height: 2,
-                        color: AppColors.fontGreyColor(),
-                      ),
-                    ),
-                  ],
-                ),
-                ExchangeDiaryCard(
-                  diaryId: "pzc1lokeYTPlwi5ukp40",
-                  tags: const ["서울숲", "산책", "해피"],
-                  date: DateTime.now(),
-                  writer: "이주현",
-                  thumbSource: "이게 무슨값이 될지 모르겠네요",
-                ),
-                ExchangeDiaryCard(
-                    diaryId: "hello",
-                    tags: const ["스타벅스", "커피", "맑음"],
-                    date: DateTime.utc(2023, 6, 15),
-                    writer: "강승진",
-                    thumbSource: "솰라솰라")
+                // Row(
+                //   children: [
+                // 어떻게 구현해야 할 지 몰라 일단 주석처리 합니다.
+                // Text(
+                //   "2023.05",
+                //   style: TextStyle(
+                //     color: AppColors.fontGreyColor(),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // Flexible(
+                //   child: Container(
+                //     height: 2,
+                //     color: AppColors.fontGreyColor(),
+                //   ),
+                // ),
+                // ],
+                // ),
+                for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
+                  ExchangeDiaryCard(
+                    idx: i,
+                    diaryId: docIds[widget.idx][i],
+                    tags: diaryList[widget.idx].diaryList[i].hashTags,
+                    date: diaryList[widget.idx].diaryList[i].createdAt,
+                    writer: diaryList[widget.idx].diaryList[i].owner,
+                    thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
+                  ),
               ],
             ),
           ),

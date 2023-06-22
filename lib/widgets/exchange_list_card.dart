@@ -4,6 +4,7 @@ import 'package:sumday/screens/exchange_diary.dart';
 import 'package:sumday/utils/variables.dart';
 
 class ExchangeListCard extends StatelessWidget {
+  final int idx;
   final String id;
   final String title;
   final int numberOfPeople;
@@ -15,6 +16,7 @@ class ExchangeListCard extends StatelessWidget {
 
   const ExchangeListCard({
     super.key,
+    required this.idx,
     required this.id,
     required this.user,
     required this.title,
@@ -35,13 +37,13 @@ class ExchangeListCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ExchangeDiary(id: id),
+            builder: (context) => ExchangeDiary(idx: idx),
           ),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.primaryColor(),
+          color: color,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
@@ -53,15 +55,20 @@ class ExchangeListCard extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 30,
+                  color: Colors.white,
                 ),
               ),
-              Text("$numberOfPeople명 참여중"),
+              Text(
+                "$numberOfPeople명 참여중",
+                style: const TextStyle(color: Colors.white),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     "${user?.name ?? "누렁이"} 작성중",
+                    style: const TextStyle(color: Colors.white),
                   ),
                   Column(
                     children: [
@@ -72,7 +79,7 @@ class ExchangeListCard extends StatelessWidget {
                             height: 40,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                color: AppColors.primaryColor(),
+                                color: color,
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(10)),
                               ),

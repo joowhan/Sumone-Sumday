@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sumday/models/exchange_diary_list_model.dart';
+import 'package:sumday/models/exchange_diary_model.dart';
 
 class ExchangeDiaryListProvider with ChangeNotifier {
-  List<ExchangeDiaryListModel> diaries = [];
+  List<ExchangeDiaryListModel> diaryList = [];
   List<String> docIds = [];
   String? uid;
   bool isLoad = false;
@@ -31,7 +32,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       loadedDiaries.add(diary);
       loadedDocIds.add(snapshot.docs[i].id);
     }
-    diaries = loadedDiaries;
+    diaryList = loadedDiaries;
     docIds = loadedDocIds;
     isLoad = true;
     notifyListeners();
@@ -44,25 +45,44 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       title: diary.title,
       owner: diary.owner,
       participants: diary.participants,
+      diaryList: diary.diaryList,
       hexColor: diary.hexColor,
       order: diary.order,
       createdAt: diary.createdAt,
     );
-    diaries.add(newDiary);
+    diaryList.add(newDiary);
     docIds.add(doc.id);
+    notifyListeners();
+  }
+
+  // 일기를 일기장에 추가
+  Future<void> addDiary(ExchangeDiaryModel diary, String docId) async {
+    final diaryObject = diary.toJson();
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    final snapshot = await docRef.get();
+    List<dynamic>? existingDiaries = snapshot.data()?['diaries'];
+
+    if (existingDiaries == null) {
+      existingDiaries = [diaryObject];
+    } else {
+      existingDiaries.add(diaryObject);
+    }
+
+    await docRef.update({'diaries': existingDiaries});
     notifyListeners();
   }
 
   // Update
   Future<void> updateDiaryList(
       ExchangeDiaryListModel diary, String docId) async {
-    final index = diaries.indexWhere((element) => element.title == diary.title);
+    final index =
+        diaryList.indexWhere((element) => element.title == diary.title);
     if (index >= 0) {
       await db
           .collection('exchangeDiaryList')
           .doc(docId)
           .update(diary.toJson());
-      diaries[index] = diary;
+      diaryList[index] = diary;
       notifyListeners();
     }
   }
@@ -72,7 +92,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     final index = docIds.indexWhere((element) => element == docId);
     if (index >= 0) {
       await db.collection('exchangeDiaryList').doc(docId).delete();
-      diaries.removeAt(index);
+      diaryList.removeAt(index);
       docIds.removeAt(index);
       notifyListeners();
     }

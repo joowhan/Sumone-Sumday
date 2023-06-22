@@ -4,6 +4,7 @@ class ExchangeDiaryListModel {
   String title;
   String owner;
   List<dynamic> participants;
+  List<dynamic> diaryList;
   String hexColor;
   int order;
   Timestamp createdAt;
@@ -12,6 +13,7 @@ class ExchangeDiaryListModel {
     required this.title,
     required this.owner,
     required this.participants,
+    required this.diaryList,
     required this.hexColor,
     required this.order,
     required this.createdAt,
@@ -21,6 +23,7 @@ class ExchangeDiaryListModel {
       : title = json["title"],
         owner = json["owner"],
         participants = json["participants"],
+        diaryList = json["diaryList"],
         hexColor = json["hexColor"],
         order = json["order"],
         createdAt = json["createdAt"];
@@ -29,6 +32,7 @@ class ExchangeDiaryListModel {
         'title': title,
         'owner': owner,
         'participants': participants,
+        'diaryList': diaryList,
         'hexColor': hexColor,
         'order': order,
         'createdAt': createdAt,

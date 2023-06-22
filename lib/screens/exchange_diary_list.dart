@@ -41,7 +41,7 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
     final userData = Provider.of<LoginProvider>(context);
     final user = userData.userInformation;
     final diaryList = Provider.of<ExchangeDiaryListProvider>(context);
-    final diaries = diaryList.diaries;
+    final diaries = diaryList.diaryList;
     final docIds = diaryList.docIds;
 
     return Container(
@@ -176,6 +176,7 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
                                                           participants: [
                                                             user.uid
                                                           ],
+                                                          diaryList: [],
                                                           hexColor: ColorToHex(
                                                                   _currentColor)
                                                               .hex,
@@ -223,14 +224,22 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
               height: 50,
             ),
             for (int i = 0; i < diaries.length; i++)
-              ExchangeListCard(
-                id: docIds[i],
-                user: user,
-                color: HexColor(diaries[i].hexColor),
-                title: diaries[i].title,
-                numberOfPeople: diaries[i].participants.length,
-                currentWriter: diaries[i].participants[diaries[i].order],
-              ),
+              Column(
+                children: [
+                  ExchangeListCard(
+                    idx: i,
+                    id: docIds[i],
+                    user: user,
+                    color: HexColor("#${diaries[i].hexColor}"),
+                    title: diaries[i].title,
+                    numberOfPeople: diaries[i].participants.length,
+                    currentWriter: diaries[i].participants[diaries[i].order],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                ],
+              )
           ],
         ),
       ),
