@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+    flutter:
+        sdk: flutter
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -53,6 +55,11 @@ dependencies:
     floating_bottom_bar: ^0.0.2
     animated_floating_buttons: ^0.0.2
     flutter_provider: ^2.1.0
+    syncfusion_flutter_calendar: ^21.2.10
+    loading_animation_widget: ^1.2.0+4
+    openai_dalle_wrapper: ^1.0.0
+    flex_color_picker: ^3.2.2
+    dio: ^5.2.1+1
 
 dev_dependencies:
     flutter_test:
@@ -74,6 +81,7 @@ flutter:
     # included with your application, so that you can use the icons in
     # the material Icons class.
     uses-material-design: true
+
     # To add assets to your application, add an assets section, like this:
     assets:
         - assets/day_night.png
@@ -86,8 +94,6 @@ flutter:
         - assets/images/test/test_image_000.jpg
         - assets/images/test/test_image_001.jpg
         - assets/images/test/test_image_002.jpg
-        - assets/sumday_logo.png
-
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages

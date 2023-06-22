@@ -48,4 +48,8 @@ class AppColors {
   static Color fontDarkGreyColor() {
     return const Color(0xFF606060);
   }
+
+  static Color exchangeBackGroudColor() {
+    return const Color(0xFFFFFDF8);
+  }
 }

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sumday/models/location_model.dart';
 import 'package:sumday/providers/place_api.dart';
 
 class PlaceData {
@@ -11,19 +10,19 @@ class PlaceData {
   PlaceData({required this.uid});
 
   Future<List<dynamic>> getPlaceData() async {
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day, 6); //테스트용으로 00시로세팅
+    var utcNow = DateTime.now();
+    var now = utcNow.add(const Duration(hours: 9));
+    DateTime today =
+        DateTime(now.year, now.month, now.day, 6); //테스트용으로 06시 이후에 불러옴
     Timestamp todayTimestamp = Timestamp.fromDate(today);
     final ref = db
         .collection("location")
-        .withConverter(
-            fromFirestore: LocationModel.fromFirestore,
-            toFirestore: (LocationModel location, _) => location.toFirestore())
         .where("uid", isEqualTo: uid)
         .where("timestamp", isGreaterThan: todayTimestamp);
     final snap = await ref.get();
     final List<QueryDocumentSnapshot> docs = snap.docs;
     var dataList = [];
+    print(2);
     for (QueryDocumentSnapshot doc in docs) {
       if (doc.exists == true) {
         dataList.add({

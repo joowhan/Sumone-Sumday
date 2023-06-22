@@ -51,7 +51,7 @@ class NewDiary extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const Ai_WriteDiary()),
+                      builder: (context) => Ai_WriteDiary(pageIndex: 0,dataList: [],)),
                 );
               },
               style: ElevatedButton.styleFrom(
