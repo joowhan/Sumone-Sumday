@@ -26,7 +26,6 @@ class _PlaceTestState extends State<PlaceTest> {
       uid = 'guest';
     }
     // _tasks = PlaceData(uid: uid).getPlaceData();
-    // print(_tasks);
     test();
   }
   void test() async {
@@ -38,7 +37,7 @@ class _PlaceTestState extends State<PlaceTest> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           children: [

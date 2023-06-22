@@ -108,34 +108,92 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                     ),
                   ),
                 ),
-
+                const SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  child: const Text("일기 내용 쏼라 쏼라"),
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.backgroundGreyColor(),
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 10,
+                    ),
+                    child: Text("오늘 스타벅스에서 미팅을 했당 ㅋ.ㅋ 오늘 날씨는 맑았고 어쩌구 저쩌구"),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 // 댓글 섹션
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      child: const Column(
-                        children: [
-                          Row(
-                            // 댓글 쓴 사람 정보
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/images/test/test_image_000.jpg'),
-                                radius: 20,
-                              ),
-                              Column(
-                                children: [
-                                  Text("이주현"),
-                                  Text("2021.09.01"),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Text("댓글내용"),
-                        ],
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.backgroundGreyColor(),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              // 댓글 쓴 사람 정보
+                              children: [
+                                const CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      'assets/images/test/test_image_000.jpg'),
+                                  radius: 20,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "강승진",
+                                      style: TextStyle(
+                                        color: AppColors.fontSecondaryColor(),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const Text(
+                                      "잘됐다!",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 50,
+                                ),
+                                Text(
+                                  "2021.09.01",
+                                  style: TextStyle(
+                                    color: AppColors.fontGreyColor(),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -143,7 +201,8 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                 Row(
                   children: [
                     const SizedBox(
-                      width: 300,
+                      width: 250,
+                      height: 40,
                       child: TextField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
