@@ -38,9 +38,7 @@ class _HomeState extends State<Home> {
     super.initState();
     final diariesProvider =
         Provider.of<DiariesProvider>(context, listen: false);
-    diariesProvider.setUserID();
-    diariesProvider.setUserID();
-    diariesProvider.loadAllDiaries();
+    diariesProvider.init();
   }
 
   @override

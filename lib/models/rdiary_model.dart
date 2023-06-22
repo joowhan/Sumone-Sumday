@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/screens/ai_writeDiary.dart';
 
 class Diary {
-  String userID, context;
+  String userID;
+  List<String> context, tags, photos;
   DateTime date;
-  List<String> tags, photos;
   bool favorite;
 
   Diary({
@@ -19,7 +20,7 @@ class Diary {
       : userID = json['userID'],
         date = json['date'].toDate(),
         tags = json['tags'].cast<String>(),
-        context = json["context"],
+        context = json["context"].cast<String>(),
         photos = json["photos"].cast<String>(),
         favorite = json['favorite'];
 
@@ -31,4 +32,22 @@ class Diary {
         "photos": photos,
         "favorite": favorite,
       };
+
+  List<String> getCurrTags(int index) {
+    return tags.sublist(4 * index, 4 * index + 4);
+  }
+
+  // List<UserForm> -> List<String>
+  static List<String> listConverter(List<UserForm> userForms) {
+    List<String> convertedList = [];
+    for (var userForm in userForms) {
+      convertedList.addAll([
+        userForm.location,
+        userForm.relation,
+        userForm.activity,
+        userForm.userState,
+      ]);
+    }
+    return convertedList;
+  }
 }

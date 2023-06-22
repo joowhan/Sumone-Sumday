@@ -37,7 +37,7 @@ class _DiariesState extends State<Diaries> {
                 diariesProvider.removeDiary(index);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('${index + 1}번 일기 삭제됨'),
+                    content: Text('${index + 1} : $docName번 일기 삭제됨'),
                     action: SnackBarAction(
                       label: '취소',
                       onPressed: () {

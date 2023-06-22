@@ -22,7 +22,7 @@ class _DiaryCardState extends State<DiaryCard> {
     String formattedDate(DateTime time) =>
         DateFormat('yyyy-MM-dd').format(time);
 
-    String joinWithHash(List list) {
+    String joinWithHash(List<String> list) {
       return list.map((item) => '#$item').join(' ');
     }
 
@@ -80,7 +80,7 @@ class _DiaryCardState extends State<DiaryCard> {
                     ),
                     const SizedBox(height: 12.0),
                     Text(
-                      widget.diary.context,
+                      widget.diary.context[0],
                       style: TextStyle(
                           color: Colors.grey.shade900,
                           fontSize: 14,
