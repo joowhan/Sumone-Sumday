@@ -29,9 +29,9 @@ class DiariesProvider with ChangeNotifier {
   // 일기 배열에 추가
   void addDiary(int index, Diary diary, String? docName) async {
     diaries.insert(index, diary);
-    var _docName = await saveDiary(diary, docName);
+    var docName0 = await saveDiary(diary, docName);
 
-    docNames.insert(index, _docName);
+    docNames.insert(index, docName0);
     notifyListeners();
   }
 

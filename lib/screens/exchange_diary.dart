@@ -68,34 +68,37 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "${diaryList[widget.idx].participants[diaryList[widget.idx].order].toString().substring(0, 5)}님",
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+                        if (diaryList[widget.idx]
+                                .participants[diaryList[widget.idx].order] !=
+                            user!.uid)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${diaryList[widget.idx].participants[diaryList[widget.idx].order].toString().substring(0, 5)}님",
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Text(
-                              "작성중!",
-                              style: TextStyle(
-                                fontSize: 18,
+                              const SizedBox(
+                                width: 10,
                               ),
-                            ),
-                            const SizedBox(
-                              width: 30,
-                            ),
-                            Icon(
-                              Icons.edit,
-                              color: AppColors.fontSecondaryColor(),
-                            ),
-                          ],
-                        ),
+                              const Text(
+                                "작성중!",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 30,
+                              ),
+                              Icon(
+                                Icons.edit,
+                                color: AppColors.fontSecondaryColor(),
+                              ),
+                            ],
+                          ),
                         const SizedBox(
                           height: 5,
                         ),

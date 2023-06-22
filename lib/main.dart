@@ -25,7 +25,6 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => DiariesProvider()),
-
         ChangeNotifierProvider(
             create: (context) => ExchangeDiaryListProvider()),
         // ChangeNotifierProvider(create: (context) => ReviewProvider()),
