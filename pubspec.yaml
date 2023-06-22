@@ -63,6 +63,8 @@ dependencies:
     flex_color_picker: ^3.2.2
     dio: ^5.2.1+1
     hexcolor: ^3.0.1
+    image_gallery_saver: ^2.0.2
+    path_provider: ^2.0.15
 
 dev_dependencies:
     flutter_test:
