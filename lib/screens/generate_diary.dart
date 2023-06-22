@@ -1,4 +1,9 @@
 //ai_resultDiary.dart
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
@@ -8,6 +13,12 @@ import 'package:http/http.dart' as http;
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+// 이곳에서 로그인된 사용자의 uid를 가져옵니다.
+final User? user = _auth.currentUser;
+final uid = user?.uid;
 
 class GenerateDiary extends StatefulWidget {
   // const GenerateDiary({Key? key}) : super(key: key);
@@ -21,6 +32,7 @@ class GenerateDiary extends StatefulWidget {
 class _GenerateDiaryState extends State<GenerateDiary> {
   String? diaryText;
   String? diaryImageURL;
+  String? imageUuid; // 클래스 레벨에서 imageUuid 선언
   @override
   // void initState() {
   //   super.initState();
@@ -56,7 +68,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       },
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "'$prompt' 를 50자 이내 영어 한 문장으로 요약해줘",
+        'prompt': "Please make it into one sentence in English : " '$prompt',
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -95,6 +107,49 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     return newresponse['choices'][0]['text'].trim();
   }
 
+  Future<void> saveImageToFirebaseStorage(
+      String? imageUrl, String? uid, String? uuid) async {
+    final response = await http.get(Uri.parse(imageUrl!));
+    final Uint8List imageBytes = response.bodyBytes;
+
+    final imageRef =
+        FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+    await imageRef.putData(imageBytes);
+  }
+
+  Future<void> saveDiaryToFirestore() async {
+    final db = FirebaseFirestore.instance;
+
+    final User? user = _auth.currentUser;
+    late String uid;
+    if (user != null) {
+      uid = user.uid;
+    } else {
+      uid = 'guest';
+    }
+    DateTime date = DateTime.now();
+    List<String> tags = [
+      widget.dataList[0].userState,
+      widget.dataList[0].activity,
+      widget.dataList[0].relation,
+      widget.dataList[0].location
+    ];
+    String context = diaryText!;
+    String photos = '${imageUuid!}.png';
+    bool favorite = false;
+
+    await db.collection("diary").doc().set(
+      {
+        "userID": uid,
+        "date": date,
+        "tags": tags,
+        "context": context,
+        "photos": photos,
+        "favorite": favorite,
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -115,8 +170,13 @@ class _GenerateDiaryState extends State<GenerateDiary> {
               ),
               actions: [
                 IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       print('save');
+                      var uuid = Uuid();
+                      imageUuid = uuid.v1();
+                      saveImageToFirebaseStorage(
+                          diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
+                      saveDiaryToFirestore(); //일기 저장
                     },
                     icon: const Icon(
                       Icons.done,
@@ -133,9 +193,10 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '6월 6일 오후 4시',
-                        style: TextStyle(
+                      Text(
+                        DateFormat('y년 M월 d일 a h:mm')
+                            .format(DateTime.now().toLocal()),
+                        style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
                         ),
