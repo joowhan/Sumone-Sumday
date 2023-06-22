@@ -33,21 +33,27 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     super.initState();
     generateContent();
   }
+
   Future<void> generateContent() async {
-    String textPrompt = '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
+    String textPrompt =
+        '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
     String summaryInEnglish = await generateSummary(textPrompt);
 
     final openai = OpenaiDalleWrapper(apiKey: apiKey);
-    diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
+    diaryImageURL = await openai
+        .generateImage(summaryInEnglish + ", a painting of illustration");
 
     String translatedText = await translateToKorean(summaryInEnglish);
     diaryText = translatedText;
-
   }
+
   Future<String> generateSummary(String prompt) async {
     final response = await http.post(
       Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $apiKey'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $apiKey'
+      },
       body: jsonEncode({
         "model": "text-davinci-003",
         'prompt': "'$prompt' 를 50자 이내 영어 한 문장으로 요약해줘",
@@ -59,14 +65,19 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       }),
     );
 
-    Map<String, dynamic> newresponse = jsonDecode(utf8.decode(response.bodyBytes));
+    Map<String, dynamic> newresponse =
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
+
   Future<String> translateToKorean(String text) async {
     final response = await http.post(
       Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $apiKey'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $apiKey'
+      },
       body: jsonEncode({
         "model": "text-davinci-003",
         'prompt': "'$text' 를 50자 이내 한국어 한 문장으로 요약해줘",
@@ -78,51 +89,28 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       }),
     );
 
-    Map<String, dynamic> newresponse = jsonDecode(utf8.decode(response.bodyBytes));
+    Map<String, dynamic> newresponse =
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            print('back');
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.black38,
-          ),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                print('save');
-              },
-              icon: Icon(
-                Icons.done,
-                color: Colors.black38,
-              ))
-        ],
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-      ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
-        child: Column(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '6월 6일 오후 4시',
-                  style: TextStyle(
-                    color: Colors.black38,
-                    letterSpacing: 2.0,
-                    //fontFamily:
-                  ),
+    return FutureBuilder(
+      future: generateContent(),
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        // 데이터 로드가 완료되었다면
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () {
+                  print('back');
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.black38,
                 ),
               ),
               actions: [
@@ -186,9 +174,9 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                         child: diaryText == null
                             ? const CircularProgressIndicator() // null이면 로딩 표시
                             : Text(
-                          diaryText!,
-                          style: const TextStyle(),
-                        ),
+                                diaryText!,
+                                style: const TextStyle(),
+                              ),
                       )
                     ],
                   ),
@@ -233,5 +221,4 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       },
     );
   }
-
 }
