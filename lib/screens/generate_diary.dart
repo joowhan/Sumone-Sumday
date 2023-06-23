@@ -12,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
 
@@ -35,17 +36,24 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   List<String> diaryImageURLs = [];
   String? diaryImageURL;
   String? imageUuid; // 클래스 레벨에서 imageUuid 선언
+
+  late PageController _pageController;
   @override
-  // void initState() {
-  //   super.initState();
-  //   print('Location: ${widget.data.location}');
-  //   print('Relation: ${widget.data.relation}');
-  //   print('Activity: ${widget.data.activity}');
-  //   print('User State: ${widget.data.userState}');
-  // }
+
   void initState() {
     super.initState();
+    // 페이지 컨트롤러 초기화
+    _pageController = PageController();
+    }
+
+
+  @override
+  void dispose() {
+    // 페이지 컨트롤러 제거
+    _pageController.dispose();
+    super.dispose();
   }
+  
 // void printContents() {
 //   diaryTexts.forEach((text) {
 //     print(text);
@@ -56,22 +64,23 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 //   });
 // }
   Future<void> generateAllContents() async {
-    diaryImageURLs.clear(); 
-    diaryTexts.clear();  
+    diaryImageURLs.clear();
+    diaryTexts.clear();
     await Future.forEach(widget.dataList, (UserForm data) async {
-      String textPrompt = '${data.userState} ${data.activity} ${data.relation} ${data.location}';
+      String textPrompt =
+          '${data.userState} ${data.activity} ${data.relation} ${data.location}';
       print(textPrompt);
       String summaryInEnglish = await generateSummary(textPrompt);
 
       final openai = OpenaiDalleWrapper(apiKey: apiKey);
-      String diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
-      diaryImageURLs.add(diaryImageURL);  // 생성된 이미지 URL을 리스트에 추가
+      String diaryImageURL = await openai
+          .generateImage(summaryInEnglish + ", a painting of illustration");
+      diaryImageURLs.add(diaryImageURL); // 생성된 이미지 URL을 리스트에 추가
 
       String diaryText = await translateToKorean(summaryInEnglish);
-      diaryTexts.add(diaryText);  // 생성된 일기 내용을 리스트에 추가
+      diaryTexts.add(diaryText); // 생성된 일기 내용을 리스트에 추가
     });
   }
-
 
   Future<String> generateSummary(String prompt) async {
     final response = await http.post(
@@ -92,7 +101,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -116,7 +125,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
+        jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -131,22 +140,23 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   //   await imageRef.putData(imageBytes);
   // }
 
-String generateUuid() {
-  var uuid = Uuid();
-  return uuid.v1();
-}
-Future<void> save_local(String url) async {
-  var response = await http.get(Uri.parse(url));
-  final Uint8List bytes = response.bodyBytes;
+  String generateUuid() {
+    var uuid = Uuid();
+    return uuid.v1();
+  }
 
-  Directory dir = await getApplicationDocumentsDirectory();
-  String fileName = generateUuid();
-  String filePath = '${dir.path}/$fileName.png';
+  Future<void> save_local(String url) async {
+    var response = await http.get(Uri.parse(url));
+    final Uint8List bytes = response.bodyBytes;
 
-  File file = File(filePath);
-  await file.writeAsBytes(bytes);
-  print('이미지 저장 경로: $filePath');
-}
+    Directory dir = await getApplicationDocumentsDirectory();
+    String fileName = generateUuid();
+    String filePath = '${dir.path}/$fileName.png';
+
+    File file = File(filePath);
+    await file.writeAsBytes(bytes);
+    print('이미지 저장 경로: $filePath');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,9 +180,10 @@ Future<void> save_local(String url) async {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                       diaryImageURLs.forEach((url) { // 로컬에 이미지 저장
+                      diaryImageURLs.forEach((url) {
+                        // 로컬에 이미지 저장
                         save_local(url);
-                        });
+                      });
                       //var uuid = Uuid();
                       //imageUuid = uuid.v1();
 
@@ -191,9 +202,11 @@ Future<void> save_local(String url) async {
             ),
             body: Padding(
               padding: const EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
-              child: Column(
-                children: [
-                  Column(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: diaryImageURLs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -205,7 +218,7 @@ Future<void> save_local(String url) async {
                         ),
                       ),
                       Text(
-                        '#${widget.dataList[0].userState}#${widget.dataList[0].activity}#${widget.dataList[0].relation}#${widget.dataList[0].location}',
+                        '#${widget.dataList[index].userState}#${widget.dataList[index].activity}#${widget.dataList[index].relation}#${widget.dataList[index].location}',
                         style: const TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
@@ -215,9 +228,11 @@ Future<void> save_local(String url) async {
                         height: 20,
                       ),
                       Container(
-                        child: diaryImageURL == null
-                            ? const CircularProgressIndicator() // null이면 로딩 표시
-                            : Image.network(diaryImageURL!), // null이 아니면 이미지 출력
+                        height: 200,
+                        child: Image.network(diaryImageURLs[index]),
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       const Row(
                         children: [
@@ -234,9 +249,16 @@ Future<void> save_local(String url) async {
                           )
                         ],
                       ),
+                      // Here you can add your text contents
+                      Container(
+                        child: Text(
+                          diaryTexts[index],
+                          style: TextStyle(),
+                        ),
+                      ),
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(
