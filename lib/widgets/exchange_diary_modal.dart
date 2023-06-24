@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sumday/providers/exchange_diary_list_provider.dart';
-import 'package:sumday/providers/loginProvider.dart';
+import 'package:sumday/models/rdiary_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:sumday/widgets/diary_modal_card.dart';
 
 class ExchangeDiaryModal extends StatefulWidget {
-  final int idx;
   final Function(int) setCurrent;
-  const ExchangeDiaryModal(
-      {super.key, required this.idx, required this.setCurrent});
+  final Diary diaries;
+  const ExchangeDiaryModal({
+    super.key,
+    required this.setCurrent,
+    required this.diaries,
+  });
 
   @override
   State<ExchangeDiaryModal> createState() => _ExchangeDiaryModalState();
@@ -19,15 +20,17 @@ class _ExchangeDiaryModalState extends State<ExchangeDiaryModal> {
   CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<LoginProvider>(context);
-    final user = userData.userInformation;
-    final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
-    final diaryList = diaryListProvider.diaryList;
-    final docIds = diaryListProvider.docIds;
+    final items = List.generate(
+        widget.diaries.context.length,
+        (index) => DiaryModalCard(
+              tags: widget.diaries.getCurrTags(index).sublist(0, 3),
+              location: widget.diaries.getCurrTags(index)[3],
+              photo: widget.diaries.photos[index],
+            ));
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: CarouselSlider(
-        items: const [DiaryModalCard()],
+        items: items,
         carouselController: buttonCarouselController,
         options: CarouselOptions(
           autoPlay: false,

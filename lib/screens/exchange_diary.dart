@@ -58,7 +58,10 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
           photo: diaryList[widget.idx].diaryList[index]["photos"]);
     });
 
-    print(items);
+    // 오늘 작성한 일기를 불러오는 코드
+    final diaryId = todayDiaryId;
+    var index = diariesDocIds.indexWhere((element) => element == diaryId);
+    final todayDiaries = diaries[index];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -211,37 +214,26 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        // 임시로 하드코딩 함
-                                                        final diaryId =
-                                                            todayDiaryId;
-                                                        var index = diariesDocIds
-                                                            .indexWhere(
-                                                                (element) =>
-                                                                    element ==
-                                                                    diaryId);
                                                         final diary =
                                                             ExchangeDiaryModel(
-                                                          owner: diaries[index]
+                                                          owner: todayDiaries
                                                               .userID,
                                                           diaryId: diaryId,
-                                                          content: diaries[
-                                                                  index]
+                                                          content: todayDiaries
                                                               .context[current],
-                                                          photos: diaries[index]
+                                                          photos: todayDiaries
                                                               .photos[current],
-                                                          tags: diaries[index]
+                                                          tags: todayDiaries
                                                               .getCurrTags(
                                                                   current)
                                                               .sublist(0, 3),
-                                                          location: diaries[
-                                                                  index]
+                                                          location: todayDiaries
                                                               .getCurrTags(
                                                                   current)[3],
                                                           comments: [],
                                                           createdAt:
                                                               Timestamp.now(),
                                                         );
-
                                                         Provider.of<ExchangeDiaryListProvider>(
                                                                 context,
                                                                 listen: false)
@@ -277,7 +269,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                   ],
                                                 ),
                                                 ExchangeDiaryModal(
-                                                  idx: widget.idx,
+                                                  diaries: todayDiaries,
                                                   setCurrent: setCurrent,
                                                 ),
                                               ],

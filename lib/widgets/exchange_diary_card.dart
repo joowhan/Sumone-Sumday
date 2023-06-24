@@ -46,13 +46,6 @@ class ExchangeDiaryCard extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.center,
                 ),
-                // child: const Image(
-                //   image: AssetImage('assets/images/test/test_image_000.jpg'),
-                //   width: double.maxFinite,
-                //   height: 185,
-                //   fit: BoxFit.fitWidth,
-                //   alignment: Alignment.center,
-                // ),
               ),
               const SizedBox(
                 height: 10,

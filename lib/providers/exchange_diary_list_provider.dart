@@ -64,8 +64,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     final diaryObject = diary.toJson();
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
-    List<dynamic>? existingDiaries = snapshot.data()?['diaries'];
-
+    List<dynamic>? existingDiaries = snapshot.data()?['diaryList'];
     if (existingDiaries == null) {
       existingDiaries = [diaryObject];
     } else {
@@ -74,6 +73,8 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     }
 
     await docRef.update({'diaryList': existingDiaries});
+    diaryList[docIds.indexWhere((element) => element == docId)].diaryList =
+        existingDiaries;
     notifyListeners();
   }
 
