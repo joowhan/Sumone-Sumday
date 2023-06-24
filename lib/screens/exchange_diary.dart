@@ -37,20 +37,28 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
     final docIds = diaryListProvider.docIds;
     final diaries = diariesProvider.diaries;
     final diariesDocIds = diariesProvider.docNames;
+    final todayIdx = diaries.indexWhere((element) =>
+        element.date.millisecondsSinceEpoch >
+            DateTime.now()
+                .subtract(const Duration(days: 1))
+                .millisecondsSinceEpoch &&
+        element.date.millisecondsSinceEpoch <
+            DateTime.now().millisecondsSinceEpoch);
+    final todayDiaryId = diariesDocIds[todayIdx];
 
     final items =
         List.generate(diaryList[widget.idx].diaryList.length, (index) {
-      var diariesId = diaryList[widget.idx].diaryList[index].diaryId;
-      var diariesIndex =
-          diariesDocIds.indexWhere((element) => element == diariesId);
+      var diariesId = diaryList[widget.idx].diaryList[index]["diaryId"];
       return ExchangeDiaryCard(
           idx: index,
           diaryId: diariesId,
-          tags: diaries[diariesIndex].tags,
-          date: diaries[diariesIndex].date,
-          writer: diaries[diariesIndex].userID,
-          thumbSource: diaries[diariesIndex].userID);
+          tags: diaryList[widget.idx].diaryList[index]["tags"],
+          date: diaryList[widget.idx].diaryList[index]["createdAt"].toDate(),
+          writer: diaryList[widget.idx].diaryList[index]["owner"],
+          photo: diaryList[widget.idx].diaryList[index]["photos"]);
     });
+
+    print(items);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -62,48 +70,49 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
         decoration: BoxDecoration(
           color: AppColors.exchangeBackGroudColor(),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      diaryList[widget.idx].title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    diaryList[widget.idx].title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ExchangeDiarySetting(idx: widget.idx)));
-                      },
-                      icon: const Icon(Icons.settings),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.fontGreyColor(),
-                    ),
-                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ExchangeDiarySetting(idx: widget.idx)));
+                    },
+                    icon: const Icon(Icons.settings),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.fontGreyColor(),
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SingleChildScrollView(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         if (diaryList[widget.idx]
                                 .participants[diaryList[widget.idx].order] !=
@@ -203,16 +212,36 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                     TextButton(
                                                       onPressed: () {
                                                         // 임시로 하드코딩 함
-                                                        const diaryId =
-                                                            "iB7QktBd1rPXzvVWBdQup7mgSZJ2";
+                                                        final diaryId =
+                                                            todayDiaryId;
+                                                        var index = diariesDocIds
+                                                            .indexWhere(
+                                                                (element) =>
+                                                                    element ==
+                                                                    diaryId);
                                                         final diary =
                                                             ExchangeDiaryModel(
-                                                                diaryId:
-                                                                    diaryId,
-                                                                comments: [],
-                                                                createdAt:
-                                                                    Timestamp
-                                                                        .now());
+                                                          owner: diaries[index]
+                                                              .userID,
+                                                          diaryId: diaryId,
+                                                          content: diaries[
+                                                                  index]
+                                                              .context[current],
+                                                          photos: diaries[index]
+                                                              .photos[current],
+                                                          tags: diaries[index]
+                                                              .getCurrTags(
+                                                                  current)
+                                                              .sublist(0, 3),
+                                                          location: diaries[
+                                                                  index]
+                                                              .getCurrTags(
+                                                                  current)[3],
+                                                          comments: [],
+                                                          createdAt:
+                                                              Timestamp.now(),
+                                                        );
+
                                                         Provider.of<ExchangeDiaryListProvider>(
                                                                 context,
                                                                 listen: false)
@@ -275,50 +304,52 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                // Row(
-                //   children: [
-                // 어떻게 구현해야 할 지 몰라 일단 주석처리 합니다.
-                // Text(
-                //   "2023.05",
-                //   style: TextStyle(
-                //     color: AppColors.fontGreyColor(),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // Flexible(
-                //   child: Container(
-                //     height: 2,
-                //     color: AppColors.fontGreyColor(),
-                //   ),
-                // ),
-                // ],
-                // ),
-                // for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
-                //   ExchangeDiaryCard(
-                //     idx: i,
-                //     diaryId: diaryList[widget.idx].diaryList[i].diaryId,
-                //     tags: diaries[docIds.indexWhere((element) =>
-                //             element ==
-                //             diaryList[widget.idx].diaryList[i].diaryId)]
-                //         .tags,
-                //     date: diaryList[widget.idx].diaryList[i].createdAt,
-                //     writer: diaryList[widget.idx].diaryList[i].owner,
-                //     thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
-                //   ),
-                Expanded(
-                  child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        return items[index];
-                      }),
-                )
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              // Row(
+              //   children: [
+              // 어떻게 구현해야 할 지 몰라 일단 주석처리 합니다.
+              // Text(
+              //   "2023.05",
+              //   style: TextStyle(
+              //     color: AppColors.fontGreyColor(),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   width: 10,
+              // ),
+              // Flexible(
+              //   child: Container(
+              //     height: 2,
+              //     color: AppColors.fontGreyColor(),
+              //   ),
+              // ),
+              // ],
+              // ),
+              // for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
+              //   ExchangeDiaryCard(
+              //     idx: i,
+              //     diaryId: diaryList[widget.idx].diaryList[i].diaryId,
+              //     tags: diaries[docIds.indexWhere((element) =>
+              //             element ==
+              //             diaryList[widget.idx].diaryList[i].diaryId)]
+              //         .tags,
+              //     date: diaryList[widget.idx].diaryList[i].createdAt,
+              //     writer: diaryList[widget.idx].diaryList[i].owner,
+              //     thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
+              //   ),
+              Flexible(
+                fit: FlexFit.loose,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return items[index];
+                    }),
+              )
+            ],
           ),
         ),
       ),

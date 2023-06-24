@@ -5,10 +5,10 @@ import 'package:sumday/utils/variables.dart';
 class ExchangeDiaryCard extends StatelessWidget {
   final int idx;
   final String diaryId;
-  final List<String> tags;
+  final List<dynamic> tags;
   final DateTime date;
   final String writer;
-  final String thumbSource;
+  final String photo;
 
   const ExchangeDiaryCard({
     super.key,
@@ -17,7 +17,7 @@ class ExchangeDiaryCard extends StatelessWidget {
     required this.tags,
     required this.date,
     required this.writer,
-    required this.thumbSource,
+    required this.photo,
   });
 
   @override
@@ -39,13 +39,20 @@ class ExchangeDiaryCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: const Image(
-                  image: AssetImage('assets/images/test/test_image_000.jpg'),
+                child: Image.asset(
+                  "assets/$photo",
                   width: double.maxFinite,
                   height: 185,
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.center,
                 ),
+                // child: const Image(
+                //   image: AssetImage('assets/images/test/test_image_000.jpg'),
+                //   width: double.maxFinite,
+                //   height: 185,
+                //   fit: BoxFit.fitWidth,
+                //   alignment: Alignment.center,
+                // ),
               ),
               const SizedBox(
                 height: 10,
@@ -73,7 +80,7 @@ class ExchangeDiaryCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "by. $writer",
+                    "by. ${writer.substring(0, 6)}",
                     style: TextStyle(color: AppColors.fontSecondaryColor()),
                   ),
                 ],

@@ -27,7 +27,7 @@ class _ExchangeDiaryModalState extends State<ExchangeDiaryModal> {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: CarouselSlider(
-        items: const [DiaryModalCard(), DiaryModalCard()],
+        items: const [DiaryModalCard()],
         carouselController: buttonCarouselController,
         options: CarouselOptions(
           autoPlay: false,
