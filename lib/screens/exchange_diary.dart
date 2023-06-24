@@ -46,16 +46,21 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
             DateTime.now().millisecondsSinceEpoch);
     final todayDiaryId = diariesDocIds[todayIdx];
 
+    // 일기 목록 렌더링하는 코드 (ListView)
     final items =
         List.generate(diaryList[widget.idx].diaryList.length, (index) {
       var diariesId = diaryList[widget.idx].diaryList[index]["diaryId"];
       return ExchangeDiaryCard(
-          idx: index,
-          diaryId: diariesId,
-          tags: diaryList[widget.idx].diaryList[index]["tags"],
-          date: diaryList[widget.idx].diaryList[index]["createdAt"].toDate(),
-          writer: diaryList[widget.idx].diaryList[index]["owner"],
-          photo: diaryList[widget.idx].diaryList[index]["photos"]);
+        idx: index,
+        diaryId: diariesId,
+        tags: diaryList[widget.idx].diaryList[index]["tags"],
+        location: diaryList[widget.idx].diaryList[index]["location"],
+        content: diaryList[widget.idx].diaryList[index]["content"],
+        date: diaryList[widget.idx].diaryList[index]["createdAt"].toDate(),
+        writer: diaryList[widget.idx].diaryList[index]["owner"],
+        photo: diaryList[widget.idx].diaryList[index]["photos"],
+        comments: diaryList[widget.idx].diaryList[index]["comments"],
+      );
     });
 
     // 오늘 작성한 일기를 불러오는 코드

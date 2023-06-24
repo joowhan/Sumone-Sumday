@@ -5,7 +5,10 @@ import 'package:sumday/utils/variables.dart';
 class ExchangeDiaryCard extends StatelessWidget {
   final int idx;
   final String diaryId;
+  final String content;
+  final List<dynamic> comments;
   final List<dynamic> tags;
+  final String location;
   final DateTime date;
   final String writer;
   final String photo;
@@ -14,7 +17,10 @@ class ExchangeDiaryCard extends StatelessWidget {
     super.key,
     required this.idx,
     required this.diaryId,
+    required this.content,
+    required this.comments,
     required this.tags,
+    required this.location,
     required this.date,
     required this.writer,
     required this.photo,
@@ -23,8 +29,20 @@ class ExchangeDiaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ExchangeDiaryDetail())),
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ExchangeDiaryDetail(
+                    idx: idx,
+                    diaryId: diaryId,
+                    content: content,
+                    comments: comments,
+                    tags: tags,
+                    location: location,
+                    date: date,
+                    writer: writer,
+                    photo: photo,
+                  ))),
       child: Container(
         height: 300,
         margin: const EdgeInsets.only(bottom: 15),

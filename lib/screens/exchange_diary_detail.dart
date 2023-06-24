@@ -2,19 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 
-class ExchangeDiaryDetail extends StatefulWidget {
-  const ExchangeDiaryDetail({super.key});
+class ExchangeDiaryDetail extends StatelessWidget {
+  final int idx;
+  final String diaryId;
+  final String content;
+  final List<dynamic> comments;
+  final List<dynamic> tags;
+  final String location;
+  final DateTime date;
+  final String writer;
+  final String photo;
+  const ExchangeDiaryDetail({
+    super.key,
+    required this.idx,
+    required this.diaryId,
+    required this.content,
+    required this.comments,
+    required this.tags,
+    required this.location,
+    required this.date,
+    required this.writer,
+    required this.photo,
+  });
 
-  @override
-  State<ExchangeDiaryDetail> createState() => _ExchangeDiaryDetailState();
-}
-
-class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
   @override
   Widget build(BuildContext context) {
+    const weekDayName = ["일", "월", "화", "수", "목", "금", "토"];
+    final dateString =
+        "${date.year}년 ${date.month}월 ${date.day}일 (${weekDayName[date.weekday]})";
+
     return Scaffold(
       appBar: MyAppBar(
-        title: "일기 제목",
+        title: "${writer.substring(0, 5)}님의 일기",
         appBar: AppBar(),
       ),
       body: Container(
@@ -40,15 +59,15 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.place_outlined,
                                   size: 32,
                                 ),
                                 Text(
-                                  "비안빈",
-                                  style: TextStyle(
+                                  location,
+                                  style: const TextStyle(
                                     fontSize: 20,
                                   ),
                                 ),
@@ -64,11 +83,11 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                             ),
                           ],
                         ),
-                        const ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/test/test_image_001.jpg'),
+                        ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          child: Image.asset(
+                            "assets/$photo",
                             width: double.maxFinite,
                             height: 185,
                             fit: BoxFit.fitWidth,
@@ -78,26 +97,31 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Row(
+                        Row(
                           // 향후 스타일 추가하겠음
                           children: [
-                            Text("#스타벅스"),
-                            Text("#커피"),
-                            Text("#아메리카노"),
+                            for (String tag in tags)
+                              Text(
+                                "#$tag  ",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "2021.09.01 (화)",
+                              dateString,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.fontDarkGreyColor(),
                               ),
                             ),
                             Text(
-                              "by. 이주현",
+                              "by. ${writer.substring(0, 5)}",
                               style: TextStyle(
                                   fontSize: 16,
                                   color: AppColors.fontSecondaryColor()),
@@ -119,12 +143,12 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 20,
                       horizontal: 10,
                     ),
-                    child: Text("오늘 스타벅스에서 미팅을 했당 ㅋ.ㅋ 오늘 날씨는 맑았고 어쩌구 저쩌구"),
+                    child: Text(content),
                   ),
                 ),
                 const SizedBox(
