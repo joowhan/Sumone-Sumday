@@ -26,6 +26,7 @@ class ExchangeDiaryCard extends StatelessWidget {
       onTap: () => Navigator.push(context,
           MaterialPageRoute(builder: (context) => const ExchangeDiaryDetail())),
       child: Container(
+        height: 300,
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.backgroundGreyColor(),

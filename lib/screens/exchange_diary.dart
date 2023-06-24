@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sumday/models/exchange_diary_model.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/screens/exchange_diary_setting.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/exchange_diary_card.dart';
+import 'package:sumday/widgets/exchange_diary_modal.dart';
 
 class ExchangeDiary extends StatefulWidget {
   final int idx;
@@ -16,14 +20,38 @@ class ExchangeDiary extends StatefulWidget {
 }
 
 class _ExchangeDiaryState extends State<ExchangeDiary> {
-  // 일기장 제목 등은 프로바이더에서 받아온다고 생각하고 일단은 하드코딩 함
+  var current = 0;
+  void setCurrent(int index) {
+    setState(() {
+      current = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<LoginProvider>(context);
-    final user = userData.userInformation;
     final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
+    final diariesProvider = Provider.of<DiariesProvider>(context);
+    final user = userData.userInformation;
     final diaryList = diaryListProvider.diaryList;
     final docIds = diaryListProvider.docIds;
+    final diaries = diariesProvider.diaries;
+    final diariesDocIds = diariesProvider.docNames;
+
+    final items =
+        List.generate(diaryList[widget.idx].diaryList.length, (index) {
+      var diariesId = diaryList[widget.idx].diaryList[index].diaryId;
+      var diariesIndex =
+          diariesDocIds.indexWhere((element) => element == diariesId);
+      return ExchangeDiaryCard(
+          idx: index,
+          diaryId: diariesId,
+          tags: diaries[diariesIndex].tags,
+          date: diaries[diariesIndex].date,
+          writer: diaries[diariesIndex].userID,
+          thumbSource: diaries[diariesIndex].userID);
+    });
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: MyAppBar(
@@ -145,7 +173,89 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                       ),
                                     ),
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Wrap(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text(
+                                                        "취소",
+                                                        style: TextStyle(
+                                                          fontSize: 22,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        // 임시로 하드코딩 함
+                                                        const diaryId =
+                                                            "iB7QktBd1rPXzvVWBdQup7mgSZJ2";
+                                                        final diary =
+                                                            ExchangeDiaryModel(
+                                                                diaryId:
+                                                                    diaryId,
+                                                                comments: [],
+                                                                createdAt:
+                                                                    Timestamp
+                                                                        .now());
+                                                        Provider.of<ExchangeDiaryListProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .addDiary(
+                                                                diary,
+                                                                docIds[widget
+                                                                    .idx]);
+                                                        var order = diaryList[
+                                                                widget.idx]
+                                                            .order;
+                                                        var nextOrder = (order +
+                                                                1) %
+                                                            diaryList[
+                                                                    widget.idx]
+                                                                .participants
+                                                                .length;
+                                                        Provider.of<ExchangeDiaryListProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .setOrder(
+                                                                docIds[
+                                                                    widget.idx],
+                                                                nextOrder);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text(
+                                                        "작성",
+                                                        style: TextStyle(
+                                                          fontSize: 22,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                ExchangeDiaryModal(
+                                                  idx: widget.idx,
+                                                  setCurrent: setCurrent,
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
                                       icon: Icon(
                                         Icons.add_box_outlined,
                                         size: 50,
@@ -188,15 +298,25 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                 // ),
                 // ],
                 // ),
-                for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
-                  ExchangeDiaryCard(
-                    idx: i,
-                    diaryId: docIds[widget.idx][i],
-                    tags: diaryList[widget.idx].diaryList[i].hashTags,
-                    date: diaryList[widget.idx].diaryList[i].createdAt,
-                    writer: diaryList[widget.idx].diaryList[i].owner,
-                    thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
-                  ),
+                // for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
+                //   ExchangeDiaryCard(
+                //     idx: i,
+                //     diaryId: diaryList[widget.idx].diaryList[i].diaryId,
+                //     tags: diaries[docIds.indexWhere((element) =>
+                //             element ==
+                //             diaryList[widget.idx].diaryList[i].diaryId)]
+                //         .tags,
+                //     date: diaryList[widget.idx].diaryList[i].createdAt,
+                //     writer: diaryList[widget.idx].diaryList[i].owner,
+                //     thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
+                //   ),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return items[index];
+                      }),
+                )
               ],
             ),
           ),

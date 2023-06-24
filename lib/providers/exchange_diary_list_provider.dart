@@ -73,28 +73,13 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       existingDiaries = [...existingDiaries, diaryObject];
     }
 
-    await docRef.update({'diaries': existingDiaries});
+    await docRef.update({'diaryList': existingDiaries});
     notifyListeners();
-  }
-
-  // Update
-  Future<void> updateDiaryList(
-      ExchangeDiaryListModel diary, String docId) async {
-    final index =
-        diaryList.indexWhere((element) => element.title == diary.title);
-    if (index >= 0) {
-      await db
-          .collection('exchangeDiaryList')
-          .doc(docId)
-          .update(diary.toJson());
-      diaryList[index] = diary;
-      notifyListeners();
-    }
   }
 
   // participants에 사용자 추가
   Future<void> addParticipants(String docId, String uid) async {
-    final index = diaryList.indexWhere((element) => element == docId);
+    final index = docIds.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
     List<dynamic>? existingParticipants = snapshot.data()?['participants'];
@@ -107,6 +92,15 @@ class ExchangeDiaryListProvider with ChangeNotifier {
 
     await docRef.update({'participants': existingParticipants});
     diaryList[index].participants = existingParticipants;
+    notifyListeners();
+  }
+
+  // 순서를 다음 순서로 변경
+  Future<void> setOrder(String docId, int order) async {
+    final index = docIds.indexWhere((element) => element == docId);
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    await docRef.update({'order': order});
+    diaryList[index].order = order;
     notifyListeners();
   }
 
