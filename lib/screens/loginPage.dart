@@ -29,15 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 100.0),
-            Text(
-              "SUMDAY",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50,
-                  color: Color(0xff326295)),
-            ),
-            SizedBox(height: 50.0),
+            SizedBox(height: 200.0),
             Image.asset(
               "assets/main_logo.png",
               width: 300,
@@ -65,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.pushNamed(context, '/home');
               },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(width: 2, color: Color(0xff326295)),
+                side: BorderSide(width: 2, color: Color(0xFFF4C54F)),
                 fixedSize: const Size(300, 55),
                 backgroundColor: Colors.white,
               ),
@@ -74,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Color(0xff326295)),
+                    color: Color(0xFFF4C54F)),
               ),
               icon: Image.asset(
                 "assets/google.png",
@@ -97,7 +89,12 @@ class _LoginPageState extends State<LoginPage> {
               }
               Navigator.pushNamed(context, '/home');
             },
-                child: Text('익명 로그인')),
+                child: Text('익명 로그인',
+                  style: TextStyle(
+                    color: Color(0xFFF4C54F), // 여기에 색상을 추가하세요
+                  ),
+                ),
+            ),
           ],
         ),
       ),
