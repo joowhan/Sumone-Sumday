@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/models/comment_model.dart';
+import 'package:sumday/providers/exchange_diary_list_provider.dart';
+import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
+import 'package:sumday/widgets/comment_widget.dart';
 
 class ExchangeDiaryDetail extends StatelessWidget {
   final int idx;
@@ -27,9 +33,23 @@ class ExchangeDiaryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const weekDayName = ["일", "월", "화", "수", "목", "금", "토"];
+    const weekDayName = ["월", "화", "수", "목", "금", "토", "일"];
     final dateString =
-        "${date.year}년 ${date.month}월 ${date.day}일 (${weekDayName[date.weekday]})";
+        "${date.year}년 ${date.month}월 ${date.day}일 (${weekDayName[date.weekday - 1]})";
+    final commentController = TextEditingController();
+    final userData = Provider.of<LoginProvider>(context);
+    final user = userData.userInformation;
+
+    // 코멘트 카드 렌더링하는 코드
+    final items = List.generate(comments.length, (index) {
+      return CommentWidget(
+        photo: comments[index]["ownerPhoto"],
+        ownerId: comments[index]["ownerId"],
+        ownerName: comments[index]["ownerName"],
+        content: comments[index]["content"],
+        createdAt: comments[index]["createdAt"].toDate(),
+      );
+    });
 
     return Scaffold(
       appBar: MyAppBar(
@@ -44,6 +64,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -155,87 +176,49 @@ class ExchangeDiaryDetail extends StatelessWidget {
                   height: 20,
                 ),
                 // 댓글 섹션
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.backgroundGreyColor(),
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 10),
-                        child: Column(
-                          children: [
-                            Row(
-                              // 댓글 쓴 사람 정보
-                              children: [
-                                const CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                      'assets/images/test/test_image_000.jpg'),
-                                  radius: 20,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "강승진",
-                                      style: TextStyle(
-                                        color: AppColors.fontSecondaryColor(),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Text(
-                                      "잘됐다!",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const SizedBox(
-                                  width: 50,
-                                ),
-                                Text(
-                                  "2021.09.01",
-                                  style: TextStyle(
-                                    color: AppColors.fontGreyColor(),
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return items[index];
+                      }),
                 ),
                 Row(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       width: 250,
                       height: 40,
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: commentController,
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: EdgeInsets.symmetric(vertical: 5),
                         ),
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        String commentText = commentController.text;
+                        CommentModel comment = CommentModel(
+                          ownerId: user!.uid,
+                          ownerName: user.uid.substring(0, 5),
+                          // 임시로 하드코딩 했습니다.
+                          ownerPhoto: "sorry.png",
+                          content: commentText,
+                          createdAt: Timestamp.now(),
+                        );
+
+                        Provider.of<ExchangeDiaryListProvider>(context,
+                                listen: false)
+                            .addComments(diaryId, idx, comment);
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                      },
                       icon: Icon(
                         Icons.send,
                         color: AppColors.fontGreyColor(),

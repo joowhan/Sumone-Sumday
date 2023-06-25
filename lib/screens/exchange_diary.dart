@@ -49,12 +49,11 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
     // 일기 목록 렌더링하는 코드 (ListView)
     final items =
         List.generate(diaryList[widget.idx].diaryList.length, (index) {
-      var diariesId = diaryList[widget.idx].diaryList[index]["diaryId"];
       return ExchangeDiaryCard(
         idx: index,
-        diaryId: diariesId,
-        tags: diaryList[widget.idx].diaryList[index]["tags"],
-        location: diaryList[widget.idx].diaryList[index]["location"],
+        diaryId: docIds[widget.idx],
+        tags: diaryList[widget.idx].diaryList[index]["tags"].sublist(0, 3),
+        location: diaryList[widget.idx].diaryList[index]["tags"][3],
         content: diaryList[widget.idx].diaryList[index]["content"],
         date: diaryList[widget.idx].diaryList[index]["createdAt"].toDate(),
         writer: diaryList[widget.idx].diaryList[index]["owner"],
@@ -175,7 +174,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                         ] else ...[
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 10),
+                                horizontal: 25, vertical: 0),
                             child: Column(
                               children: [
                                 Row(
@@ -230,11 +229,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                               .photos[current],
                                                           tags: todayDiaries
                                                               .getCurrTags(
-                                                                  current)
-                                                              .sublist(0, 3),
-                                                          location: todayDiaries
-                                                              .getCurrTags(
-                                                                  current)[3],
+                                                                  current),
                                                           comments: [],
                                                           createdAt:
                                                               Timestamp.now(),
@@ -305,38 +300,6 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
               const SizedBox(
                 height: 10,
               ),
-              // Row(
-              //   children: [
-              // 어떻게 구현해야 할 지 몰라 일단 주석처리 합니다.
-              // Text(
-              //   "2023.05",
-              //   style: TextStyle(
-              //     color: AppColors.fontGreyColor(),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   width: 10,
-              // ),
-              // Flexible(
-              //   child: Container(
-              //     height: 2,
-              //     color: AppColors.fontGreyColor(),
-              //   ),
-              // ),
-              // ],
-              // ),
-              // for (int i = 0; i < diaryList[widget.idx].diaryList.length; i++)
-              //   ExchangeDiaryCard(
-              //     idx: i,
-              //     diaryId: diaryList[widget.idx].diaryList[i].diaryId,
-              //     tags: diaries[docIds.indexWhere((element) =>
-              //             element ==
-              //             diaryList[widget.idx].diaryList[i].diaryId)]
-              //         .tags,
-              //     date: diaryList[widget.idx].diaryList[i].createdAt,
-              //     writer: diaryList[widget.idx].diaryList[i].owner,
-              //     thumbSource: diaryList[widget.idx].diaryList[i].imageUrl,
-              //   ),
               Flexible(
                 fit: FlexFit.loose,
                 child: ListView.builder(

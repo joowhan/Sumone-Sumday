@@ -6,7 +6,6 @@ class ExchangeDiaryModel {
   String diaryId;
   String content;
   String photos;
-  String location;
   List<String> tags;
   List<CommentModel> comments;
   Timestamp createdAt;
@@ -16,7 +15,6 @@ class ExchangeDiaryModel {
     required this.diaryId,
     required this.content,
     required this.photos,
-    required this.location,
     required this.tags,
     required this.comments,
     required this.createdAt,
@@ -27,7 +25,6 @@ class ExchangeDiaryModel {
         diaryId = json["diaryId"],
         content = json["content"],
         photos = json["photos"],
-        location = json["location"],
         tags = json["tags"],
         comments = json["comments"],
         createdAt = json["createdAt"];
@@ -37,7 +34,6 @@ class ExchangeDiaryModel {
         'diaryId': diaryId,
         'content': content,
         'photos': photos,
-        'location': location,
         'tags': tags,
         'comments': comments,
         'createdAt': createdAt,

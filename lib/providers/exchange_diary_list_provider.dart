@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sumday/models/comment_model.dart';
 import 'package:sumday/models/exchange_diary_list_model.dart';
 import 'package:sumday/models/exchange_diary_model.dart';
 
@@ -93,6 +94,30 @@ class ExchangeDiaryListProvider with ChangeNotifier {
 
     await docRef.update({'participants': existingParticipants});
     diaryList[index].participants = existingParticipants;
+    notifyListeners();
+  }
+
+  // diaryList > comments에 댓글 추가
+  Future<void> addComments(
+      String docId, int diaryIndex, CommentModel comment) async {
+    print("Start addComments");
+    final index = docIds.indexWhere((element) => element == docId);
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    final snapshot = await docRef.get();
+    final commentData = comment.toJson();
+    List<dynamic>? existingDiaries = snapshot.data()?['diaryList'];
+    List<dynamic>? existingComments = existingDiaries![diaryIndex]['comments'];
+
+    if (existingComments == null) {
+      existingComments = [commentData];
+    } else {
+      existingComments = [...existingComments, commentData];
+    }
+
+    existingDiaries[diaryIndex]['comments'] = existingComments;
+    await docRef.update({'diaryList': existingDiaries});
+    diaryList[index].diaryList = existingDiaries;
+    print("comment added!");
     notifyListeners();
   }
 

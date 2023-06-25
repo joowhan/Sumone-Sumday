@@ -44,14 +44,13 @@ class ExchangeDiaryCard extends StatelessWidget {
                     photo: photo,
                   ))),
       child: Container(
-        height: 300,
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           color: AppColors.backgroundGreyColor(),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -68,7 +67,6 @@ class ExchangeDiaryCard extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              // 추후에 리스트로 하나하나 불러와야 할 듯
               Row(
                 children: [
                   for (String tag in tags)
