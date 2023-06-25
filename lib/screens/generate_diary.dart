@@ -39,13 +39,11 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 
   late PageController _pageController;
   @override
-
   void initState() {
     super.initState();
     // 페이지 컨트롤러 초기화
     _pageController = PageController();
-    }
-
+  }
 
   @override
   void dispose() {
@@ -53,7 +51,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     _pageController.dispose();
     super.dispose();
   }
-  
+
 // void printContents() {
 //   diaryTexts.forEach((text) {
 //     print(text);
@@ -167,6 +165,13 @@ class _GenerateDiaryState extends State<GenerateDiary> {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
             appBar: AppBar(
+              title: Text(
+                DateFormat('MMdd_hha').format(DateTime.now()),
+                style: TextStyle(
+                  fontSize: 32,
+                  color: Color(0xff363636),
+                ),
+              ),
               leading: IconButton(
                 onPressed: () {
                   print('back');
@@ -176,27 +181,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                   color: Colors.black38,
                 ),
               ),
-              actions: [
-                IconButton(
-                    onPressed: () async {
-                      print('save');
-                      diaryImageURLs.forEach((url) {
-                        // 로컬에 이미지 저장
-                        save_local(url);
-                      });
-                      //var uuid = Uuid();
-                      //imageUuid = uuid.v1();
-
-                      //printContents();
-                      // saveImageToFirebaseStorage(
-                      //     diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
-                      //saveDiaryToFirestore(); //일기 저장
-                    },
-                    icon: const Icon(
-                      Icons.done,
-                      color: Colors.black38,
-                    ))
-              ],
+              
               backgroundColor: Colors.white,
               elevation: 0.0,
             ),
@@ -206,62 +191,88 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                 controller: _pageController,
                 itemCount: diaryImageURLs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        DateFormat('y년 M월 d일 a h:mm')
-                            .format(DateTime.now().toLocal()),
-                        style: TextStyle(
-                          color: Colors.black38,
-                          letterSpacing: 2.0,
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          height: 300,
+                          child: Image.network(diaryImageURLs[index]),
                         ),
-                      ),
-                      Text(
-                        '#${widget.dataList[index].userState}#${widget.dataList[index].activity}#${widget.dataList[index].relation}#${widget.dataList[index].location}',
-                        style: const TextStyle(
-                          color: Colors.black38,
-                          letterSpacing: 2.0,
+                        SizedBox(
+                          height: 8,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: 200,
-                        child: Image.network(diaryImageURLs[index]),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Row(
-                        children: [
-                          Text(
-                            '오늘의 날씨',
-                            style: TextStyle(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on_outlined,
+                                      size: 48, weight: 1),
+                                  Text(
+                                    '${widget.dataList[index].location}',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xfff4c758),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(22))),
+                                onPressed: () {
+                                  
+                                },
+                                child: Text(
+                                  '저장',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          Icon(
-                            Icons.sunny,
-                            size: 15.0,
-                          )
-                        ],
-                      ),
-                      // Here you can add your text contents
-                      Container(
-                        child: Text(
-                          diaryTexts[index],
-                          style: TextStyle(),
                         ),
-                      ),
-                    ],
+                        Card(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                  color: Color(0xffc4c4c4), width: .6)),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '#${widget.dataList[index].userState}#${widget.dataList[index].activity}#${widget.dataList[index].relation}#${widget.dataList[index].location}',
+                                    style: TextStyle(
+                                        fontSize: 18, color: Color(0xff888888)),
+                                  ),
+                                  Text(
+                                    diaryTexts[index],
+                                    style: TextStyle(
+                                        fontSize: 24, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Color(0xffFBE8B8),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
