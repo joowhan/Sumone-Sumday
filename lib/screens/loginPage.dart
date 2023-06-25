@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 // import 'home.dart';
 import 'package:sumday/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -21,6 +22,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  Future<bool> permission() async {
+    Map<Permission, PermissionStatus> status =
+    await [Permission.location].request(); // [] 권한배열에 권한을 작성
+
+    if (await Permission.location.isGranted) {
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     LoginProvider loginProvider = Provider.of(context, listen: true);
@@ -38,23 +51,21 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 10.0),
             OutlinedButton.icon(
               onPressed: () async {
-                try {
-                  await loginProvider.signInWithGoogle(); // 구글 로그인
-                  print("Google Login Success!!");
-                  //SignInController().signIn();
-                  // await signInWithGoogle();
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => Home()),
-                  // );
-                  Navigator.pushNamed(context, '/home');
-                } catch (e) {
-                  if (e is FirebaseAuthException) {
-                    print(e.message!);
+                bool hasPermission = await permission(); // 위치 권한 요청
+
+                if (hasPermission) {
+                  try {
+                    await loginProvider.signInWithGoogle(); // 구글 로그인
+                    print("Google Login Success!!");
+                    Navigator.pushNamed(context, '/home');
+                  } catch (e) {
+                    if (e is FirebaseAuthException) {
+                      print(e.message!);
+                    }
                   }
+                } else {
+                  print('위치 권한이 필요합니다.');
                 }
-                Navigator.pushNamed(context, '/home');
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(width: 2, color: Color(0xFFF4C54F)),
@@ -64,37 +75,60 @@ class _LoginPageState extends State<LoginPage> {
               label: Text(
                 "Google로 로그인 하기",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color(0xFFF4C54F)),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Color(0xFFF4C54F),
+                ),
               ),
               icon: Image.asset(
                 "assets/google.png",
                 height: 30,
                 width: 30,
-
-                //color: Colors.white,
               ),
             ),
-            OutlinedButton(onPressed: () async{
-              try {
-                await loginProvider.signInWithAnonymous(); // 구글 로그인
-                print("Anonymous Login Success!!");
-
-                Navigator.pushNamed(context, '/home');
-              } catch (e) {
-                if (e is FirebaseAuthException) {
-                  print(e.message!);
+            OutlinedButton(
+              onPressed: () async {
+                bool hasPermission = await permission(); // 위치 권한 요청
+                if (hasPermission) {
+                  try {
+                    await loginProvider.signInWithAnonymous(); // 익명 로그인
+                    print("Anonymous Login Success!!");
+                    Navigator.pushNamed(context, '/home');
+                  } catch (e) {
+                    if (e is FirebaseAuthException) {
+                      print(e.message!);
+                    }
+                  }
+                } else {
+                  print("위치 권한이 필요합니다."); // 위치 권한이 없는 경우 처리
                 }
-              }
-              Navigator.pushNamed(context, '/home');
-            },
-                child: Text('익명 로그인',
-                  style: TextStyle(
-                    color: Color(0xFFF4C54F), // 여기에 색상을 추가하세요
-                  ),
+              },
+              child: Text(
+                '익명 로그인',
+                style: TextStyle(
+                  color: Color(0xFFF4C54F),
                 ),
+              ),
             ),
+            // OutlinedButton(onPressed: () async{
+            //   try {
+            //     await loginProvider.signInWithAnonymous(); // 구글 로그인
+            //     print("Anonymous Login Success!!");
+            //
+            //     Navigator.pushNamed(context, '/home');
+            //   } catch (e) {
+            //     if (e is FirebaseAuthException) {
+            //       print(e.message!);
+            //     }
+            //   }
+            //   Navigator.pushNamed(context, '/home');
+            // },
+            //     child: Text('익명 로그인',
+            //       style: TextStyle(
+            //         color: Color(0xFFF4C54F), // 여기에 색상을 추가하세요
+            //       ),
+            //     ),
+            // ),
           ],
         ),
       ),

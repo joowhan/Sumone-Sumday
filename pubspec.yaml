@@ -65,6 +65,7 @@ dependencies:
     hexcolor: ^3.0.1
     image_gallery_saver: ^2.0.2
     path_provider: ^2.0.15
+    permission_handler: ^10.3.0
 
 dev_dependencies:
     flutter_test:
