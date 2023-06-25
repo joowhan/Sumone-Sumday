@@ -12,6 +12,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
 
@@ -268,9 +270,21 @@ Future<void> save_local(String url) async {
         }
         // 아직 로드 중이거나 오류가 발생했다면 로딩 화면을 표시
         else {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.halfTriangleDot(
+                  color: Color(0xFFF4C54F),
+                  size: 200, ),
+                  SizedBox(height: 16),
+                  Text(
+                    "일기 생성 중...",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             ),
           );
         }
