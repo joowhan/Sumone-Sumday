@@ -21,7 +21,6 @@ class _ExchangeDiarySettingState extends State<ExchangeDiarySetting> {
     final userData = Provider.of<LoginProvider>(context);
     final user = userData.userInformation;
     final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
-    final diaryList = diaryListProvider.diaryList;
     final docIds = diaryListProvider.docIds;
 
     return Scaffold(

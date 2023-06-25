@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/models/exchange_diary_model.dart';
+import 'package:sumday/models/rdiary_model.dart';
 import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
+import 'package:sumday/screens/exchange_diary_edit.dart';
 import 'package:sumday/screens/exchange_diary_setting.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
@@ -44,7 +46,12 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                 .millisecondsSinceEpoch &&
         element.date.millisecondsSinceEpoch <
             DateTime.now().millisecondsSinceEpoch);
-    final todayDiaryId = diariesDocIds[todayIdx];
+    late String? todayDiaryId;
+    if (todayIdx == -1) {
+      todayDiaryId = null;
+    } else {
+      todayDiaryId = diariesDocIds[todayIdx];
+    }
 
     // 일기 목록 렌더링하는 코드 (ListView)
     final items =
@@ -61,11 +68,15 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
         comments: diaryList[widget.idx].diaryList[index]["comments"],
       );
     });
-
+    late Diary? todayDiaries;
     // 오늘 작성한 일기를 불러오는 코드
-    final diaryId = todayDiaryId;
-    var index = diariesDocIds.indexWhere((element) => element == diaryId);
-    final todayDiaries = diaries[index];
+    if (todayDiaryId == null) {
+      todayDiaries = null;
+    } else {
+      var index =
+          diariesDocIds.indexWhere((element) => element == todayDiaryId);
+      todayDiaries = diaries[index];
+    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -190,92 +201,132 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                     ),
                                     IconButton(
                                       onPressed: () {
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return Wrap(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text(
-                                                        "취소",
-                                                        style: TextStyle(
-                                                          fontSize: 22,
+                                        if (todayDiaries != null) {
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Wrap(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                          "취소",
+                                                          style: TextStyle(
+                                                            fontSize: 22,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        final diary =
-                                                            ExchangeDiaryModel(
-                                                          owner: todayDiaries
-                                                              .userID,
-                                                          diaryId: diaryId,
-                                                          content: todayDiaries
-                                                              .context[current],
-                                                          photos: todayDiaries
-                                                              .photos[current],
-                                                          tags: todayDiaries
-                                                              .getCurrTags(
-                                                                  current),
-                                                          comments: [],
-                                                          createdAt:
-                                                              Timestamp.now(),
-                                                        );
-                                                        Provider.of<ExchangeDiaryListProvider>(
-                                                                context,
-                                                                listen: false)
-                                                            .addDiary(
-                                                                diary,
-                                                                docIds[widget
-                                                                    .idx]);
-                                                        var order = diaryList[
-                                                                widget.idx]
-                                                            .order;
-                                                        var nextOrder = (order +
-                                                                1) %
-                                                            diaryList[
-                                                                    widget.idx]
-                                                                .participants
-                                                                .length;
-                                                        Provider.of<ExchangeDiaryListProvider>(
-                                                                context,
-                                                                listen: false)
-                                                            .setOrder(
-                                                                docIds[
-                                                                    widget.idx],
-                                                                nextOrder);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text(
-                                                        "작성",
-                                                        style: TextStyle(
-                                                          fontSize: 22,
+                                                      const SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          final diary =
+                                                              ExchangeDiaryModel(
+                                                            owner: todayDiaries!
+                                                                .userID,
+                                                            diaryId:
+                                                                todayDiaryId!,
+                                                            content: todayDiaries
+                                                                    .context[
+                                                                current],
+                                                            photos: todayDiaries
+                                                                    .photos[
+                                                                current],
+                                                            tags: todayDiaries
+                                                                .getCurrTags(
+                                                                    current),
+                                                            comments: [],
+                                                            createdAt:
+                                                                Timestamp.now(),
+                                                          );
+                                                          // Provider.of<ExchangeDiaryListProvider>(
+                                                          //         context,
+                                                          //         listen: false)
+                                                          //     .addDiary(
+                                                          //         diary,
+                                                          //         docIds[widget
+                                                          //             .idx]);
+                                                          // var order = diaryList[
+                                                          //         widget.idx]
+                                                          //     .order;
+                                                          // var nextOrder = (order +
+                                                          //         1) %
+                                                          //     diaryList[
+                                                          //             widget.idx]
+                                                          //         .participants
+                                                          //         .length;
+                                                          // Provider.of<ExchangeDiaryListProvider>(
+                                                          //         context,
+                                                          //         listen: false)
+                                                          //     .setOrder(
+                                                          //         docIds[
+                                                          //             widget.idx],
+                                                          //         nextOrder);
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ExchangeDiaryEditPage(
+                                                                            idx:
+                                                                                widget.idx,
+                                                                            diary:
+                                                                                diary,
+                                                                          )));
+                                                        },
+                                                        child: const Text(
+                                                          "작성",
+                                                          style: TextStyle(
+                                                            fontSize: 22,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                ExchangeDiaryModal(
-                                                  diaries: todayDiaries,
-                                                  setCurrent: setCurrent,
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
+                                                    ],
+                                                  ),
+                                                  ExchangeDiaryModal(
+                                                    diaries: todayDiaries!,
+                                                    setCurrent: setCurrent,
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          // todo 일기 생성하는 페이지로 이동시키기
+                                          showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return SizedBox(
+                                                  height: 200,
+                                                  child: Column(
+                                                    children: [
+                                                      const Text("일기를 생성해주세요!"),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child:
+                                                              const Text("확인"))
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                        }
                                       },
                                       icon: Icon(
                                         Icons.add_box_outlined,
