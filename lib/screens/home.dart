@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +39,18 @@ class _HomeState extends State<Home> {
     super.initState();
     final diariesProvider =
         Provider.of<DiariesProvider>(context, listen: false);
-    diariesProvider.setUserID();
-    diariesProvider.setUserID();
-    // diariesProvider.loadAllDiaries();
+    diariesProvider.init();
+  }
+
+  var isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      Provider.of<ExchangeDiaryListProvider>(context).fetchDiaryList();
+    }
+    isInit = false;
+    super.didChangeDependencies();
   }
 
   @override

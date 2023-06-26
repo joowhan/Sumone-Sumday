@@ -8,7 +8,7 @@ import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/comment_widget.dart';
 
-class ExchangeDiaryDetail extends StatelessWidget {
+class ExchangeDiaryDetail extends StatefulWidget {
   final int idx;
   final String diaryId;
   final String content;
@@ -32,28 +32,33 @@ class ExchangeDiaryDetail extends StatelessWidget {
   });
 
   @override
+  State<ExchangeDiaryDetail> createState() => _ExchangeDiaryDetailState();
+}
+
+class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
+  @override
   Widget build(BuildContext context) {
     const weekDayName = ["월", "화", "수", "목", "금", "토", "일"];
     final dateString =
-        "${date.year}년 ${date.month}월 ${date.day}일 (${weekDayName[date.weekday - 1]})";
+        "${widget.date.year}년 ${widget.date.month}월 ${widget.date.day}일 (${weekDayName[widget.date.weekday - 1]})";
     final commentController = TextEditingController();
     final userData = Provider.of<LoginProvider>(context);
     final user = userData.userInformation;
 
     // 코멘트 카드 렌더링하는 코드
-    final items = List.generate(comments.length, (index) {
+    final items = List.generate(widget.comments.length, (index) {
       return CommentWidget(
-        photo: comments[index]["ownerPhoto"],
-        ownerId: comments[index]["ownerId"],
-        ownerName: comments[index]["ownerName"],
-        content: comments[index]["content"],
-        createdAt: comments[index]["createdAt"].toDate(),
+        photo: widget.comments[index]["ownerPhoto"],
+        ownerId: widget.comments[index]["ownerId"],
+        ownerName: widget.comments[index]["ownerName"],
+        content: widget.comments[index]["content"],
+        createdAt: widget.comments[index]["createdAt"].toDate(),
       );
     });
 
     return Scaffold(
       appBar: MyAppBar(
-        title: "${writer.substring(0, 5)}님의 일기",
+        title: "${widget.writer.substring(0, 5)}님의 일기",
         appBar: AppBar(),
       ),
       body: Container(
@@ -87,7 +92,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
                                   size: 32,
                                 ),
                                 Text(
-                                  location,
+                                  widget.location,
                                   style: const TextStyle(
                                     fontSize: 20,
                                   ),
@@ -108,7 +113,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10)),
                           child: Image.asset(
-                            "assets/$photo",
+                            "assets/${widget.photo}",
                             width: double.maxFinite,
                             height: 185,
                             fit: BoxFit.fitWidth,
@@ -121,7 +126,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
                         Row(
                           // 향후 스타일 추가하겠음
                           children: [
-                            for (String tag in tags)
+                            for (String tag in widget.tags)
                               Text(
                                 "#$tag  ",
                                 style: const TextStyle(
@@ -142,7 +147,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "by. ${writer.substring(0, 5)}",
+                              "by. ${widget.writer.substring(0, 5)}",
                               style: TextStyle(
                                   fontSize: 16,
                                   color: AppColors.fontSecondaryColor()),
@@ -169,7 +174,12 @@ class ExchangeDiaryDetail extends StatelessWidget {
                       vertical: 20,
                       horizontal: 10,
                     ),
-                    child: Text(content),
+                    child: Text(
+                      widget.content,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -188,7 +198,7 @@ class ExchangeDiaryDetail extends StatelessWidget {
                 Row(
                   children: [
                     SizedBox(
-                      width: 250,
+                      width: 284,
                       height: 40,
                       child: TextField(
                         controller: commentController,
@@ -212,9 +222,10 @@ class ExchangeDiaryDetail extends StatelessWidget {
 
                         Provider.of<ExchangeDiaryListProvider>(context,
                                 listen: false)
-                            .addComments(diaryId, idx, comment);
+                            .addComments(widget.diaryId, widget.idx, comment);
                         FocusScopeNode currentFocus = FocusScope.of(context);
-
+                        widget.comments.add(comment.toJson());
+                        setState(() {});
                         if (!currentFocus.hasPrimaryFocus) {
                           currentFocus.unfocus();
                         }
