@@ -71,6 +71,18 @@ void _saveLocation(uid, taskId) async {
   } else {
     var timestamp = Timestamp.now();
     var places = await getPlace(latitude, longitude);
+    var placeList = [];
+    for (var place in places) {
+      // 부동산, 주유소, 교통, 50m 밖, 중복 장소는 제외
+      if (place.placeCategoryName.contains("부동산") ||
+          place.placeCategoryName.contains("교통") ||
+          int.parse(place.distance) > 50 ||
+          placeList.contains(place.placeId)) {
+        print(place);
+      } else {
+        placeList.add(place.toJson());
+      }
+    }
 
     locationRef.add({
       'count': 1,
@@ -83,7 +95,7 @@ void _saveLocation(uid, taskId) async {
       'weather': weather.weather,
       'weather_description': weather.description,
       'timestamp': timestamp,
-      'place': places.map((e) => e.toJson()).toList(),
+      'place': placeList,
     });
   }
 }

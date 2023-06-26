@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sumday/models/comment_model.dart';
 import 'package:sumday/models/exchange_diary_list_model.dart';
 import 'package:sumday/models/exchange_diary_model.dart';
 
@@ -64,8 +65,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     final diaryObject = diary.toJson();
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
-    List<dynamic>? existingDiaries = snapshot.data()?['diaries'];
-
+    List<dynamic>? existingDiaries = snapshot.data()?['diaryList'];
     if (existingDiaries == null) {
       existingDiaries = [diaryObject];
     } else {
@@ -73,27 +73,15 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       existingDiaries = [...existingDiaries, diaryObject];
     }
 
-    await docRef.update({'diaries': existingDiaries});
+    await docRef.update({'diaryList': existingDiaries});
+    diaryList[docIds.indexWhere((element) => element == docId)].diaryList =
+        existingDiaries;
     notifyListeners();
-  }
-
-  // Update
-  Future<void> updateDiaryList(
-      ExchangeDiaryListModel diary, String docId) async {
-    final index =
-        diaryList.indexWhere((element) => element.title == diary.title);
-    if (index >= 0) {
-      await db
-          .collection('exchangeDiaryList')
-          .doc(docId)
-          .update(diary.toJson());
-      diaryList[index] = diary;
-      notifyListeners();
-    }
   }
 
   // participants에 사용자 추가
   Future<void> addParticipants(String docId, String uid) async {
+    final index = docIds.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
     List<dynamic>? existingParticipants = snapshot.data()?['participants'];
@@ -105,6 +93,40 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     }
 
     await docRef.update({'participants': existingParticipants});
+    diaryList[index].participants = existingParticipants;
+    notifyListeners();
+  }
+
+  // diaryList > comments에 댓글 추가
+  Future<void> addComments(
+      String docId, int diaryIndex, CommentModel comment) async {
+    print("Start addComments");
+    final index = docIds.indexWhere((element) => element == docId);
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    final snapshot = await docRef.get();
+    final commentData = comment.toJson();
+    List<dynamic>? existingDiaries = snapshot.data()?['diaryList'];
+    List<dynamic>? existingComments = existingDiaries![diaryIndex]['comments'];
+
+    if (existingComments == null) {
+      existingComments = [commentData];
+    } else {
+      existingComments = [...existingComments, commentData];
+    }
+
+    existingDiaries[diaryIndex]['comments'] = existingComments;
+    await docRef.update({'diaryList': existingDiaries});
+    diaryList[index].diaryList = existingDiaries;
+    print("comment added!");
+    notifyListeners();
+  }
+
+  // 순서를 다음 순서로 변경
+  Future<void> setOrder(String docId, int order) async {
+    final index = docIds.indexWhere((element) => element == docId);
+    final docRef = db.collection('exchangeDiaryList').doc(docId);
+    await docRef.update({'order': order});
+    diaryList[index].order = order;
     notifyListeners();
   }
 

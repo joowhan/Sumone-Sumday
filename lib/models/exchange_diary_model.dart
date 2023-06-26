@@ -2,43 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sumday/models/comment_model.dart';
 
 class ExchangeDiaryModel {
-  String title;
-  String content;
   String owner;
-  String imageUrl;
-  List<String> hashTags;
-  String placeName;
+  String diaryId;
+  String content;
+  String photos;
+  List<String> tags;
   List<CommentModel> comments;
   Timestamp createdAt;
 
   ExchangeDiaryModel({
-    required this.title,
-    required this.content,
     required this.owner,
-    required this.imageUrl,
-    required this.hashTags,
-    required this.placeName,
+    required this.diaryId,
+    required this.content,
+    required this.photos,
+    required this.tags,
     required this.comments,
     required this.createdAt,
   });
 
   ExchangeDiaryModel.fromJson(Map<String, dynamic> json)
-      : title = json["title"],
+      : owner = json["owner"],
+        diaryId = json["diaryId"],
         content = json["content"],
-        owner = json["owner"],
-        imageUrl = json["imageUrl"],
-        hashTags = json["hashTags"],
-        placeName = json["placeName"],
+        photos = json["photos"],
+        tags = json["tags"],
         comments = json["comments"],
         createdAt = json["createdAt"];
 
   Map<String, Object?> toJson() => {
-        'title': title,
-        'content': content,
         'owner': owner,
-        'imageUrl': imageUrl,
-        'hastTags': hashTags,
-        'placeName': placeName,
+        'diaryId': diaryId,
+        'content': content,
+        'photos': photos,
+        'tags': tags,
         'comments': comments,
         'createdAt': createdAt,
       };

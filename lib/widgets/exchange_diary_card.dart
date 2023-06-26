@@ -5,26 +5,44 @@ import 'package:sumday/utils/variables.dart';
 class ExchangeDiaryCard extends StatelessWidget {
   final int idx;
   final String diaryId;
-  final List<String> tags;
+  final String content;
+  final List<dynamic> comments;
+  final List<dynamic> tags;
+  final String location;
   final DateTime date;
   final String writer;
-  final String thumbSource;
+  final String photo;
 
   const ExchangeDiaryCard({
     super.key,
     required this.idx,
     required this.diaryId,
+    required this.content,
+    required this.comments,
     required this.tags,
+    required this.location,
     required this.date,
     required this.writer,
-    required this.thumbSource,
+    required this.photo,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ExchangeDiaryDetail())),
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ExchangeDiaryDetail(
+                    idx: idx,
+                    diaryId: diaryId,
+                    content: content,
+                    comments: comments,
+                    tags: tags,
+                    location: location,
+                    date: date,
+                    writer: writer,
+                    photo: photo,
+                  ))),
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
@@ -32,14 +50,14 @@ class ExchangeDiaryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: const Image(
-                  image: AssetImage('assets/images/test/test_image_000.jpg'),
+                child: Image.asset(
+                  "assets/$photo",
                   width: double.maxFinite,
                   height: 185,
                   fit: BoxFit.fitWidth,
@@ -49,7 +67,6 @@ class ExchangeDiaryCard extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              // 추후에 리스트로 하나하나 불러와야 할 듯
               Row(
                 children: [
                   for (String tag in tags)
@@ -72,7 +89,7 @@ class ExchangeDiaryCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "by. $writer",
+                    "by. ${writer.substring(0, 6)}",
                     style: TextStyle(color: AppColors.fontSecondaryColor()),
                   ),
                 ],
