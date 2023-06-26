@@ -324,7 +324,17 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (widget.pageIndex != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            GenerateDiary(dataList: widget.dataList),
+                      ),
+                    );
+                  }
+                },
                 child: const Text(
                   "건너뛰기",
                   style: TextStyle(fontSize: 18, color: Color(0xff136750)),
