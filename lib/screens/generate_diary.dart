@@ -1,16 +1,18 @@
 //ai_resultDiary.dart
-import 'dart:typed_data';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
 import 'dart:convert';
 import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
@@ -31,7 +33,8 @@ class GenerateDiary extends StatefulWidget {
 }
 
 class _GenerateDiaryState extends State<GenerateDiary> {
-  String? diaryText;
+  List<String> diaryTexts = [];
+  List<String> diaryImageURLs = [];
   String? diaryImageURL;
   String? imageUuid; // 클래스 레벨에서 imageUuid 선언
   @override
@@ -44,21 +47,33 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   // }
   void initState() {
     super.initState();
-    generateContent();
+  }
+// void printContents() {
+//   diaryTexts.forEach((text) {
+//     print(text);
+//   });
+
+//   diaryImageURLs.forEach((url) {
+//     print(url);
+//   });
+// }
+  Future<void> generateAllContents() async {
+    diaryImageURLs.clear(); 
+    diaryTexts.clear();  
+    await Future.forEach(widget.dataList, (UserForm data) async {
+      String textPrompt = '${data.userState} ${data.activity} ${data.relation} ${data.location}';
+      print(textPrompt);
+      String summaryInEnglish = await generateSummary(textPrompt);
+
+      final openai = OpenaiDalleWrapper(apiKey: apiKey);
+      String diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
+      diaryImageURLs.add(diaryImageURL);  // 생성된 이미지 URL을 리스트에 추가
+
+      String diaryText = await translateToKorean(summaryInEnglish);
+      diaryTexts.add(diaryText);  // 생성된 일기 내용을 리스트에 추가
+    });
   }
 
-  Future<void> generateContent() async {
-    String textPrompt =
-        '${widget.dataList[0].userState} ${widget.dataList[0].activity} ${widget.dataList[0].relation} ${widget.dataList[0].location}';
-    String summaryInEnglish = await generateSummary(textPrompt);
-
-    final openai = OpenaiDalleWrapper(apiKey: apiKey);
-    diaryImageURL = await openai
-        .generateImage("$summaryInEnglish, a painting of illustration");
-
-    String translatedText = await translateToKorean(summaryInEnglish);
-    diaryText = translatedText;
-  }
 
   Future<String> generateSummary(String prompt) async {
     final response = await http.post(
@@ -79,7 +94,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-        jsonDecode(utf8.decode(response.bodyBytes));
+    jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
@@ -93,7 +108,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
       },
       body: jsonEncode({
         "model": "text-davinci-003",
-        'prompt': "'$text' 를 50자 이내 한국어 한 문장으로 요약해줘",
+        'prompt': "Please write it in a Korean diary format : '$text' ",
         'max_tokens': 1000,
         'temperature': 0,
         'top_p': 1,
@@ -103,58 +118,42 @@ class _GenerateDiaryState extends State<GenerateDiary> {
     );
 
     Map<String, dynamic> newresponse =
-        jsonDecode(utf8.decode(response.bodyBytes));
+    jsonDecode(utf8.decode(response.bodyBytes));
     //print(newresponse['choices'][0]['text'].trim());
     return newresponse['choices'][0]['text'].trim();
   }
 
-  Future<void> saveImageToFirebaseStorage(
-      String? imageUrl, String? uid, String? uuid) async {
-    final response = await http.get(Uri.parse(imageUrl!));
-    final Uint8List imageBytes = response.bodyBytes;
+  // Future<void> saveImageToFirebaseStorage(
+  //     String? imageUrl, String? uid, String? uuid) async {
+  //   final response = await http.get(Uri.parse(imageUrl!));
+  //   final Uint8List imageBytes = response.bodyBytes;
 
-    final imageRef =
-        FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
-    await imageRef.putData(imageBytes);
-  }
+  //   final imageRef =
+  //   FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
+  //   await imageRef.putData(imageBytes);
+  // }
 
-  Future<void> saveDiaryToFirestore() async {
-    final db = FirebaseFirestore.instance;
+String generateUuid() {
+  var uuid = Uuid();
+  return uuid.v1();
+}
+Future<void> save_local(String url) async {
+  var response = await http.get(Uri.parse(url));
+  final Uint8List bytes = response.bodyBytes;
 
-    final User? user = _auth.currentUser;
-    late String uid;
-    if (user != null) {
-      uid = user.uid;
-    } else {
-      uid = 'guest';
-    }
-    DateTime date = DateTime.now();
-    List<String> tags = [
-      widget.dataList[0].userState,
-      widget.dataList[0].activity,
-      widget.dataList[0].relation,
-      widget.dataList[0].location
-    ];
-    String context = diaryText!;
-    String photos = '${imageUuid!}.png';
-    bool favorite = false;
+  Directory dir = await getApplicationDocumentsDirectory();
+  String fileName = generateUuid();
+  String filePath = '${dir.path}/$fileName.png';
 
-    await db.collection("diary").doc().set(
-      {
-        "userID": uid,
-        "date": date,
-        "tags": tags,
-        "context": context,
-        "photos": photos,
-        "favorite": favorite,
-      },
-    );
-  }
+  File file = File(filePath);
+  await file.writeAsBytes(bytes);
+  print('이미지 저장 경로: $filePath');
+}
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generateContent(),
+      future: generateAllContents(),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         // 데이터 로드가 완료되었다면
         if (snapshot.connectionState == ConnectionState.done) {
@@ -173,11 +172,16 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                 IconButton(
                     onPressed: () async {
                       print('save');
-                      var uuid = const Uuid();
-                      imageUuid = uuid.v1();
-                      saveImageToFirebaseStorage(
-                          diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
-                      saveDiaryToFirestore(); //일기 저장
+                       diaryImageURLs.forEach((url) { // 로컬에 이미지 저장
+                        save_local(url);
+                        });
+                      //var uuid = Uuid();
+                      //imageUuid = uuid.v1();
+
+                      //printContents();
+                      // saveImageToFirebaseStorage(
+                      //     diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
+                      //saveDiaryToFirestore(); //일기 저장
                     },
                     icon: const Icon(
                       Icons.done,
@@ -197,7 +201,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                       Text(
                         DateFormat('y년 M월 d일 a h:mm')
                             .format(DateTime.now().toLocal()),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black38,
                           letterSpacing: 2.0,
                         ),
@@ -232,14 +236,6 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                           )
                         ],
                       ),
-                      Container(
-                        child: diaryText == null
-                            ? const CircularProgressIndicator() // null이면 로딩 표시
-                            : Text(
-                                diaryText!,
-                                style: const TextStyle(),
-                              ),
-                      )
                     ],
                   ),
                 ],
@@ -274,9 +270,21 @@ class _GenerateDiaryState extends State<GenerateDiary> {
         }
         // 아직 로드 중이거나 오류가 발생했다면 로딩 화면을 표시
         else {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.halfTriangleDot(
+                  color: Color(0xFFF4C54F),
+                  size: 200, ),
+                  SizedBox(height: 16),
+                  Text(
+                    "일기 생성 중...",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
             ),
           );
         }
