@@ -326,13 +326,14 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 ),
                 onPressed: () {
                   if (widget.pageIndex != 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            GenerateDiary(dataList: widget.dataList),
-                      ),
-                    );
+                    // 첫 페이지(기본 페이지)만 두고 모두 닫고, 탭 하나 열기
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              GenerateDiary(dataList: widget.dataList),
+                        ),
+                        (route) => route.isFirst);
                   }
                 },
                 child: const Text(
