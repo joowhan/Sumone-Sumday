@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/models/exchange_diary_list_model.dart';
-import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
@@ -26,17 +25,17 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
     });
   }
 
-  var isInit = true;
+  // var isInit = true;
 
-  @override
-  void didChangeDependencies() {
-    if (isInit) {
-      Provider.of<ExchangeDiaryListProvider>(context).fetchDiaryList();
-      Provider.of<DiariesProvider>(context).loadAllDiaries();
-    }
-    isInit = false;
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   if (isInit) {
+  //     Provider.of<ExchangeDiaryListProvider>(context).fetchDiaryList();
+  //     Provider.of<DiariesProvider>(context).loadAllDiaries();
+  //   }
+  //   isInit = false;
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {

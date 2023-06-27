@@ -313,15 +313,36 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                 return SizedBox(
                                                   height: 200,
                                                   child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
-                                                      const Text("일기를 생성해주세요!"),
+                                                      const Text(
+                                                        "아직 오늘 일기를 작성하지 않으셨어요.",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                      const Text(
+                                                        "먼저 오늘의 일기를 작성해주세요!",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
                                                       TextButton(
                                                           onPressed: () {
                                                             Navigator.pop(
                                                                 context);
                                                           },
-                                                          child:
-                                                              const Text("확인"))
+                                                          child: const Text(
+                                                            "작성하러 가기",
+                                                            style: TextStyle(
+                                                              fontSize: 20,
+                                                            ),
+                                                          ))
                                                     ],
                                                   ),
                                                 );

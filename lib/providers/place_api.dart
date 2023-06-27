@@ -72,15 +72,27 @@ void _saveLocation(uid, taskId) async {
     var timestamp = Timestamp.now();
     var places = await getPlace(latitude, longitude);
     var placeList = [];
+    var placeId = [];
     for (var place in places) {
       // 부동산, 주유소, 교통, 50m 밖, 중복 장소는 제외
       if (place.placeCategoryName.contains("부동산") ||
           place.placeCategoryName.contains("교통") ||
           int.parse(place.distance) > 50 ||
-          placeList.contains(place.placeId)) {
-        print(place);
+          place.placeCategoryName.contains("우체통") ||
+          place.placeCategoryName.contains("아파트") ||
+          place.placeCategoryName.contains("유치원") ||
+          place.placeCategoryName.contains("어린이집") ||
+          place.placeCategoryName.contains("인력") ||
+          place.placeCategoryName.contains("건설") ||
+          place.placeCategoryName.contains("마케팅") ||
+          place.placeCategoryName.contains("주차장") ||
+          place.placeCategoryName.contains("인테리어") ||
+          place.placeCategoryName.contains("가구") ||
+          place.placeCategoryName.contains("화장실") ||
+          placeId.contains(place.placeId)) {
       } else {
         placeList.add(place.toJson());
+        placeId.add(place.placeId);
       }
     }
 

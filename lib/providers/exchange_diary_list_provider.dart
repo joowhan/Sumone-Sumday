@@ -73,7 +73,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       existingDiaries = [...existingDiaries, diaryObject];
     }
 
-    await docRef.update({'diaryList': existingDiaries});
+    docRef.update({'diaryList': existingDiaries});
     diaryList[docIds.indexWhere((element) => element == docId)].diaryList =
         existingDiaries;
     notifyListeners();
@@ -92,7 +92,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       existingParticipants = [...existingParticipants, uid];
     }
 
-    await docRef.update({'participants': existingParticipants});
+    docRef.update({'participants': existingParticipants});
     diaryList[index].participants = existingParticipants;
     notifyListeners();
   }
@@ -100,7 +100,6 @@ class ExchangeDiaryListProvider with ChangeNotifier {
   // diaryList > comments에 댓글 추가
   Future<void> addComments(
       String docId, int diaryIndex, CommentModel comment) async {
-    print("Start addComments");
     final index = docIds.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);
     final snapshot = await docRef.get();
@@ -115,9 +114,8 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     }
 
     existingDiaries[diaryIndex]['comments'] = existingComments;
-    await docRef.update({'diaryList': existingDiaries});
+    docRef.update({'diaryList': existingDiaries});
     diaryList[index].diaryList = existingDiaries;
-    print("comment added!");
     notifyListeners();
   }
 
@@ -125,7 +123,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
   Future<void> setOrder(String docId, int order) async {
     final index = docIds.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);
-    await docRef.update({'order': order});
+    docRef.update({'order': order});
     diaryList[index].order = order;
     notifyListeners();
   }
@@ -134,7 +132,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
   Future<void> deleteDiaryList(String docId) async {
     final index = docIds.indexWhere((element) => element == docId);
     if (index >= 0) {
-      await db.collection('exchangeDiaryList').doc(docId).delete();
+      db.collection('exchangeDiaryList').doc(docId).delete();
       diaryList.removeAt(index);
       docIds.removeAt(index);
       notifyListeners();
