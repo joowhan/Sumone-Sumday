@@ -18,9 +18,15 @@ class LocationProvider with ChangeNotifier {
   // Read
   Future<void> fetchLocationList() async {
     setUid();
-
-    final QuerySnapshot snapshot =
-        await db.collection('location').where("uid", isEqualTo: uid).get();
+    DateTime now = DateTime.now();
+    DateTime today =
+        DateTime(now.year, now.month, now.day - 1, 6); //전날 6시 이후로 저장된 위치만 가져옴
+    Timestamp todayTimestamp = Timestamp.fromDate(today);
+    final QuerySnapshot snapshot = await db
+        .collection('location')
+        .where("uid", isEqualTo: uid)
+        .where("timestamp", isGreaterThanOrEqualTo: todayTimestamp)
+        .get();
     List<RLocationModel> loadedLocations = [];
     List<String> loadedDocIds = [];
     for (var i = 0; i < snapshot.docs.length; i++) {

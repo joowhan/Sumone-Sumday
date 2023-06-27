@@ -97,6 +97,7 @@ void _saveLocation(uid, taskId) async {
               place.placeCategoryName.contains("기업") ||
               place.placeCategoryName.contains("소프트웨어") ||
               place.placeCategoryName.contains("전문대행") ||
+              place.placeCategoryName.contains("학원") ||
               placeId.contains(place.placeId)) ==
           false) {
         placeList.add(place.toJson());

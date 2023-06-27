@@ -39,11 +39,10 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   Widget _aiKeywordsForm() {
     final locationProviderList = Provider.of<LocationProvider>(context);
     final locationList = locationProviderList.locationList;
-    locationList.sort((a, b) => a.count.compareTo(b.count));
+    locationList.sort((a, b) => a.places.length.compareTo(b.places.length));
     final sortedLocationList =
         locationList.reversed.toList().sublist(0, min(3, locationList.length));
     List<UserForm> dataList = widget.dataList;
-    String? locationCategory;
     return Center(
       child: ListView(
         children: [
