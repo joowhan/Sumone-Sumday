@@ -45,9 +45,9 @@ class DiariesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 일기 배열 추가
+  // 일기 추가
   // docName : 일반적으로 저장할 때는 null 주면 됨, 삭제 복구할 때는 값 줘야함
-  void addDiary(int index, Diary diary, String? docName) async {
+  Future<String> addDiary(int index, Diary diary, String? docName) async {
     print(index);
     diaries.insert(index, diary);
     var docName0 = await _saveDiary(diary, docName);
@@ -55,6 +55,19 @@ class DiariesProvider with ChangeNotifier {
     docNames.insert(index, docName0);
     _numOfDiaries++;
     notifyListeners();
+    return docName0;
+  }
+
+  // 일기 업데이트
+  // docName : 일반적으로 저장할 때는 null 주면 됨, 삭제 복구할 때는 값 줘야함
+  Future<String> UpdateDiary(int index, Diary diary, String? docName) async {
+    print(index);
+    diaries[index] = diary;
+    var docName0 = await _saveDiary(diary, docName);
+
+    docNames[index] = docName0;
+    notifyListeners();
+    return docName0;
   }
 
   // 일기 배열에서 삭제

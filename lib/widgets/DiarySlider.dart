@@ -4,8 +4,13 @@ import 'SquareSliderComponentShape.dart';
 class DiarySlider extends StatefulWidget {
   final double maxRange;
   final double currSelect;
+  final Function pageHandler;
 
-  const DiarySlider({super.key, required this.maxRange, this.currSelect = 1});
+  const DiarySlider(
+      {super.key,
+      required this.maxRange,
+      required this.pageHandler,
+      this.currSelect = 1});
 
   @override
   State<DiarySlider> createState() => _DiarySliderState();
@@ -36,6 +41,7 @@ class _DiarySliderState extends State<DiarySlider> {
         onChanged: (double value) {
           setState(() {
             _currentSliderValue = value;
+            widget.pageHandler(value);
           });
         },
       ),

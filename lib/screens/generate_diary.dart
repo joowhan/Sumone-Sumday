@@ -15,6 +15,7 @@ const apiUrl = 'https://api.openai.com/v1/completions';
 
 class GenerateDiary extends StatefulWidget {
   final List<UserForm> dataList;
+  int currPage = 1;
 
   const GenerateDiary({super.key, required this.dataList});
 
@@ -29,11 +30,19 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 
     final generateProvider =
         Provider.of<GenerateProvider>(context, listen: false);
-    generateProvider.init(widget.dataList);
+    final diariesProvider =
+        Provider.of<DiariesProvider>(context, listen: false);
+    generateProvider.init(widget.dataList, diariesProvider.numOfDiaries);
     for (var i = 0; i < widget.dataList.length; i++) {
       generateProvider.generateContents(i);
     }
     print('init');
+  }
+
+  void pageHandler(int page) {
+    setState(() {
+      widget.currPage = page;
+    });
   }
 
   String getTimeString() {
@@ -197,7 +206,8 @@ class _DiaryContentsState extends State<DiaryContents> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(22))),
                               onPressed: () {
-                                // diariesProvider.addDiary(generateProvider.);
+                                if (diariesProvider.diaries.length !=
+                                    generateProvider.getDiaryIndex) {}
                               },
                               child: Text(
                                 '저장',
