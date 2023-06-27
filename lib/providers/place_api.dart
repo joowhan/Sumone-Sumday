@@ -46,8 +46,8 @@ void _saveLocation(uid, taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  int latitude = (currentLocation.latitude * 1800).round();
-  int longitude = (currentLocation.longitude * 1800).round();
+  int latitude = (currentLocation.latitude * 900).round();
+  int longitude = (currentLocation.longitude * 900).round();
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
@@ -166,8 +166,8 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
 // get place by coordinate
 Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
-  var lat = latitude / 1800;
-  var lon = longitude / 1800;
+  var lat = latitude / 900;
+  var lon = longitude / 900;
 
   var json = await getPlacesGoogle(lat, lon);
   var placeNames = [
