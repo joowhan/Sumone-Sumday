@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/screens/exchange_diary_detail.dart';
 import 'package:sumday/utils/variables.dart';
+import 'package:provider/provider.dart';
 
 class ExchangeDiaryCard extends StatelessWidget {
   final int idx;
@@ -56,13 +58,30 @@ class ExchangeDiaryCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "assets/$photo",
-                  width: double.maxFinite,
+                child: FutureBuilder<String>(
+                      future:
+                          Provider.of<DiariesProvider>(context, listen: false)
+                              .getImageUrl(photo),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Image.network(snapshot.data!,
+                                            width: double.maxFinite,
                   height: 185,
                   fit: BoxFit.fitWidth,
-                  alignment: Alignment.center,
-                ),
+                  alignment: Alignment.center,);
+                        }
+                      },
+                    ),
+                
               ),
               const SizedBox(
                 height: 10,

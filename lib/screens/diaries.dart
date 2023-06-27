@@ -41,7 +41,7 @@ class _DiariesState extends State<Diaries> {
                     action: SnackBarAction(
                       label: '취소',
                       onPressed: () {
-                        diariesProvider.addDiary(index, diary, docName);
+                        diariesProvider.insertDiary(index, diary, docName);
                       },
                     ),
                   ),

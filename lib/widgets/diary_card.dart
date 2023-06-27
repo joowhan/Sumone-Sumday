@@ -1,6 +1,11 @@
+// import 'dart:html';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sumday/models/rdiary_model.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 
 class DiaryCard extends StatefulWidget {
   final Diary diary;
@@ -17,6 +22,15 @@ class DiaryCard extends StatefulWidget {
 }
 
 class _DiaryCardState extends State<DiaryCard> {
+  String? imageUrl;
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DiariesProvider>(context, listen: false)
+        .getImageUrl(widget.diary.images[0])
+        .then((url) => imageUrl = url);
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate(DateTime time) =>
@@ -27,7 +41,9 @@ class _DiaryCardState extends State<DiaryCard> {
     }
 
     final ThemeData theme = Theme.of(context);
-
+    Provider.of<DiariesProvider>(context, listen: false)
+        .getImageUrl(widget.diary.images[0])
+        .then((url) => imageUrl = url);
     return Container(
       height: 125,
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
@@ -44,17 +60,33 @@ class _DiaryCardState extends State<DiaryCard> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(4.5, 4.5, 4.5, 4.5),
                 child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    // border: Border.all(
-                    //   color: Colors.black,
-                    //   width: 1.0,
-                    // ),
-                  ),
-                  child: Image.asset(
-                    'assets/${widget.diary.photos[0]}',
-                  ),
-                ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      // border: Border.all(
+                      //   color: Colors.black,
+                      //   width: 1.0,
+                      // ),
+                    ),
+                    child: FutureBuilder<String>(
+                      future:
+                          Provider.of<DiariesProvider>(context, listen: false)
+                              .getImageUrl(widget.diary.images[0]),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Image.network(snapshot.data!);
+                        }
+                      },
+                    ),
+                    ),
               ),
             ),
             Expanded(

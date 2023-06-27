@@ -243,7 +243,7 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
                                                                     .context[
                                                                 current],
                                                             photos: todayDiaries
-                                                                    .photos[
+                                                                    .images[
                                                                 current],
                                                             tags: todayDiaries
                                                                 .getCurrTags(

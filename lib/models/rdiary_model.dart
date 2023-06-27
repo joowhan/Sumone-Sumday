@@ -3,7 +3,7 @@ import 'package:sumday/screens/ai_writeDiary.dart';
 
 class Diary {
   String userID;
-  List<String> context, tags, photos;
+  List<String> context, tags, images;
   DateTime date;
   bool favorite;
 
@@ -11,7 +11,7 @@ class Diary {
     required this.userID,
     required this.date,
     required this.tags,
-    required this.photos,
+    required this.images,
     required this.context,
     required this.favorite,
   });
@@ -21,7 +21,7 @@ class Diary {
         date = json['date'].toDate(),
         tags = json['tags'].cast<String>(),
         context = json["context"].cast<String>(),
-        photos = json["photos"].cast<String>(),
+        images = json["photos"].cast<String>(),
         favorite = json['favorite'];
 
   Map<String, dynamic> toJson() => {
@@ -29,7 +29,7 @@ class Diary {
         "date": date,
         "tags": tags,
         "context": context,
-        "photos": photos,
+        "photos": images,
         "favorite": favorite,
       };
 

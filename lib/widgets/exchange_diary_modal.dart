@@ -25,7 +25,7 @@ class _ExchangeDiaryModalState extends State<ExchangeDiaryModal> {
         (index) => DiaryModalCard(
               tags: widget.diaries.getCurrTags(index).sublist(0, 3),
               location: widget.diaries.getCurrTags(index)[3],
-              photo: widget.diaries.photos[index],
+              photo: widget.diaries.images[index],
             ));
     return Padding(
       padding: const EdgeInsets.only(top: 20),

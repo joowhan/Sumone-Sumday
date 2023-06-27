@@ -41,7 +41,7 @@ class _BookmarksState extends State<Bookmarks> {
                     action: SnackBarAction(
                       label: '취소',
                       onPressed: () {
-                        diariesProvider.addDiary(index, diary, docName);
+                        diariesProvider.insertDiary(index, diary, docName);
                       },
                     ),
                   ),

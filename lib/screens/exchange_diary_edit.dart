@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/models/exchange_diary_model.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/screens/exchange_diary_detail.dart';
 import 'package:sumday/utils/variables.dart';
@@ -125,13 +126,29 @@ class _ExchangeDiaryEditPageState extends State<ExchangeDiaryEditPage> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              "assets/${widget.diary.photos}",
-                              width: 185,
+                            child: FutureBuilder<String>(
+                      future:
+                          Provider.of<DiariesProvider>(context, listen: false)
+                              .getImageUrl(widget.diary.photos),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Image.network(snapshot.data!,
+                                                        width: 185,
                               height: 185,
                               fit: BoxFit.fill,
-                              alignment: Alignment.center,
-                            ),
+                              alignment: Alignment.center,);
+                        }
+                      },
+                    ),
                           ),
                           const SizedBox(
                             height: 30,

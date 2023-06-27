@@ -47,7 +47,7 @@ class DiariesProvider with ChangeNotifier {
 
   // 일기 추가
   // docName : 일반적으로 저장할 때는 null 주면 됨, 삭제 복구할 때는 값 줘야함
-  Future<String> addDiary(int index, Diary diary, String? docName) async {
+  Future<String> insertDiary(int index, Diary diary, String? docName) async {
     print(index);
     diaries.insert(index, diary);
     var docName0 = await _saveDiary(diary, docName);
@@ -56,6 +56,20 @@ class DiariesProvider with ChangeNotifier {
     _numOfDiaries++;
     notifyListeners();
     return docName0;
+  }
+
+  Future<String> addDiary(Diary diary, String? docName) async {
+    if (!diaries.contains(diary)) {
+      diaries.add(diary);
+      var docName0 = await _saveDiary(diary, docName);
+
+      docNames.add(docName0);
+      _numOfDiaries++;
+      notifyListeners();
+      return docName0;
+    }
+    final idx = diaries.indexOf(diary);
+    return docNames[idx];
   }
 
   // 일기 업데이트
@@ -122,19 +136,20 @@ class DiariesProvider with ChangeNotifier {
       final uuid = generateUuid();
       final fileName = '$uuid.png';
 
-      final imageRef = FirebaseStorage.instance.ref().child(fileName);
+      final imageRef = FirebaseStorage.instance.ref().child('images/$fileName');
       await imageRef.putData(imageBytes);
       fileNames.add(fileName);
+
+      saveImageToStorage(imgUrl, fileName);
     }
 
     return fileNames;
   }
 
   // 내부 저장소에 이미지 저장
-  Future<void> saveImageToStorage(String url) async {
+  Future<void> saveImageToStorage(String url, String uuid) async {
     var response = await http.get(Uri.parse(url));
     final Uint8List bytes = response.bodyBytes;
-    final uuid = generateUuid();
 
     Directory dir = await getApplicationDocumentsDirectory();
     String filePath = '${dir.path}/$uuid.png';
@@ -142,5 +157,31 @@ class DiariesProvider with ChangeNotifier {
     File file = File(filePath);
     await file.writeAsBytes(bytes);
     print('이미지 저장 경로: $filePath');
+    print('추가 경로 : ${getApplicationDocumentsDirectory()}');
   }
+
+  // 내부 저장소에서 이미지 불러오기
+  Future<Uint8List> loadImageFromStorage(String filePath) async {
+    File file = File(filePath);
+    Uint8List bytes = await file.readAsBytes();
+    return bytes;
+  }
+
+  Future<String> getImageUrl(String imageName) async {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  // Here we assume that the images are stored in a directory named 'images'.
+  // You should replace this with the actual path to your images.
+  return storage.ref().child('images/$imageName').getDownloadURL();
+  print('images/$imageName');
+
+  // try {
+  //   String url = await ref.getDownloadURL();
+  //   print(url);
+  //   return url;
+  // } catch (e) {
+  //   print(e);
+  //   return 'null';
+  // }
+}
 }

@@ -43,6 +43,8 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
     final sortedLocationList =
         locationList.reversed.toList().sublist(0, min(3, locationList.length));
     List<UserForm> dataList = widget.dataList;
+    print('aaaa $sortedLocationList');
+    print(widget.pageIndex);
     return Center(
       child: ListView(
         children: [

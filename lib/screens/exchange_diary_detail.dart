@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/models/comment_model.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
@@ -12,13 +13,14 @@ class ExchangeDiaryDetail extends StatefulWidget {
   final int idx;
   final String diaryId;
   final String content;
-  final List<dynamic> comments;
+  List<dynamic> comments;
   final List<dynamic> tags;
   final String location;
   final DateTime date;
   final String writer;
   final String photo;
-  const ExchangeDiaryDetail({
+
+  ExchangeDiaryDetail({
     super.key,
     required this.idx,
     required this.diaryId,
@@ -112,13 +114,28 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                         ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(10)),
-                          child: Image.asset(
-                            "assets/${widget.photo}",
-                            width: double.maxFinite,
+                          child: FutureBuilder<String>(
+                      future:
+                          Provider.of<DiariesProvider>(context, listen: false)
+                              .getImageUrl(widget.photo),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Image.network(snapshot.data!,width: double.maxFinite,
                             height: 185,
                             fit: BoxFit.fitWidth,
-                            alignment: Alignment.center,
-                          ),
+                            alignment: Alignment.center,);
+                        }
+                      },
+                    )
                         ),
                         const SizedBox(
                           height: 20,

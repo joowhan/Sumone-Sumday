@@ -49,7 +49,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
   @override
   Widget build(BuildContext context) {
     var _pages = List.generate(
-        widget.dataList.length, (index) => DiaryContents(index: index));
+        widget.dataList.length, (index) => DiaryContents(dataList:widget.dataList, index: index));
 
     print(_pages);
 
@@ -140,8 +140,9 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 
 class DiaryContents extends StatefulWidget {
   final int index;
+  final List<UserForm> dataList;
 
-  const DiaryContents({super.key, required this.index});
+  const DiaryContents({super.key, required this.dataList, required this.index});
 
   @override
   State<DiaryContents> createState() => _DiaryContentsState();
@@ -200,9 +201,25 @@ class _DiaryContentsState extends State<DiaryContents> {
                                   backgroundColor: Color(0xfff4c758),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(22))),
-                              onPressed: () {
-                                if (diariesProvider.diaries.length !=
-                                    generateProvider.getDiaryIndex) {}
+                              onPressed: () async {
+                                if (generateProvider.isAllGen) {
+                                  print('start saving!');
+                                  var fileNames =
+                                      await diariesProvider.saveImageToFirebase(
+                                          generateProvider.getAllImageUrl!);
+                                  print('filename : ${fileNames[0]}');
+                                  var diary = Diary(
+                                      userID: diariesProvider.userID,
+                                      date: DateTime.now(),
+                                      tags:
+                                          Diary.listConverter(widget.dataList),
+                                      images: fileNames,
+                                      context:
+                                          generateProvider.getAllKoSummary!,
+                                      favorite: false);
+                                  print('diary filename : ${diary.images[0]}');
+                                  diariesProvider.addDiary(diary, null);
+                                }
                               },
                               child: Text(
                                 '저장',
