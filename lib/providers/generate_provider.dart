@@ -89,7 +89,7 @@ class GenerateProvider with ChangeNotifier {
   }
 
   String getPrompt(UserForm data) {
-    return '${data.userState} ${data.activity} ${data.relation} ${data.location}';
+    return '${data.userState} ${data.activity} ${data.relation} ${data.location} ${data.category}';
   }
 
   String getKoSummary(int index) {
@@ -125,7 +125,7 @@ class GenerateProvider with ChangeNotifier {
 
     var data = _dataList![index];
     var prompt = getPrompt(data);
-    print('$prompt');
+    print(prompt);
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -168,7 +168,7 @@ class GenerateProvider with ChangeNotifier {
     if (!_isImageGen![index]) {
       final openai = OpenaiDalleWrapper(apiKey: apiKey);
       String url = await openai
-          .generateImage(_enSummary![index] + ", a painting of illustration");
+          .generateImage("${_enSummary![index]}, a painting of illustration");
       print(url);
       _setImgUrl(index, url);
       _setImageGen(index);

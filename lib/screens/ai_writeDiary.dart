@@ -1,4 +1,9 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/location_provider.dart';
 import 'package:sumday/screens/generate_diary.dart';
 // import 'package:multi_select_flutter/multi_select_flutter.dart';
 // import 'package:flutter_titled_container/flutter_titled_container.dart';
@@ -32,7 +37,13 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   // int hour = timestamp.hour;
   final TextEditingController _controller = TextEditingController();
   Widget _aiKeywordsForm() {
+    final locationProviderList = Provider.of<LocationProvider>(context);
+    final locationList = locationProviderList.locationList;
+    locationList.sort((a, b) => a.count.compareTo(b.count));
+    final sortedLocationList =
+        locationList.reversed.toList().sublist(0, min(3, locationList.length));
     List<UserForm> dataList = widget.dataList;
+    String? locationCategory;
     return Center(
       child: ListView(
         children: [
@@ -46,13 +57,13 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 fontWeight: FontWeight.bold,
                 color: Color(0xff136750)),
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // SizedBox(width: 10,),
               Text(
-                "6월 9일, 오전 10시,", //timestamp에서 시간을 불러와야 한다.
-                style: TextStyle(
+                "${sortedLocationList[widget.pageIndex].timestamp.toDate().month}월 ${sortedLocationList[widget.pageIndex].timestamp.toDate().day}일 ${sortedLocationList[widget.pageIndex].timestamp.toDate().hour}시", //timestamp에서 시간을 불러와야 한다.
+                style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Color(0xff136750)),
@@ -78,8 +89,16 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: locations.map((location) {
-                      final locationId = locations.indexOf(location) + 1;
+                    children: sortedLocationList[widget.pageIndex]
+                        .places
+                        .map((locationData) {
+                      //final locationId = locations.indexOf(location) + 1;
+                      final location = locationData['placeName'];
+                      final locationId = sortedLocationList[widget.pageIndex]
+                              .places
+                              .indexOf(locationData) +
+                          1;
+
                       return Row(
                         children: [
                           OutlinedButton(
@@ -90,7 +109,17 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                                       : Colors.white,
                             ),
                             onPressed: () {
-                              locationClick(location, locationId.toString());
+                              var locationCategoryList =
+                                  sortedLocationList[widget.pageIndex]
+                                      .places[locationId - 1]
+                                          ['placeCategoryName']
+                                      .toString()
+                                      .split(">");
+                              var locationCategory = locationCategoryList[
+                                  max(0, locationCategoryList.length - 2)];
+                              print(locationCategory);
+                              locationClick(location, locationId.toString(),
+                                  locationCategory.toString());
                             },
                             child: Text(
                               location,
@@ -148,6 +177,14 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
               OutlinedButton(
                 onPressed: () async {
                   setState(() {
+                    sortedLocationList[widget.pageIndex].places.insert(0, {
+                      'placeName': textValue,
+                      'placeCategoryName': '기타장소>기타장소',
+                      'placeCategoryGroupCode': 'FD6',
+                      'placeCategoryCode': 'FD6',
+                      'count': 1,
+                      'timestamp': Timestamp.now(),
+                    });
                     locations.insert(0, textValue); // textValue를 버튼 리스트에 추가
                     textValue = '';
                     _controller.clear(); // textValue 초기화
@@ -351,6 +388,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                 onPressed: () {
                   UserForm userForm = UserForm(
                       location: _location,
+                      category: _category,
                       relation: _relation,
                       activity: _activity,
                       userState: _feeling);
@@ -358,7 +396,8 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                   print(widget.dataList);
                   print(dataList);
                   print(widget.pageIndex);
-                  if (widget.pageIndex < 2) {
+                  print(locationList.length);
+                  if (widget.pageIndex < min(2, locationList.length - 1)) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -396,6 +435,7 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
   }
 
   var _location = "";
+  var _category = "";
   var _relation = "";
   var _activity = "";
   var _feeling = "";
@@ -415,11 +455,13 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
     return _question;
   }
 
-  void locationClick(text, id) {
+  void locationClick(text, id, category) {
     setState(() {
       _location = text; // 버튼 클릭 시 변수에 값을 저장
+      _category = category; // 버튼 클릭 시 변수에 값을 저장
       // isLocationClicked = !isLocationClicked;
       _locationId = id;
+      print("$id, $text, $category");
     });
   }
 
@@ -481,12 +523,14 @@ List<Relation> relations = [
 
 class UserForm {
   final String location;
+  final String category;
   final String relation;
   final String activity;
   final String userState;
 
   UserForm({
     required this.location,
+    required this.category,
     required this.relation,
     required this.activity,
     required this.userState,
