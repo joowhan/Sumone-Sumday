@@ -1,293 +1,260 @@
-//ai_resultDiary.dart
-import 'package:flutter/material.dart';
+import 'package:sumday/models/rdiary_model.dart';
+import 'package:sumday/providers/diaries_provider.dart';
 import 'package:sumday/screens/ai_writeDiary.dart';
-import 'dart:convert';
-import 'package:openai_dalle_wrapper/openai_dalle_wrapper.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sumday/widgets/DiarySlider.dart';
+import 'package:sumday/widgets/ExpandablePageView.dart';
+import 'package:flutter/material.dart';
+import 'package:indexed/indexed.dart';
+import 'package:provider/provider.dart';
+import 'package:sumday/providers/generate_provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:uuid/uuid.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 const apiKey = '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';
 const apiUrl = 'https://api.openai.com/v1/completions';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-
-// 이곳에서 로그인된 사용자의 uid를 가져옵니다.
-final User? user = _auth.currentUser;
-final uid = user?.uid;
-
 class GenerateDiary extends StatefulWidget {
-  // const GenerateDiary({Key? key}) : super(key: key);
   final List<UserForm> dataList;
 
   const GenerateDiary({super.key, required this.dataList});
+
   @override
   State<GenerateDiary> createState() => _GenerateDiaryState();
 }
 
 class _GenerateDiaryState extends State<GenerateDiary> {
-  List<String> diaryTexts = [];
-  List<String> diaryImageURLs = [];
-  String? diaryImageURL;
-  String? imageUuid; // 클래스 레벨에서 imageUuid 선언
   @override
-  // void initState() {
-  //   super.initState();
-  //   print('Location: ${widget.data.location}');
-  //   print('Relation: ${widget.data.relation}');
-  //   print('Activity: ${widget.data.activity}');
-  //   print('User State: ${widget.data.userState}');
-  // }
   void initState() {
     super.initState();
-  }
-// void printContents() {
-//   diaryTexts.forEach((text) {
-//     print(text);
-//   });
 
-//   diaryImageURLs.forEach((url) {
-//     print(url);
-//   });
-// }
-  Future<void> generateAllContents() async {
-    diaryImageURLs.clear(); 
-    diaryTexts.clear();  
-    await Future.forEach(widget.dataList, (UserForm data) async {
-      String textPrompt = '${data.userState} ${data.activity} ${data.relation} ${data.location}';
-      print(textPrompt);
-      String summaryInEnglish = await generateSummary(textPrompt);
-
-      final openai = OpenaiDalleWrapper(apiKey: apiKey);
-      String diaryImageURL = await openai.generateImage(summaryInEnglish + ", a painting of illustration");
-      diaryImageURLs.add(diaryImageURL);  // 생성된 이미지 URL을 리스트에 추가
-
-      String diaryText = await translateToKorean(summaryInEnglish);
-      diaryTexts.add(diaryText);  // 생성된 일기 내용을 리스트에 추가
-    });
+    final generateProvider =
+        Provider.of<GenerateProvider>(context, listen: false);
+    generateProvider.init(widget.dataList);
+    for (var i = 0; i < widget.dataList.length; i++) {
+      generateProvider.generateContents(i);
+    }
+    print('init');
   }
 
-
-  Future<String> generateSummary(String prompt) async {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $apiKey'
-      },
-      body: jsonEncode({
-        "model": "text-davinci-003",
-        'prompt': "Please make it into one sentence in English : " '$prompt',
-        'max_tokens': 1000,
-        'temperature': 0,
-        'top_p': 1,
-        'frequency_penalty': 0,
-        'presence_penalty': 0
-      }),
-    );
-
-    Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
-    //print(newresponse['choices'][0]['text'].trim());
-    return newresponse['choices'][0]['text'].trim();
+  String getTimeString() {
+    final now = DateTime.now();
+    final formatter = DateFormat('MMdd_hh(a)');
+    final formatted = formatter.format(now);
+    return formatted;
   }
-
-  Future<String> translateToKorean(String text) async {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $apiKey'
-      },
-      body: jsonEncode({
-        "model": "text-davinci-003",
-        'prompt': "Please write it in a Korean diary format : '$text' ",
-        'max_tokens': 1000,
-        'temperature': 0,
-        'top_p': 1,
-        'frequency_penalty': 0,
-        'presence_penalty': 0
-      }),
-    );
-
-    Map<String, dynamic> newresponse =
-    jsonDecode(utf8.decode(response.bodyBytes));
-    //print(newresponse['choices'][0]['text'].trim());
-    return newresponse['choices'][0]['text'].trim();
-  }
-
-  // Future<void> saveImageToFirebaseStorage(
-  //     String? imageUrl, String? uid, String? uuid) async {
-  //   final response = await http.get(Uri.parse(imageUrl!));
-  //   final Uint8List imageBytes = response.bodyBytes;
-
-  //   final imageRef =
-  //   FirebaseStorage.instance.ref().child('/images/$uid/$uuid.png');
-  //   await imageRef.putData(imageBytes);
-  // }
-
-String generateUuid() {
-  var uuid = Uuid();
-  return uuid.v1();
-}
-Future<void> save_local(String url) async {
-  var response = await http.get(Uri.parse(url));
-  final Uint8List bytes = response.bodyBytes;
-
-  Directory dir = await getApplicationDocumentsDirectory();
-  String fileName = generateUuid();
-  String filePath = '${dir.path}/$fileName.png';
-
-  File file = File(filePath);
-  await file.writeAsBytes(bytes);
-  print('이미지 저장 경로: $filePath');
-}
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: generateAllContents(),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        // 데이터 로드가 완료되었다면
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  print('back');
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black38,
-                ),
-              ),
-              actions: [
-                IconButton(
-                    onPressed: () async {
-                      print('save');
-                       diaryImageURLs.forEach((url) { // 로컬에 이미지 저장
-                        save_local(url);
-                        });
-                      //var uuid = Uuid();
-                      //imageUuid = uuid.v1();
+    var _pages = List.generate(
+        widget.dataList.length, (index) => DiaryContents(index: index));
 
-                      //printContents();
-                      // saveImageToFirebaseStorage(
-                      //     diaryImageURL, uid, imageUuid); // 스토리지 이미지 저장
-                      //saveDiaryToFirestore(); //일기 저장
-                    },
-                    icon: const Icon(
-                      Icons.done,
-                      color: Colors.black38,
-                    ))
-              ],
-              backgroundColor: Colors.white,
-              elevation: 0.0,
+    print(_pages);
+
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Color(0xfffffdf8),
+        appBar: AppBar(
+          leading: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Color(0xff475468),
+                size: 16,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                print('back button click');
+                // Navigator.pop(context);
+              },
             ),
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
-              child: Column(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          leadingWidth: 40,
+          title: Text(
+            getTimeString(),
+            style: TextStyle(
+              fontSize: 32,
+              color: Color(0xff363636),
+            ),
+          ),
+          shadowColor: Color(0xffffffff),
+          elevation: .6,
+          toolbarHeight: 68,
+          backgroundColor: Colors.white,
+        ),
+        body: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 1000),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: DiarySlider(maxRange: 3),
+                ),
+                Indexer(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Indexed(
+                      index: 2,
+                      child: Container(
+                        width: 104,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Color(0xfff4c758),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '1 / 3',
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset(0, 22),
+                      child: Indexed(
+                        index: 1,
+                        child: ExpandablePageView(children: _pages),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DiaryContents extends StatefulWidget {
+  final int index;
+
+  const DiaryContents({super.key, required this.index});
+
+  @override
+  State<DiaryContents> createState() => _DiaryContentsState();
+}
+
+class _DiaryContentsState extends State<DiaryContents> {
+  bool isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GenerateProvider>(
+      builder: (context, generateProvider, _) {
+        return Consumer<DiariesProvider>(
+          builder: (context, diariesProvider, _) {
+            return Column(
+              children: [
+                SizedBox(
+                  width: 300,
+                  height: 300,
+                  child: generateProvider.isGenComplete(widget.index)
+                      ? Image.network(
+                          generateProvider.getImageUrl(widget.index))
+                      : CircularProgressIndicator(),
+                ),
+                Transform.translate(
+                  offset: Offset(0, -14),
+                  child: Column(
                     children: [
-                      Text(
-                        DateFormat('y년 M월 d일 a h:mm')
-                            .format(DateTime.now().toLocal()),
-                        style: TextStyle(
-                          color: Colors.black38,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      Text(
-                        '#${widget.dataList[0].userState}#${widget.dataList[0].activity}#${widget.dataList[0].relation}#${widget.dataList[0].location}',
-                        style: const TextStyle(
-                          color: Colors.black38,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      const SizedBox(
+                      SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        child: diaryImageURL == null
-                            ? const CircularProgressIndicator() // null이면 로딩 표시
-                            : Image.network(diaryImageURL!), // null이 아니면 이미지 출력
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 32),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined,
+                                    size: 48, weight: 1),
+                                Text(
+                                  generateProvider
+                                      .getUserData(widget.index)
+                                      .getLocation(),
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xfff4c758),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(22))),
+                              onPressed: () {
+                                // diariesProvider.addDiary(generateProvider.);
+                              },
+                              child: Text(
+                                '저장',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const Row(
-                        children: [
-                          Text(
-                            '오늘의 날씨',
-                            style: TextStyle(),
+                      Card(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                                color: Color(0xffc4c4c4), width: .6)),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  generateProvider
+                                      .getUserData(widget.index)
+                                      .getHashTags(),
+                                  style: TextStyle(
+                                      fontSize: 18, color: Color(0xff888888)),
+                                ),
+                                if (generateProvider.isTextGen![widget.index])
+                                  Text(
+                                    generateProvider.getKoSummary(widget.index),
+                                    style: TextStyle(
+                                        fontSize: 24, color: Colors.black),
+                                  ),
+                                if (!generateProvider.isTextGen![widget.index])
+                                  Text(
+                                    '로딩중~',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        color: Colors.grey.shade600),
+                                  ),
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          Icon(
-                            Icons.sunny,
-                            size: 15.0,
-                          )
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.image),
-                  label: '',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.add_reaction),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.text_fields),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.bookmark_border),
-                  label: '',
-                ),
+                SizedBox(height: 18),
               ],
-              // currentIndex: _selectedIndex,
-              // selectedItemColor: Colors.white,
-              // backgroundColor: Color(0xffF4C54F),
-              // onTap: _onItemTapped,
-            ),
-          );
-        }
-        // 아직 로드 중이거나 오류가 발생했다면 로딩 화면을 표시
-        else {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LoadingAnimationWidget.halfTriangleDot(
-                  color: Color(0xFFF4C54F),
-                  size: 200, ),
-                  SizedBox(height: 16),
-                  Text(
-                    "일기 생성 중...",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+            );
+          },
+        );
       },
     );
   }
