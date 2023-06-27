@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sumday/models/rdiary_model.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DiariesProvider with ChangeNotifier {
   List<Diary> diaries = <Diary>[];
@@ -18,6 +20,10 @@ class DiariesProvider with ChangeNotifier {
 
   String get userID => _userID!;
   int get numOfDiaries => _numOfDiaries;
+
+  String generateUuid() {
+    return const Uuid().v1();
+  }
 
   void init() {
     setUserID();
@@ -93,13 +99,14 @@ class DiariesProvider with ChangeNotifier {
     }
   }
 
-  Future<List<String>> saveImage(List<String> imgUrls) async {
+  // 파베에 이미지 저장
+  Future<List<String>> saveImageToFirebase(List<String> imgUrls) async {
     List<String> fileNames = [];
 
     for (var imgUrl in imgUrls) {
       final response = await http.get(Uri.parse(imgUrl));
       final Uint8List imageBytes = response.bodyBytes;
-      final uuid = const Uuid().v1();
+      final uuid = generateUuid();
       final fileName = '$uuid.png';
 
       final imageRef = FirebaseStorage.instance.ref().child(fileName);
@@ -108,5 +115,19 @@ class DiariesProvider with ChangeNotifier {
     }
 
     return fileNames;
+  }
+
+  // 내부 저장소에 이미지 저장
+  Future<void> saveImageToStorage(String url) async {
+    var response = await http.get(Uri.parse(url));
+    final Uint8List bytes = response.bodyBytes;
+    final uuid = generateUuid();
+
+    Directory dir = await getApplicationDocumentsDirectory();
+    String filePath = '${dir.path}/$uuid.png';
+
+    File file = File(filePath);
+    await file.writeAsBytes(bytes);
+    print('이미지 저장 경로: $filePath');
   }
 }

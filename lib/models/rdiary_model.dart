@@ -1,4 +1,5 @@
 import 'package:sumday/screens/ai_writeDiary.dart';
+// diary_model을 다른 용도로 사용하고 있음..
 
 class Diary {
   String userID;

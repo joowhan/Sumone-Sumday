@@ -491,6 +491,15 @@ class UserForm {
     required this.activity,
     required this.userState,
   });
+
+  String getHashTags() {
+    return '#$relation #$activity #$userState';
+  }
+
+  String getLocation() {
+    return location;
+  }
+
   @override
   String toString() {
     return 'UserForm{location: $location, relation: $relation, activity: $activity, userState: $userState}';
