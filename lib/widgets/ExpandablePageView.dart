@@ -1,5 +1,7 @@
+import 'package:sumday/providers/generate_provider.dart';
 import 'package:sumday/widgets/SizeReportingWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ExpandablePageView extends StatefulWidget {
   final List<Widget> children;
@@ -42,21 +44,30 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      curve: Curves.easeInOutCubic,
-      duration: const Duration(milliseconds: 100),
-      tween: Tween<double>(begin: _heights[0], end: _currentHeight),
-      builder: (context, value, child) => SizedBox(height: value, child: child),
-      child: PageView(
-        scrollDirection: Axis.horizontal,
-        controller: _pageController,
-        children: _sizeReportingChildren
-            .asMap() //
-            .map((index, child) => MapEntry(index, child))
-            .values
-            .toList(),
-      ),
-    );
+    return Consumer<GenerateProvider>(builder: (context, generateProvider, _) {
+      return TweenAnimationBuilder<double>(
+        curve: Curves.easeInOutCubic,
+        duration: const Duration(milliseconds: 100),
+        tween: Tween<double>(begin: _heights[0], end: _currentHeight),
+        builder: (context, value, child) =>
+            SizedBox(height: value, child: child),
+        child: PageView(
+          onPageChanged: (changePage) {
+            setState(() {
+              generateProvider.setPageValue(changePage);
+              generateProvider.setSliderValue((changePage + 1).toDouble());
+            });
+          },
+          scrollDirection: Axis.horizontal,
+          controller: _pageController,
+          children: _sizeReportingChildren
+              .asMap() //
+              .map((index, child) => MapEntry(index, child))
+              .values
+              .toList(),
+        ),
+      );
+    });
   }
 
   List<Widget> get _sizeReportingChildren => widget.children

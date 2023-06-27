@@ -29,10 +29,13 @@ class _GenerateDiaryState extends State<GenerateDiary> {
 
     final generateProvider =
         Provider.of<GenerateProvider>(context, listen: false);
-    generateProvider.init(widget.dataList);
+    final diariesProvider =
+        Provider.of<DiariesProvider>(context, listen: false);
+    generateProvider.init(widget.dataList, diariesProvider.numOfDiaries);
     for (var i = 0; i < widget.dataList.length; i++) {
       generateProvider.generateContents(i);
     }
+
     print('init');
   }
 
@@ -90,7 +93,8 @@ class _GenerateDiaryState extends State<GenerateDiary> {
               children: [
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: DiarySlider(maxRange: 3),
+                  child:
+                      DiarySlider(maxRange: widget.dataList.length.toDouble()),
                 ),
                 Indexer(
                   alignment: Alignment.topCenter,
@@ -106,7 +110,7 @@ class _GenerateDiaryState extends State<GenerateDiary> {
                         ),
                         child: Center(
                           child: Text(
-                            '1 / 3',
+                            '${Provider.of<GenerateProvider>(context, listen: false).sliderValue.round()} / ${widget.dataList.length}',
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
@@ -197,7 +201,8 @@ class _DiaryContentsState extends State<DiaryContents> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(22))),
                               onPressed: () {
-                                // diariesProvider.addDiary(generateProvider.);
+                                if (diariesProvider.diaries.length !=
+                                    generateProvider.getDiaryIndex) {}
                               },
                               child: Text(
                                 '저장',

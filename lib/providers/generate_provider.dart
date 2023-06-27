@@ -15,10 +15,29 @@ class GenerateProvider with ChangeNotifier {
   final String apiKey = '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';
   final String apiUrl = 'https://api.openai.com/v1/completions';
 
+  int? _diaryIndex;
+
+  int _pageValue = 1;
+  double _sliderValue = 1;
+
+  void setPageValue(int value) {
+    _pageValue = value;
+    notifyListeners();
+  }
+
+  void setSliderValue(double value) {
+    _sliderValue = value;
+    notifyListeners();
+  }
+
+  int get PageValue => _pageValue;
+  double get sliderValue => _sliderValue;
+
   List<bool>? get isTextGen => _isTextGen;
   List<bool>? get isPhotoGen => _isImageGen;
+  int? get getDiaryIndex => _diaryIndex;
 
-  void init(List<UserForm> data) {
+  void init(List<UserForm> data, int diaryIndex) {
     _dataList = data;
     var length = data.length;
     _isTextGen =
@@ -31,6 +50,7 @@ class GenerateProvider with ChangeNotifier {
         List<String>.generate(length, (int index) => '', growable: false);
     _imageUrl =
         List<String>.generate(length, (int index) => '', growable: false);
+    _diaryIndex = diaryIndex;
     print(_dataList);
   }
 
