@@ -17,6 +17,22 @@ class GenerateProvider with ChangeNotifier {
 
   int? _diaryIndex;
 
+  int _pageValue = 1;
+  double _sliderValue = 1;
+
+  void setPageValue(int value) {
+    _pageValue = value;
+    notifyListeners();
+  }
+
+  void setSliderValue(double value) {
+    _sliderValue = value;
+    notifyListeners();
+  }
+
+  int get PageValue => _pageValue;
+  double get sliderValue => _sliderValue;
+
   List<bool>? get isTextGen => _isTextGen;
   List<bool>? get isPhotoGen => _isImageGen;
   int? get getDiaryIndex => _diaryIndex;
