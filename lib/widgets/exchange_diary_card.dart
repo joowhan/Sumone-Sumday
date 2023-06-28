@@ -59,7 +59,7 @@ class ExchangeDiaryCard extends StatelessWidget {
                 child: Image.asset(
                   "assets/$photo",
                   width: double.maxFinite,
-                  height: 185,
+                  height: 150,
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.center,
                 ),

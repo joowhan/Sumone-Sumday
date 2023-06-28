@@ -59,8 +59,8 @@ class _ExchangeDiaryState extends State<ExchangeDiary> {
       return ExchangeDiaryCard(
         idx: index,
         diaryId: docIds[widget.idx],
-        tags: diaryList[widget.idx].diaryList[index]["tags"].sublist(0, 3),
-        location: diaryList[widget.idx].diaryList[index]["tags"][3],
+        tags: diaryList[widget.idx].diaryList[index]["tags"].sublist(1, 4),
+        location: diaryList[widget.idx].diaryList[index]["tags"][0],
         content: diaryList[widget.idx].diaryList[index]["content"],
         date: diaryList[widget.idx].diaryList[index]["createdAt"].toDate(),
         writer: diaryList[widget.idx].diaryList[index]["owner"],

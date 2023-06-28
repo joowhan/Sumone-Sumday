@@ -235,7 +235,7 @@ class _ExchangeDiaryListState extends State<ExchangeDiaryList> {
                           content: Row(
                             children: [
                               SizedBox(
-                                width: 200,
+                                width: 150,
                                 child: TextField(
                                   controller: codeController,
                                   decoration: const InputDecoration(
