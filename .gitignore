@@ -163,7 +163,8 @@ coverage/
 firebase_options.dart
 
 #google login
-google-services.json
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
 
 #pubspec.lock
 pubspec.lock
