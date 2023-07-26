@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:sumday/screens/mainPage.dart';
-import 'package:sumday/signIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sumday/main.dart';
-import 'package:sumday/signIn.dart';
-import 'package:sign_button/sign_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/loginProvider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'home.dart';
-import 'package:sumday/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,15 +33,15 @@ class _LoginPageState extends State<LoginPage> {
         return await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                      title: Text('정말 종료하겠습니까?'),
+                      title: const Text('정말 종료하겠습니까?'),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: Text('확인'),
+                          child: const Text('확인'),
                         ),
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('취소'),
+                          child: const Text('취소'),
                         ),
                       ],
                     )) ??
@@ -61,13 +52,13 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 200.0),
+              const SizedBox(height: 200.0),
               Image.asset(
                 "assets/main_logo.png",
                 width: 300,
                 height: 300,
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               OutlinedButton.icon(
                 onPressed: () async {
                   bool hasPermission = await permission(); // 위치 권한 요청
@@ -89,11 +80,11 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(width: 2, color: Color(0xFFF4C54F)),
+                  side: const BorderSide(width: 2, color: Color(0xFFF4C54F)),
                   fixedSize: const Size(300, 55),
                   backgroundColor: Colors.white,
                 ),
-                label: Text(
+                label: const Text(
                   "Google로 로그인 하기",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -127,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                     print("위치 권한이 필요합니다."); // 위치 권한이 없는 경우 처리
                   }
                 },
-                child: Text(
+                child: const Text(
                   '익명 로그인',
                   style: TextStyle(
                     color: Color(0xFFF4C54F),

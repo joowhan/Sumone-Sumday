@@ -24,17 +24,16 @@ class ExchangeDiaryListProvider with ChangeNotifier {
         .collection('exchangeDiaryList')
         .where("participants", arrayContains: uid)
         .get();
-    List<ExchangeDiaryListModel> loadedDiaries = [];
-    List<String> loadedDocIds = [];
+    List<ExchangeDiaryListModel> loadedDiaries = []; // db에서 불러온 일기 내용
+    List<String> loadedDocIds = []; // db에서 불러온 일기의 id
 
     for (var i = 0; i < snapshot.docs.length; i++) {
       final data = snapshot.docs[i].data() as Map<String, dynamic>?;
       final diary = ExchangeDiaryListModel.fromJson(data!);
-      // loadedDiaries.add(diary);
-      // loadedDocIds.add(snapshot.docs[i].id);
       loadedDiaries = [...loadedDiaries, diary];
       loadedDocIds = [...loadedDocIds, snapshot.docs[i].id];
     }
+    // db에서 불러온 데이터를 Provider에 저장
     diaryList = loadedDiaries;
     docIds = loadedDocIds;
     isLoad = true;
@@ -53,8 +52,6 @@ class ExchangeDiaryListProvider with ChangeNotifier {
       order: diary.order,
       createdAt: diary.createdAt,
     );
-    // diaryList.add(newDiary);
-    // docIds.add(doc.id);
     diaryList = [...diaryList, newDiary];
     docIds = [...docIds, doc.id];
     notifyListeners();
@@ -69,7 +66,6 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     if (existingDiaries == null) {
       existingDiaries = [diaryObject];
     } else {
-      // existingDiaries.add(diaryObject);
       existingDiaries = [...existingDiaries, diaryObject];
     }
 
@@ -119,7 +115,7 @@ class ExchangeDiaryListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 순서를 다음 순서로 변경
+  // 일기 작성 완료시 작성 차례를 다음 순서로 변경
   Future<void> setOrder(String docId, int order) async {
     final index = docIds.indexWhere((element) => element == docId);
     final docRef = db.collection('exchangeDiaryList').doc(docId);

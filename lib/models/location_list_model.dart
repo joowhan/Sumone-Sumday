@@ -5,23 +5,20 @@
 * */
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sumday/models/place_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LocationListModel {
   int count;
   List<VisitedPlaceModel> places;
   Timestamp timestamp;
   String weather;
-  String weather_description;
+  String weatherDescription;
 
   LocationListModel({
     required this.count,
     required this.places,
     required this.timestamp,
     required this.weather,
-    required this.weather_description,
+    required this.weatherDescription,
   });
 
   LocationListModel.fromJson(Map<String, dynamic> json)
@@ -29,19 +26,17 @@ class LocationListModel {
         places = json["place"],
         timestamp = json["timestamp"],
         weather = json["weather"],
-        weather_description = json["weather_description"];
+        weatherDescription = json["weather_description"];
   Map<String, Object?> toJson() => {
         'count': count,
         'place': places,
         'timestamp': timestamp,
         'weather': weather,
-        'weather_description': weather_description,
+        'weather_description': weatherDescription,
       };
 }
 
-Future<void> fetchLocationList() async {
-
-}
+Future<void> fetchLocationList() async {}
 
 
 //

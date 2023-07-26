@@ -392,10 +392,6 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       activity: _activity,
                       userState: _feeling);
                   dataList = [...widget.dataList, userForm];
-                  print(widget.dataList);
-                  print(dataList);
-                  print(widget.pageIndex);
-                  print(locationList.length);
                   if (widget.pageIndex < min(2, locationList.length - 1)) {
                     Navigator.push(
                       context,
@@ -407,7 +403,6 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
                       ),
                     );
                   } else {
-                    print(dataList);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -460,7 +455,6 @@ class _Ai_WriteDiaryState extends State<Ai_WriteDiary> {
       _category = category; // 버튼 클릭 시 변수에 값을 저장
       // isLocationClicked = !isLocationClicked;
       _locationId = id;
-      print("$id, $text, $category");
     });
   }
 

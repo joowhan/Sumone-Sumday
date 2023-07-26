@@ -97,7 +97,6 @@ class LoginProvider with ChangeNotifier {
       _userName = user!.displayName;
 
       addUserInfo(user);
-      print("hello");
       downloadUserInfo(user);
       // FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
       notifyListeners();
@@ -142,7 +141,6 @@ class LoginProvider with ChangeNotifier {
       if (doc.exists) {
         print('already exists'); // 이미 존재하는 유저이면 새로 추가 X
       } else {
-        print('hello2');
         return FirebaseFirestore.instance
             .collection('user')
             .doc(user.uid)
@@ -167,7 +165,7 @@ class LoginProvider with ChangeNotifier {
       'status_message': "sumday is all you need",
       'uid': user.uid,
     });
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> updateAnonymousInfo(User? user) {
@@ -179,7 +177,7 @@ class LoginProvider with ChangeNotifier {
       'status_message': "New sumday user.",
       'uid': user.uid,
     });
-    notifyListeners();
+    // notifyListeners();
   }
 }
 

@@ -12,7 +12,8 @@ class GenerateProvider with ChangeNotifier {
   List<String>? _koSummary;
   List<String>? _imageUrl;
 
-  final String apiKey = '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';
+  // 배포를 위해 API 키 지웠습니다.
+  final String apiKey = 'YOUR_API_KEY';
   final String apiUrl = 'https://api.openai.com/v1/completions';
 
   int? _diaryIndex;
@@ -51,36 +52,30 @@ class GenerateProvider with ChangeNotifier {
     _imageUrl =
         List<String>.generate(length, (int index) => '', growable: false);
     _diaryIndex = diaryIndex;
-    print(_dataList);
   }
 
   void _setTextGen(int index) {
     _isTextGen?[index] = true;
-    print('11');
     notifyListeners();
   }
 
   void _setImageGen(int index) {
     _isImageGen?[index] = true;
-    print('22');
     notifyListeners();
   }
 
   void _setEnSummary(int index, String text) {
     _enSummary?[index] = text;
-    print('33');
     notifyListeners();
   }
 
   void _setKoSummary(int index, String text) {
     _koSummary?[index] = text;
-    print('44');
     notifyListeners();
   }
 
   void _setImgUrl(int index, String url) {
     _imageUrl?[index] = url;
-    print('55');
     notifyListeners();
   }
 
@@ -118,14 +113,10 @@ class GenerateProvider with ChangeNotifier {
   // }
 
   Future<void> generateSummary(int index) async {
-    print('gen1');
-    print('$_dataList');
     if (_isTextGen![index]) return;
-    print('gen summ');
 
     var data = _dataList![index];
     var prompt = getPrompt(data);
-    print(prompt);
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -148,35 +139,28 @@ class GenerateProvider with ChangeNotifier {
         jsonDecode(utf8.decode(response.bodyBytes));
 
     var eSummary = newresponse['choices'][0]['text'].trim();
-    print('ddd');
     var kSummary = await _translateToKorean(eSummary);
-    print('bbb');
+
     _setEnSummary(index, eSummary);
-    print('ccc');
     _setKoSummary(index, kSummary);
     _setTextGen(index);
   }
 
   Future<void> generateContents(int index) async {
-    print('$_dataList');
-    print('fealihulihjrf');
     if (!_isTextGen![index]) {
       await generateSummary(index);
     }
-    print('gen Cont');
 
     if (!_isImageGen![index]) {
       final openai = OpenaiDalleWrapper(apiKey: apiKey);
       String url = await openai
           .generateImage("${_enSummary![index]}, a painting of illustration");
-      print(url);
       _setImgUrl(index, url);
       _setImageGen(index);
     }
   }
 
   Future<String> _translateToKorean(String text) async {
-    print('tto');
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: {

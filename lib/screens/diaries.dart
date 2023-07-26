@@ -27,7 +27,6 @@ class _DiariesState extends State<Diaries> {
 
             void favoriteClickHandler() {
               diariesProvider.toggleFavorite(index);
-              print(docName);
             }
 
             return Dismissible(
@@ -50,7 +49,7 @@ class _DiariesState extends State<Diaries> {
               background: Container(
                 alignment: Alignment.centerRight,
                 color: Colors.red,
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Icon(
                     Icons.delete,

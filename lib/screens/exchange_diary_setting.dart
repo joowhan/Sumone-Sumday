@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sumday/providers/exchange_diary_list_provider.dart';
-import 'package:sumday/providers/loginProvider.dart';
 import 'package:sumday/utils/variables.dart';
 import 'package:sumday/widgets/appbar.dart';
 import 'package:sumday/widgets/setting_widget.dart';
@@ -18,8 +17,6 @@ class ExchangeDiarySetting extends StatefulWidget {
 class _ExchangeDiarySettingState extends State<ExchangeDiarySetting> {
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<LoginProvider>(context);
-    final user = userData.userInformation;
     final diaryListProvider = Provider.of<ExchangeDiaryListProvider>(context);
     final docIds = diaryListProvider.docIds;
 

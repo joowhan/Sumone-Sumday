@@ -23,7 +23,7 @@ class AppColors {
     return const Color(0xFFF8F4D7);
   }
 
-  // 초록색 계열 서브 커러
+  // 초록색 계열 서브 컬러
   static Color secondaryColor() {
     return const Color(0xFF14B690);
   }

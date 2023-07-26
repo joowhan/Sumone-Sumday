@@ -13,6 +13,12 @@ import 'package:sumday/models/place_model.dart';
 import 'package:sumday/models/weather_model.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
+// github 업로드 위해 빈 문자열로 치환함
+const kakaoApiKey = "";
+const googleApiKey = "";
+const openWeatherApiKey = "";
+
+const coordinationUnit = 1800; // 반경 약 50m를 동일 좌표로 취급
 
 // initiralize background fetch
 Future<void> initLocationState() async {
@@ -46,14 +52,14 @@ void _saveLocation(uid, taskId) async {
   var currentLocation = await getLocation();
   var weather =
       await getWeather(currentLocation.latitude, currentLocation.longitude);
-  int latitude = (currentLocation.latitude * 900).round();
-  int longitude = (currentLocation.longitude * 900).round();
+  int latitude = (currentLocation.latitude * coordinationUnit).round();
+  int longitude = (currentLocation.longitude * coordinationUnit).round();
   final locationRef = FirebaseFirestore.instance.collection("location");
 
   // 오늘 06:00부터 현재시각까지의 데이터를 가져오는 쿼리
   var utcNow = DateTime.now();
-  var now = utcNow.add(const Duration(hours: 9));
-  DateTime today = DateTime(now.year, now.month, now.day, 6); //테스트용으로 00시로세팅
+  var now = utcNow.add(const Duration(hours: 9)); // UTC +9이므로 9시간을 더해서 가져와야함
+  DateTime today = DateTime(now.year, now.month, now.day, 6);
   Timestamp todayTimestamp = Timestamp.fromDate(today);
   final exists = await locationRef
       .where("uid", isEqualTo: uid)
@@ -61,6 +67,8 @@ void _saveLocation(uid, taskId) async {
       .where("latitude", isEqualTo: latitude)
       .where("longitude", isEqualTo: longitude)
       .get();
+
+  // 해당 위치가 이미 DB에 기록되어있다면 count를 1 증가 시김
   if (exists.docs.isNotEmpty) {
     FirebaseFirestore.instance
         .collection("location")
@@ -68,6 +76,7 @@ void _saveLocation(uid, taskId) async {
         .update({'count': FieldValue.increment(1)});
 
     return;
+    // 해당 위치가 기록되어있지 않다면 DB에 새로 추가
   } else {
     var timestamp = Timestamp.now();
     var places = await getPlace(latitude, longitude);
@@ -164,10 +173,10 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   BackgroundFetch.finish(taskId);
 }
 
-// get place by coordinate
+// 좌표를 통해 사용자가 방문한 장소의 후보 리스트를 가져옴
 Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
-  var lat = latitude / 900;
-  var lon = longitude / 900;
+  var lat = latitude / coordinationUnit;
+  var lon = longitude / coordinationUnit;
 
   var json = await getPlacesGoogle(lat, lon);
   var placeNames = [
@@ -188,7 +197,7 @@ Future<List<VisitedPlaceModel>> getPlace(var latitude, var longitude) async {
 
 Future<List<VisitedPlaceModel>> getPlacesKakao(
     var placeNames, var latitude, var longitude) async {
-  var key = "916168db2740df8a80a776ae4751c981";
+  var key = kakaoApiKey;
   var baseUrl = "https://dapi.kakao.com/v2/local/search/keyword.json";
   List<VisitedPlaceModel> responses = [];
   // group_code 참조 : https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-category-request-category-group-code
@@ -229,7 +238,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
 }
 // Future<List<VisitedPlaceModel>> getPlacesKakao(
 //     var latitude, var longitude) async {
-//   var key = "916168db2740df8a80a776ae4751c981";
+//   var key = "kakaoApiKey";
 //   var baseUrl = "https://dapi.kakao.com/v2/local/search/category.json";
 //   List<VisitedPlaceModel> responses = [];
 //   // group_code 참조 : https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-category-request-category-group-code
@@ -277,7 +286,7 @@ Future<List<VisitedPlaceModel>> getPlacesKakao(
 
 // Google Place API
 Future<dynamic> getPlacesGoogle(var latitude, var longitude) async {
-  var key = "AIzaSyDo2dnIDCoU02BXMP6lR9sVSsXjJiJ7qsg";
+  var key = googleApiKey;
   var baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
   var url = Uri.parse(
       // rankby parameter를 이용할 수 있는데, prominence(default)는 장소 인기도 중심, distance는 거리 중심
@@ -294,7 +303,7 @@ Future<dynamic> getPlacesGoogle(var latitude, var longitude) async {
 
 // Weather API
 Future<WeatherModel> getWeather(var latitude, var longitude) async {
-  var key = "a01688e1c93e922e4bd07d6714e06468";
+  var key = openWeatherApiKey;
   var baseUrl = "https://api.openweathermap.org/data/2.5/weather";
   var url = Uri.parse(
       '$baseUrl?lat=$latitude&lon=$longitude&appid=$key&units=metric&lang=kr');

@@ -48,7 +48,6 @@ class DiariesProvider with ChangeNotifier {
   // 일기 추가
   // docName : 일반적으로 저장할 때는 null 주면 됨, 삭제 복구할 때는 값 줘야함
   Future<String> addDiary(int index, Diary diary, String? docName) async {
-    print(index);
     diaries.insert(index, diary);
     var docName0 = await _saveDiary(diary, docName);
 
@@ -60,8 +59,7 @@ class DiariesProvider with ChangeNotifier {
 
   // 일기 업데이트
   // docName : 일반적으로 저장할 때는 null 주면 됨, 삭제 복구할 때는 값 줘야함
-  Future<String> UpdateDiary(int index, Diary diary, String? docName) async {
-    print(index);
+  Future<String> updateDiary(int index, Diary diary, String? docName) async {
     diaries[index] = diary;
     var docName0 = await _saveDiary(diary, docName);
 
@@ -101,7 +99,6 @@ class DiariesProvider with ChangeNotifier {
           .collection('diary')
           .where("userID", isEqualTo: _userID)
           .get();
-      print(snapshot.docs.length);
 
       for (var doc in snapshot.docs) {
         docNames.add(doc.id);
