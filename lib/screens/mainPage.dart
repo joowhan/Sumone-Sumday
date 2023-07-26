@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sumday/screens/BookMarks.dart';
 import 'package:sumday/screens/diaries.dart';
 import 'package:sumday/screens/exchange_diary_list.dart';
-import 'package:sumday/screens/get_place_test.dart';
 import 'package:sumday/screens/newDiary.dart';
 import 'package:sumday/screens/settings.dart';
 import 'package:sumday/screens/home.dart';
@@ -83,15 +81,15 @@ class _MainPageState extends State<MainPage> {
         return await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                      title: Text('정말 종료하겠습니까?'),
+                      title: const Text('정말 종료하겠습니까?'),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: Text('확인'),
+                          child: const Text('확인'),
                         ),
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('취소'),
+                          child: const Text('취소'),
                         ),
                       ],
                     )) ??

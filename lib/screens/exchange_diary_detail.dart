@@ -198,7 +198,7 @@ class _ExchangeDiaryDetailState extends State<ExchangeDiaryDetail> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 284,
+                      width: 240,
                       height: 40,
                       child: TextField(
                         controller: commentController,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sumday/screens/ai_writeDiary.dart';
 
 class LocationForm extends StatefulWidget {
   const LocationForm({Key? key}) : super(key: key);

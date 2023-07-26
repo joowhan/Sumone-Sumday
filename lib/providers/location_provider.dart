@@ -32,8 +32,6 @@ class LocationProvider with ChangeNotifier {
     for (var i = 0; i < snapshot.docs.length; i++) {
       final data = snapshot.docs[i].data() as Map<String, dynamic>?;
       final location = RLocationModel.fromJson(data!);
-      // loadedLocations.add(location);
-      // loadedDocIds.add(snapshot.docs[i].id);
       loadedLocations = [...loadedLocations, location];
       loadedDocIds = [...loadedDocIds, snapshot.docs[i].id];
     }
