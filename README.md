@@ -1,4 +1,5 @@
 # sumday
+![sumday_intro](https://github.com/joowhan/Sumone-Sumday/assets/101931446/7b609a46-153d-4fcf-92ce-5490d7cc78b4)
 
 A new Flutter project.
 
